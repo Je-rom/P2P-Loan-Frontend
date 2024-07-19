@@ -1,9 +1,9 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { FormContext } from "@/context/FormContext";
+import React, { useState } from "react";
+import { useFormStore } from "@/context/FormContext";
 
 const CreatePin: React.FC = () => {
-  const { formData, prevStep, updateFormData } = useContext(FormContext);
+  const { formData, prevStep, updateFormData } = useFormStore();
   const [pinCreation, setPinCreation] = useState(formData.pinCreation);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

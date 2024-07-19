@@ -1,6 +1,6 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { FormContext } from "@/context/FormContext";
+import React, { useState } from "react";
+import { useFormStore } from "@/context/FormContext";
 import { Button } from "@/components/ui/button";
 
 const VerifyEmail: React.FC = () => {
@@ -10,7 +10,7 @@ const VerifyEmail: React.FC = () => {
     prevStep,
     updateFormData,
     sendVerificationEmail,
-  } = useContext(FormContext);
+  } = useFormStore();
   const [isEmailSent, setIsEmailSent] = useState(
     formData.emailVerification.isEmailSent
   );
@@ -40,13 +40,9 @@ const VerifyEmail: React.FC = () => {
       <Button
         type="button"
         onClick={handleSendEmail}
-        disabled={loading || isEmailSent}
+        disabled={isEmailSent || loading}
       >
-        {loading
-          ? "Sending..."
-          : isEmailSent
-          ? "Email Sent"
-          : "Send Verification Email"}
+        {isEmailSent ? "Email Sent" : loading ? "Sending..." : "Send Email"}
       </Button>
     </div>
   );

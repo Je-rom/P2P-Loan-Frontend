@@ -1,8 +1,6 @@
 "use client";
-
-import React, { useContext, useState } from "react";
-import { FormContext } from "@/context/FormContext";
-import { Input } from "@/components/ui/input";
+import React from "react";
+import { useFormStore } from "@/context/FormContext";
 import {
   Form,
   FormField,
@@ -12,63 +10,66 @@ import {
 } from "@/components/ui/form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-const bvnSchema = z.object({
-  bvn: z
-    .string()
-    .length(11, { message: "Your BVN should be exactly 11 digits" })
-    .regex(/^\d+$/, { message: "Your BVN should only contain digits" }),
-});
+const BVNVerification: React.FC = () => {
+  const { formData, nextStep, prevStep, updateFormData } = useFormStore();
 
-type BvnFormValues = z.infer<typeof bvnSchema>;
+  const bvnSchema = z.object({
+    bvn: z.string().length(11, {
+      message: "BVN must be 11 digits",
+    }),
+  });
 
-const VerifyBVN: React.FC = () => {
-  const { formData, nextStep, prevStep, updateFormData } =
-    useContext(FormContext);
-  const [isLoading, setIsLoading] = useState(false);
+  type BVNFormValues = z.infer<typeof bvnSchema>;
 
-  const form = useForm<BvnFormValues>({
+  const form = useForm<BVNFormValues>({
     resolver: zodResolver(bvnSchema),
     defaultValues: {
-      bvn: formData.bvnVerification?.bvn || "",
+      bvn: formData.bvnVerification.bvn,
     },
   });
 
-  const onSubmit: SubmitHandler<BvnFormValues> = async (data) => {
-    setIsLoading(true);
-    updateFormData({ bvnVerification: { bvn: data.bvn } });
+  const onSubmit = (data: BVNFormValues) => {
+    updateFormData({ bvnVerification: data });
     nextStep();
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="py-2">
-          <FormField
-            control={form.control}
-            name="bvn"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
+    <div className="md:px-28 py-7">
+      <Button type="button" onClick={prevStep}>
+        Back
+      </Button>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="py-2">
+            <FormField
+              control={form.control}
+              name="bvn"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
                     <Input
                       type="text"
-                      disabled={isLoading}
                       placeholder="Enter your BVN"
                       {...field}
                       className="pl-14 py-7 rounded-xl"
                     />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
-      </form>
-    </Form>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="py-2">
+            <Button type="submit">Next</Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
-export default VerifyBVN;
+export default BVNVerification;

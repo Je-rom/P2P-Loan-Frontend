@@ -1,5 +1,6 @@
 "use client";
-import React, { createContext, useState, ReactNode, FC } from "react";
+import { create } from "zustand";
+import { ReactNode } from "react";
 
 interface FormData {
   basicInfo: {
@@ -17,7 +18,7 @@ interface FormData {
     bvn: string;
   };
   walletLinking: {
-    walletType?: "paystack" | "momo" | "other";
+    walletType?: "paystack" | "momo" | null;
     walletId?: string;
   };
   pinCreation: {
@@ -25,7 +26,7 @@ interface FormData {
   };
 }
 
-interface FormContextType {
+interface FormState {
   step: number;
   formData: FormData;
   nextStep: () => void;
@@ -34,87 +35,51 @@ interface FormContextType {
   sendVerificationEmail: () => Promise<void>;
 }
 
-export const FormContext = createContext<FormContextType>({
-  step: 1,
-  formData: {
-    basicInfo: {
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    emailVerification: {
-      isEmailSent: false,
-    },
-    bvnVerification: {
-      bvn: "",
-    },
-    walletLinking: {
-      walletType: undefined,
-      walletId: "",
-    },
-    pinCreation: {
-      pin: "",
-    },
+const initialFormData: FormData = {
+  basicInfo: {
+    firstName:"",
+    lastName: "",
+    middleName:"",
+    email: "",
+    password: "",
+    confirmPassword: "",
   },
-  nextStep: () => {},
-  prevStep: () => {},
-  updateFormData: () => {},
-  sendVerificationEmail: async () => {},
-});
+  emailVerification: {
+    isEmailSent: false,
+  },
+  bvnVerification: {
+    bvn: "",
+  },
+  walletLinking: {
+    walletType: undefined,
+    walletId: "",
+  },
+  pinCreation: {
+    pin: "",
+  },
+};
+
+export const useFormStore = create<FormState>((set) => ({
+  step: 1,
+  formData: initialFormData,
+  nextStep: () => set((state) => ({ step: state.step + 1 })),
+  prevStep: () => set((state) => ({ step: state.step - 1 })),
+  updateFormData: (data: Partial<FormData>) =>
+    set((state) => ({
+      formData: {
+        ...state.formData,
+        ...data,
+      },
+    })),
+  sendVerificationEmail: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  },
+}));
 
 interface FormProviderProps {
   children: ReactNode;
 }
 
-export const FormProvider: FC<FormProviderProps> = ({ children }) => {
-  const [step, setStep] = useState<number>(1);
-  const [formData, setFormData] = useState<FormData>({
-    basicInfo: {
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    emailVerification: {
-      isEmailSent: false,
-    },
-    bvnVerification: {
-      bvn: "",
-    },
-    walletLinking: {
-      walletType: undefined,
-      walletId: "",
-    },
-    pinCreation: {
-      pin: "",
-    },
-  });
-
-  const nextStep = () => setStep((prevStep) => prevStep + 1);
-  const prevStep = () => setStep((prevStep) => prevStep - 1);
-
-  const updateFormData = (data: Partial<FormData>) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      ...data,
-    }));
-  };
-
-  const sendVerificationEmail = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
-  const contextValue = {
-    step,
-    formData,
-    nextStep,
-    prevStep,
-    updateFormData,
-    sendVerificationEmail,
-  } as const;
-
-  return (
-    <FormContext.Provider value={contextValue}>{children}</FormContext.Provider>
-  );
+export const FormProvider = ({ children }: FormProviderProps) => {
+  return <>{children}</>;
 };

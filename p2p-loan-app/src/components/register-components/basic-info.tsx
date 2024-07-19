@@ -1,6 +1,6 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { FormContext } from "./../../context/FormContext";
+import React, { useState } from "react";
+import { useFormStore } from "@/context/FormContext";
 import {
   Form,
   FormField,
@@ -17,21 +17,19 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
 const BasicInfo: React.FC = () => {
-  const { formData, nextStep, updateFormData } = useContext(FormContext);
+  const { formData, nextStep, updateFormData } = useFormStore();
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
   const registerSchema = z
     .object({
-      firstName: z.string({ message: "Please Input your first name" }),
-      middleName: z.string({ message: "Please Input your middle name" }),
-      lastName: z.string({ message: "Please Input your last name" }),
-      email: z.string().trim().email({
-        message: "Invalid email",
-      }),
-      password: z.string().min(8, {
-        message: "Password must be at least 8 characters",
-      }),
+      firstName: z.string({ message: "Please input your first name" }),
+      middleName: z.string().optional(),
+      lastName: z.string({ message: "Please input your last name" }),
+      email: z.string().email({ message: "Invalid email" }),
+      password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters" }),
       confirmPassword: z
         .string()
         .min(1, { message: "Confirm Password is required" }),
@@ -42,7 +40,7 @@ const BasicInfo: React.FC = () => {
     });
 
   type RegisterFormValues = z.infer<typeof registerSchema>;
-  const form = useForm<z.infer<typeof registerSchema>>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       firstName: "",
@@ -56,151 +54,158 @@ const BasicInfo: React.FC = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     setIsLoading(true);
+    // Handle form submission here
+    updateFormData({
+      basicInfo: {
+        ...formData.basicInfo,
+        ...data,
+      },
+    });
+    nextStep();
   };
 
   return (
-    <div className="md:px-28 py-7">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        disabled={isLoading}
-                        placeholder="Email Address"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+    <div
+      className="">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="p-8 bg-white rounded-lg shadow-xl w-full max-w-md">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          disabled={isLoading}
+                          placeholder="First Name"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        disabled={isLoading}
-                        placeholder="Email Address"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="middleName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          disabled={isLoading}
+                          placeholder="Middle Name"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="middleName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        disabled={isLoading}
-                        placeholder="Email Address"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          disabled={isLoading}
+                          placeholder="Last Name"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        disabled={isLoading}
-                        placeholder="Email Address"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          disabled={isLoading}
+                          placeholder="Email Address"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="password"
-                        disabled={isLoading}
-                        placeholder="Password"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          disabled={isLoading}
+                          placeholder="Password"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="py-2">
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type="password"
-                        disabled={isLoading}
-                        placeholder="Confirm Password"
-                        {...field}
-                        className="pl-14 py-7 rounded-xl"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
-        </form>
-      </Form>
+              <div className="py-2">
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          disabled={isLoading}
+                          placeholder="Confirm Password"
+                          {...field}
+                          className="py-2 px-4 rounded-lg border"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-between mt-4">
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? <Loader2 className="animate-spin" /> : "Next"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };
