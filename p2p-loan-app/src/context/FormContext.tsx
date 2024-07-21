@@ -37,9 +37,9 @@ interface FormState {
 
 const initialFormData: FormData = {
   basicInfo: {
-    firstName:"",
+    firstName: "",
     lastName: "",
-    middleName:"",
+    middleName: "",
     email: "",
     password: "",
     confirmPassword: "",

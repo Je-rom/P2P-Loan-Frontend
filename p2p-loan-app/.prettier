@@ -1,0 +1,1 @@
+node --eval "fs.writeFileSync('.prettierrc','{}\n')"

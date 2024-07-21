@@ -12,7 +12,7 @@ const VerifyEmail: React.FC = () => {
     sendVerificationEmail,
   } = useFormStore();
   const [isEmailSent, setIsEmailSent] = useState(
-    formData.emailVerification.isEmailSent
+    formData.emailVerification.isEmailSent,
   );
   const [loading, setLoading] = useState(false);
 

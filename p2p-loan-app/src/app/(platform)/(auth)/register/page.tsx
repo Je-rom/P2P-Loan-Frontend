@@ -29,14 +29,13 @@ const Register: React.FC = () => {
 
   return (
     <div
-      className="container mx-auto px-4 py-8 w-full h-full"
+      className="w-full h-full bg-cover bg-center"
       style={{
         backgroundImage: "url('/reg-background.svg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <h1 className="text-2xl font-bold mb-4">Multi-Step Form</h1>
       {renderStep()}
     </div>
   );
