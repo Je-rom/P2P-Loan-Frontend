@@ -28,8 +28,6 @@ const BasicInfo: React.FC = () => {
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify Email' },
     { number: 3, label: 'Verify BVN' },
-    { number: 4, label: 'Link Wallet' },
-    { number: 5, label: 'Create PIN' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -100,7 +98,7 @@ const BasicInfo: React.FC = () => {
             </Button>
           </div>
           <div className="flex items-center justify-center mb-6">
-            <div className="w-full max-w-3xl text-center">
+            <div className="w-full max-w-2xl text-center">
               <StepIndicator />
             </div>
           </div>

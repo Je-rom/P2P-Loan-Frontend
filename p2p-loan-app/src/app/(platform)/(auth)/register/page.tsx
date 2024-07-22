@@ -1,14 +1,19 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormStore } from '@/context/FormContext';
 import BasicInfo from '@/components/register-components/basic-info';
 import VerifyEmail from '@/components/register-components/verify-email';
 import VerifyBVN from '@/components/register-components/verify-bvn';
-import LinkWallet from '@/components/register-components/link-wallet';
-import CreatePin from '@/components/register-components/create-pin';
 
 const Register: React.FC = () => {
-  const { step } = useFormStore();
+  const { step, setStep } = useFormStore();
+
+  useEffect(() => {
+    const savedStep = Number(localStorage.getItem('step'));
+    if (savedStep) {
+      setStep(savedStep);
+    }
+  }, [setStep]);
 
   const renderStep = () => {
     switch (step) {
@@ -18,10 +23,6 @@ const Register: React.FC = () => {
         return <VerifyEmail />;
       case 3:
         return <VerifyBVN />;
-      case 4:
-        return <LinkWallet />;
-      case 5:
-        return <CreatePin />;
       default:
         return <BasicInfo />;
     }

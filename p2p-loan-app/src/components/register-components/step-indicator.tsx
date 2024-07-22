@@ -5,8 +5,6 @@ const steps = [
   { number: 1, label: "Basic Info" },
   { number: 2, label: "Verify Email" },
   { number: 3, label: "Verify BVN" },
-  { number: 4, label: "Link Wallet" },
-  { number: 5, label: "Create PIN" },
 ];
 
 const StepIndicator: React.FC = () => {

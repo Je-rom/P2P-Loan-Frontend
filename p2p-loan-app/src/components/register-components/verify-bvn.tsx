@@ -16,17 +16,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import StepIndicator from '@/components/register-components/step-indicator';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const BVNVerification: React.FC = () => {
-  const { formData, nextStep, prevStep, updateFormData } = useFormStore();
+  const { formData, nextStep, updateFormData } = useFormStore();
   const { step } = useFormStore();
-
+  const router = useRouter();
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify Email' },
     { number: 3, label: 'Verify BVN' },
-    { number: 4, label: 'Link Wallet' },
-    { number: 5, label: 'Create PIN' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -48,13 +47,14 @@ const BVNVerification: React.FC = () => {
   const onSubmit = (data: BVNFormValues) => {
     updateFormData({ bvnVerification: data });
     nextStep();
+    router.push('/login');
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
       <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
         <div className="flex items-center justify-center mt-8">
-          <div className="w-full text-center">
+          <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
@@ -66,9 +66,7 @@ const BVNVerification: React.FC = () => {
               </span>
               {currentStep?.label}
             </h1>
-            <p className="text-md mt-2">
-              Why we need your BVN
-            </p>
+            <p className="text-md mt-2">Why we need your BVN</p>
             <p className="text-xs mt-2">
               Your Bank Verification Number (BVN) helps us verify your identity
               and ensures the security of your account. It allows us to provide

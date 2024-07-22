@@ -42,7 +42,7 @@ const VerifyEmail: React.FC = () => {
     <div className="flex justify-center items-center min-h-screen p-4">
       <div className="bg-white p-6 rounded-xl w-[800px] h-[600px]">
         <div className="flex items-center justify-center mt-8">
-          <div className="w-full max-w-3xl text-center">
+          <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
@@ -61,7 +61,7 @@ const VerifyEmail: React.FC = () => {
           <h1 className="mt-4">
             Didn't receive any mail?
             <button>
-              <span onClick={handleSendEmail} className="text-blue-500">
+              <span onClick={handleSendEmail} className="text-blue-600">
                 Click to resend
               </span>
             </button>

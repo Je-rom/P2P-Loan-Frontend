@@ -1,6 +1,5 @@
-"use client";
 import { create } from "zustand";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface FormData {
   basicInfo: {
@@ -17,13 +16,6 @@ interface FormData {
   bvnVerification: {
     bvn: string;
   };
-  walletLinking: {
-    walletType?: "paystack" | "momo" | null;
-    walletId?: string;
-  };
-  pinCreation: {
-    pin: string;
-  };
 }
 
 interface FormState {
@@ -33,6 +25,7 @@ interface FormState {
   prevStep: () => void;
   updateFormData: (data: Partial<FormData>) => void;
   sendVerificationEmail: () => Promise<void>;
+  setStep: (step: number) => void;
 }
 
 const initialFormData: FormData = {
@@ -50,20 +43,21 @@ const initialFormData: FormData = {
   bvnVerification: {
     bvn: "",
   },
-  walletLinking: {
-    walletType: undefined,
-    walletId: "",
-  },
-  pinCreation: {
-    pin: "",
-  },
 };
 
 export const useFormStore = create<FormState>((set) => ({
-  step: 1,
+  step: typeof window !== 'undefined' ? Number(localStorage.getItem('step')) || 1 : 1,
   formData: initialFormData,
-  nextStep: () => set((state) => ({ step: state.step + 1 })),
-  prevStep: () => set((state) => ({ step: state.step - 1 })),
+  nextStep: () => set((state) => {
+    const nextStep = state.step + 1;
+    localStorage.setItem('step', String(nextStep));
+    return { step: nextStep };
+  }),
+  prevStep: () => set((state) => {
+    const prevStep = state.step - 1;
+    localStorage.setItem('step', String(prevStep));
+    return { step: prevStep };
+  }),
   updateFormData: (data: Partial<FormData>) =>
     set((state) => ({
       formData: {
@@ -74,6 +68,10 @@ export const useFormStore = create<FormState>((set) => ({
   sendVerificationEmail: async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   },
+  setStep: (step: number) => {
+    localStorage.setItem('step', String(step));
+    set({ step });
+  }
 }));
 
 interface FormProviderProps {
