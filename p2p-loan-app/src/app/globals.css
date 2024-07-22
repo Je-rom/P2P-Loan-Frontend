@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 @layer base {
   :root {
@@ -68,19 +69,6 @@
   }
 }
 
-.stepper-line {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.stepper-line::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -50%;
-  width: 100%;
-  height: 2px;
-  background-color: #e0e0e0;
-  z-index: -1;
+body {
+  font-family: 'Inter', sans-serif;
 }

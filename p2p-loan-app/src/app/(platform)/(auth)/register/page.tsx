@@ -1,11 +1,11 @@
-"use client";
-import React from "react";
-import { useFormStore } from "@/context/FormContext";
-import BasicInfo from "@/components/register-components/basic-info";
-import VerifyEmail from "@/components/register-components/verify-email";
-import VerifyBVN from "@/components/register-components/verify-bvn";
-import LinkWallet from "@/components/register-components/link-wallet";
-import CreatePin from "@/components/register-components/create-pin";
+'use client';
+import React from 'react';
+import { useFormStore } from '@/context/FormContext';
+import BasicInfo from '@/components/register-components/basic-info';
+import VerifyEmail from '@/components/register-components/verify-email';
+import VerifyBVN from '@/components/register-components/verify-bvn';
+import LinkWallet from '@/components/register-components/link-wallet';
+import CreatePin from '@/components/register-components/create-pin';
 
 const Register: React.FC = () => {
   const { step } = useFormStore();
@@ -32,8 +32,8 @@ const Register: React.FC = () => {
       className="w-full h-full bg-cover bg-center"
       style={{
         backgroundImage: "url('/reg-background.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     >
       {renderStep()}
