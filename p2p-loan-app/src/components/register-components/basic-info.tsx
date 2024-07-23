@@ -106,7 +106,7 @@ const BasicInfo: React.FC = () => {
             <div className="bg-white p-6 rounded-xl w-full max-w-lg">
               <div>
                 <h1 className="text-sm flex  gap-2">
-                  <span className="w-4 h-4 bg-black text-white rounded-full flex items-center justify-center text-xs">
+                  <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-lg">
                     {currentStep?.number}
                   </span>
                   {currentStep?.label}
