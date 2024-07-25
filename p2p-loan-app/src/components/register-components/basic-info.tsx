@@ -90,10 +90,10 @@ const BasicInfo: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            <Button className="bg-blue-500 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
               Lender
             </Button>
-            <Button className="bg-blue-500 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
               Borrower
             </Button>
           </div>
@@ -264,7 +264,7 @@ const BasicInfo: React.FC = () => {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-[400px] rounded-xl bg-blue-500 hover:bg-blue-500 "
+                      className="w-[400px] rounded-xl bg-blue-400 hover:bg-blue-400 "
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin" />

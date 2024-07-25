@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 const VerifyEmail: React.FC = () => {
   const {
@@ -18,6 +20,8 @@ const VerifyEmail: React.FC = () => {
     formData.emailVerification.isEmailSent,
   );
   const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
 
   const handleSendEmail = async () => {
     setLoading(true);
@@ -35,7 +39,7 @@ const VerifyEmail: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    nextStep();
+    router.push('/login');
   };
 
   return (
@@ -54,14 +58,14 @@ const VerifyEmail: React.FC = () => {
             type="submit"
             onClick={handleSendEmail}
             disabled={loading}
-            className="w-[300px] rounded-xl bg-blue-500 hover:bg-blue-500 mt-8"
+            className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
           >
             {loading ? <Loader2 className="animate-spin" /> : 'Open Email App'}
           </Button>
-          <h1 className="mt-4">
+          <h1 className="mt-4 flex gap-2">
             Didn't receive any mail?
             <button>
-              <span onClick={handleSendEmail} className="text-blue-600">
+              <span onClick={handleSendEmail} className="text-blue-400">
                 Click to resend
               </span>
             </button>
@@ -69,7 +73,10 @@ const VerifyEmail: React.FC = () => {
           <div className="flex items-center mt-4 gap-2">
             <h1 className="">Continue Registration</h1>
             <button>
-              <MoveRight onClick={handleNextStep} color="#31AAEE" />
+              <MoveRight
+                onClick={handleNextStep}
+                color="rgba(49, 170, 238, 1)"
+              />
             </button>
           </div>
         </div>

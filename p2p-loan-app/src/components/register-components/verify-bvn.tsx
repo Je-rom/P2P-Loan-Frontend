@@ -47,7 +47,6 @@ const BVNVerification: React.FC = () => {
   const onSubmit = (data: BVNFormValues) => {
     updateFormData({ bvnVerification: data });
     nextStep();
-    router.push('/login');
   };
 
   return (
@@ -99,7 +98,7 @@ const BVNVerification: React.FC = () => {
                 </div>
                 <div className="py-2 flex justify-center items-center">
                   <Button
-                    className="w-[400px] rounded-xl bg-blue-500 hover:bg-blue-600 text-white"
+                    className="w-[550px] rounded-xl bg-blue-400 hover:bg-blue-400 text-white"
                     type="submit"
                   >
                     {form.formState.isSubmitting ? (
