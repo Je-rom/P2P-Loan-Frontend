@@ -38,7 +38,7 @@ const invoices = [
   },
 ];
 
-const LenderTable = () => {
+const BorrowerTable = () => {
   return (
     <div className="">
       <Table>
@@ -67,4 +67,4 @@ const LenderTable = () => {
   );
 };
 
-export default LenderTable;
+export default BorrowerTable;

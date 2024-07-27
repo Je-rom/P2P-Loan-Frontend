@@ -7,7 +7,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'P2P Loan',
+  title: 'BorrowPointe',
   description:
     "Peer-to-Peer (P2P) Microloan Platform that bridges the gap between borrower's and lenders",
 };
