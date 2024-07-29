@@ -7,6 +7,8 @@ import { Skeleton } from '../ui/skeleton';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useMediaQuery } from 'usehooks-ts';
+import MobileSidebar from './mobile-sidebar';
+import NavbarLogo from './navbar-logo';
 
 const DashboardNavbar = () => {
   const storedEmail = localStorage.getItem('email');
@@ -17,10 +19,9 @@ const DashboardNavbar = () => {
   const router = useRouter();
 
   return (
-    <nav className="md:flex items-center px-8 py-7 border-b-2 shadow-lg bg-white w-full">
-      <div className=''>
-        <h1 className='font-bold text-2xl'>BorrowPoint</h1>
-      </div>
+    <nav className="md:flex flex items-center px-8 py-7 shadow-lg bg-white w-full">
+      <MobileSidebar />
+      <NavbarLogo />
       <div className="flex justify-end items-center w-full">
         <div className="flex items-center gap-4">
           {user.isLoading ? (
@@ -38,7 +39,7 @@ const DashboardNavbar = () => {
           ) : (
             <>
               <div>
-                <p className="text-lg font-semibold">
+                <p className="text-sm font-semibold">
                   {`${user?.data?.email}`}
                 </p>
               </div>

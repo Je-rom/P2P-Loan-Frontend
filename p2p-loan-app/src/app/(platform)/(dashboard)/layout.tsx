@@ -6,8 +6,6 @@ import { useMediaQuery } from 'usehooks-ts';
 import Bottombar from '@/components/shared/bottomBar';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
-
   return (
     <div className="h-full relative">
       <div className="sticky top-0 z-30 w-full">
@@ -17,20 +15,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <Sidebar />
       </div>
       <main className="lg:pl-72">
-        {isDesktop ? (
-          <div
-            className="px-8 py-10 lg:px-20 lg:py-16"
-            style={{ minHeight: 'calc(100vh - 4rem)' }}
-          >
-            {children}
-          </div>
-        ) : (
-          <div className="" style={{ minHeight: 'calc(100vh - 4rem)' }}>
-            {children}
-          </div>
-        )}
+        <div
+          className="px-8 py-10 lg:px-20 lg:py-16"
+          style={{ minHeight: 'calc(100vh - 4rem)' }}
+        >
+          {children}
+        </div>
+        {/* <div className="" style={{ minHeight: 'calc(100vh - 4rem)' }}>
+          {children}
+        </div> */}
       </main>
-      <Bottombar />
     </div>
   );
 };

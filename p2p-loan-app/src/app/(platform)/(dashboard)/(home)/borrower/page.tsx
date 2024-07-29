@@ -13,7 +13,7 @@ const BorrowerPage = () => {
     {
       img: (
         <Image
-          src="Add-task.svg"
+          src="balance.svg"
           alt=""
           width={40}
           height={10}
@@ -26,7 +26,7 @@ const BorrowerPage = () => {
     {
       img: (
         <Image
-          src="empty-wallet.svg"
+          src="active-loans.svg"
           alt=""
           width={40}
           height={10}
@@ -39,7 +39,7 @@ const BorrowerPage = () => {
     {
       img: (
         <Image
-          src="empty-wallet.svg"
+          src="loan-req.svg"
           alt=""
           width={40}
           height={10}
@@ -52,7 +52,7 @@ const BorrowerPage = () => {
     {
       img: (
         <Image
-          src="empty-wallet.svg"
+          src="loan-offer.svg"
           alt=""
           width={40}
           height={10}
@@ -76,7 +76,7 @@ const BorrowerPage = () => {
           Create New Offer
         </Button>
       </div>
-      <div className="flex flex-wrap items-start justify-center gap-4 p-4">
+      <div className="flex flex-wrap items-start justify-start gap-4 p-4">
         {cards.map((card, index) => (
           <Card key={index} className="w-full md:w-[315px] shadow-xl">
             <CardHeader>
@@ -105,38 +105,22 @@ const BorrowerPage = () => {
         </div>
         <Image src={'/info-circle.svg'} alt="info" width={25} height={10} />
       </div>
-      {/* <div className="border border-gray-200  md:flex-row rounded-2xl mt-10 p-4 md:p-10 justify-between space-y-4 md:space-y-0 items-start md:items-center">
-        <h1 className="font-bold text-2xl tracking-wider">Transactions</h1>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-          <div className="relative w-full md:w-auto">
+      <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row justify-between items-start">
+        <h1 className="font-bold text-xl sm:text-2xl">Transactions</h1>
+        <div className="flex flex-col md:flex-row mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
+          <div className="relative flex-grow">
             <Input
-              className="w-full md:w-auto rounded-xl bg-gray-100 pr-10"
+              className="w-[250px] rounded-xl"
               placeholder="Search history"
             />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
-          <div className="w-full md:w-auto">
+          <div className="relative flex-grow">
             <DatePickerWithRange />
           </div>
         </div>
       </div>
-      <BorrowerTable /> */}
-      <div className="mt-10 p-4 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
-        <h1 className="font-bold text-2xl tracking-wider">Transactions</h1>
-        <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-          <div className="relative w-full md:w-auto max-w-xs">
-            <Input
-              className="w-full rounded-xl bg-gray-100 pr-10"
-              placeholder="Search history"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
-          <div className="w-full md:w-auto max-w-xs">
-            <DatePickerWithRange />
-          </div>
-        </div>
-      </div>
-      <div className="w-full md:w-auto mt-4 md:mt-0 p-4">
+      <div className="w-full mt-4 md:mt-0">
         <BorrowerTable />
       </div>
     </>

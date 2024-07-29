@@ -8,12 +8,16 @@ import { Skeleton } from '../ui/skeleton';
 import LoanRequest from '../../../public/loan-request.svg';
 import Loans from '../../../public/loans.svg';
 import myOffer from '../../../public/loans.svg';
-import loanOffer from '../../../public/loan-offer.svg';
+import loanOffer from '../../../public/lender-offer.svg';
 import LayoutDashboard from '../../../public/dashboard.svg';
 import Settings from '../../../public/setting-2.svg';
 import Image from 'next/image';
 import { LogoutDialog } from './logoutdialog';
 import { useState } from 'react';
+
+interface SidebarProps {
+  storageKey?: string;
+}
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,27 +36,27 @@ const Sidebar = () => {
     {
       title: 'Loan Request',
       icon: LoanRequest,
-      href: `/transactions/${selectedOption}`,
+      href: `/loan-request/${selectedOption}`,
     },
     {
       title: 'Loans',
       icon: Loans,
-      href: `/multimedia/${selectedOption}`,
+      href: `/loans/${selectedOption}`,
     },
     {
       title: 'My Offers',
       icon: myOffer,
-      href: `/account-settings/${selectedOption}`,
+      href: `/offers/${selectedOption}`,
     },
     {
       title: 'Lenders Offers',
       icon: loanOffer,
-      href: `/account-settings/${selectedOption}`,
+      href: `/lender-offers/${selectedOption}`,
     },
     {
       title: 'Settings',
       icon: Settings,
-      href: '/home/help',
+      href: '/settings',
     },
   ];
 

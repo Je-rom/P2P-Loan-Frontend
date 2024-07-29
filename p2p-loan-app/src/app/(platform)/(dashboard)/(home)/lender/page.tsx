@@ -36,7 +36,6 @@ const LenderPage = () => {
       amount: 529.0,
       text: 'Active Loan',
     },
-    
   ];
 
   return (
@@ -74,22 +73,24 @@ const LenderPage = () => {
           </Card>
         ))}
       </div>
-      <div className="flex flex-col md:flex-row rounded-lg mt-10 p-4 md:p-10 justify-between space-y-4 md:space-y-0 items-start md:items-center">
-        <h1 className="font-bold text-2xl tracking-wider">Transactions</h1>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-          <div className="relative w-full md:w-auto">
+      <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row justify-between items-start">
+        <h1 className="font-bold text-xl sm:text-2xl">Transactions</h1>
+        <div className="flex flex-col md:flex-row mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
+          <div className="relative flex-grow">
             <Input
-              className="w-full md:w-auto rounded-xl bg-gray-100 pr-10"
+              className="w-[250px] rounded-xl"
               placeholder="Search history"
             />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
-          <div className="w-full md:w-auto">
+          <div className="relative flex-grow">
             <DatePickerWithRange />
           </div>
         </div>
       </div>
-      <LenderTable />
+      <div className="w-full mt-4 md:mt-0">
+        <LenderTable />
+      </div>
     </>
   );
 };

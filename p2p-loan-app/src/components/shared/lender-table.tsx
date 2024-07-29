@@ -40,11 +40,11 @@ const invoices = [
 
 const LenderTable = () => {
   return (
-    <div className="">
+    <div className="mt-5 bg-gray-100 bg-opacity-100">
       <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100 bg-opacity-100">
-            <TableHead className="w-[400px]">Name</TableHead>
+        <TableHeader className="bg-white text-center">
+          <TableRow className="">
+            <TableHead className="">Name</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead className="text-right">Status</TableHead>
