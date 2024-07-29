@@ -36,13 +36,13 @@ export function LogoutDialog({
             <div className="mt-14 space-x-10 mr-20">
               <Button
                 // onClick={logout}
-                className="bg-gray-200 px-10 py-7 hover:bg-purple-900 hover:text-white text-purple-900"
+                className="bg-gray-200 px-10 py-7 hover:bg-blue-400 hover:text-white text-blue-900"
               >
                 Yes
               </Button>
               <Button
                 onClick={closeDialog}
-                className="bg-gray-200 px-10 py-7 hover:bg-purple-900 hover:text-white text-purple-900"
+                className="bg-gray-200 px-10 py-7 hover:bg-blue-400 hover:text-white text-blue-900"
               >
                 No
               </Button>

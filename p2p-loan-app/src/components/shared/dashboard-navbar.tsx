@@ -18,6 +18,9 @@ const DashboardNavbar = () => {
 
   return (
     <nav className="md:flex items-center px-8 py-7 border-b-2 shadow-lg bg-white w-full">
+      <div className=''>
+        <h1 className='font-bold text-2xl'>BorrowPoint</h1>
+      </div>
       <div className="flex justify-end items-center w-full">
         <div className="flex items-center gap-4">
           {user.isLoading ? (
@@ -35,7 +38,7 @@ const DashboardNavbar = () => {
           ) : (
             <>
               <div>
-                <p className="text-sm font-semibold">
+                <p className="text-lg font-semibold">
                   {`${user?.data?.email}`}
                 </p>
               </div>
