@@ -1,21 +1,14 @@
 'use client';
 import React, { useState } from 'react';
 import { z } from 'zod';
+import image from 'next/image';
 import { useForm } from 'react-hook-form';
-
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormMessage,
-  FormControl,
-  FormLabel,
-} from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import VerifyEmail from '@/components/register-components/verify-email';
+import Image from 'next/image';
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,39 +28,66 @@ const HomePage = () => {
   });
 
   return (
-    <div className="background">
-      <div
-        className="min-h-screen bg-cover bg-center flex items-center justify-center"
-        style={{
-          backgroundImage: "url('/reg-background.svg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      ></div>
-
-      <footer className="bg-blue-600  text-white py-4">
-        <div className="container mx-auto text-center">
-          <p>
-            <a href="/privacy-policy" className="text-blue-400 hover:underline">
-              Privacy Policy
-            </a>
-            {' | '}
-            <a
-              href="/terms-of-service"
-              className="text-blue-400 hover:underline"
-            >
-              Terms of Service
-            </a>
-            {' | '}
-            <a href="/contact-us" className="text-blue-400 hover:underline">
-              Contact Us
-            </a>
-          </p>
-          <p>© {new Date().getFullYear()} PeerLend. All rights reserved.</p>
+    <div className="background bg-transparent bg-gradient-to-r from-white to-blue-300">
+      <div className="pt-10 mt-20">
+        <div className="flex justify-between">
+          <div className="">
+            <h1 className="font-bold text-4xl">
+              Empower Your Financial Future
+            </h1>
+            <p className="text-center text-gray-600">
+              PeerLend is Link peer-to-peer lending platform that allows you to
+              borrow money from other people.
+            </p>
+          </div>
+          <Image
+            src={'/hand_image.svg'}
+            alt="hand image"
+            width={400}
+            height={10}
+          />
         </div>
-      </footer>
+      </div>
+
+      <section className="bg-white">
+        <div className="pt-10 mt-20">
+          <div className="flex justify-between">
+            <Image
+              src={'/couple_image.svg'}
+              alt="indoor-candid-shot-young-african-american-couple-doing-paperwork-together"
+              width={600}
+              height={100}
+            />
+
+            <div className="w-1/2">
+              <h1 className="font-bold text-2xl">Why Choose Us</h1>
+              <section className="p-6 bg-gray-100">
+                <ul className="list-disc list-inside pl-6">
+                  <li>
+                    Simplified Access to Credit: Borrowers can quickly and
+                    easily obtain loans with competitive interest rates,
+                    tailored to their needs.
+                  </li>
+                  <li>
+                    Profitable Investment Opportunities: Lenders gain access to
+                    a wide range of vetted lending options, allowing them to
+                    diversify their investments.
+                  </li>
+                  <li>
+                    Enhanced User Engagement: The app's intuitive interface and
+                    personalized recommendations empower users to take control
+                    of their finances.
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
 export default HomePage;
+
+// test the height on different devices to see if it breaks
