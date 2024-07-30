@@ -119,7 +119,7 @@ const LoginPage = () => {
               </Button>
             </div>
             <p className="mt-3 text-start leading-9 tracking-wide">
-              Dont't have an account?
+              Dont have an account?
               <Link
                 href="/register"
                 className="text-primary ml-1 font-semibold text-blue-600"

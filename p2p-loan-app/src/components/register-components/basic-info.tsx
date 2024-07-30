@@ -86,7 +86,7 @@ const BasicInfo: React.FC = () => {
             <p className="text-sm md:text-base p-4">
               Follow these steps to create your account: enter your personal
               details, verify your email, and set up your account securely.
-              Let's get started!
+              Lets get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">

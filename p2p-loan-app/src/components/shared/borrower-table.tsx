@@ -52,6 +52,7 @@ const BorrowerTable = () => {
         </TableHeader>
         <TableBody>
           {invoices.map((invoice) => (
+            // eslint-disable-next-line react/jsx-key
             <TableRow>
               <TableCell className="font-medium">{invoice.name}</TableCell>
               <TableCell>{invoice.date}</TableCell>
