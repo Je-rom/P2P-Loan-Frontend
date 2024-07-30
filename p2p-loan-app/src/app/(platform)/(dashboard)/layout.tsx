@@ -8,10 +8,10 @@ import Bottombar from '@/components/shared/bottomBar';
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-full relative">
-      <div className="sticky top-0 z-30 w-full">
+      <div className="sticky top-0 z-10 w-full">
         <DashboardNavbar />
       </div>
-      <div className="hidden rounded-r-lg h-full w-[200px] lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 z-20 shrink-0">
+      <div className="hidden rounded-r-lg h-full w-[200px] lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 z-30 shrink-0">
         <Sidebar />
       </div>
       <main className="lg:pl-72">

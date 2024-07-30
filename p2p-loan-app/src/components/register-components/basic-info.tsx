@@ -14,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import StepIndicator from '@/components/register-components/step-indicator';
 
@@ -22,6 +21,7 @@ const BasicInfo: React.FC = () => {
   const { formData, nextStep, updateFormData } = useFormStore();
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const { step } = useFormStore();
 
   const steps = [
@@ -63,16 +63,43 @@ const BasicInfo: React.FC = () => {
     },
   });
 
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+  };
+
   const onSubmit = async (data: RegisterFormValues) => {
+    if (!selectedOption) {
+      setFormError('Please select either Lender or Borrower.');
+      return;
+    }
+    const {
+      lastName,
+      firstName,
+      confirmPassword,
+      email,
+      ...dataWithoutConfirmPassword
+    } = data;
+    const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
-    // Handle form submission here
-    updateFormData({
-      basicInfo: {
-        ...formData.basicInfo,
-        ...data,
-      },
-    });
-    nextStep();
+    try {
+      // Handle form submission here
+      localStorage.setItem('user_type', user_type);
+      localStorage.setItem('email', email);
+      localStorage.setItem('firstName', firstName);
+      localStorage.setItem('lastName', lastName);
+
+      updateFormData({
+        basicInfo: {
+          ...formData.basicInfo,
+          ...data,
+        },
+      });
+      nextStep();
+    } catch (error) {
+      setFormError('An error occurred while submitting the form.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,10 +117,16 @@ const BasicInfo: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button
+              onClick={() => handleOptionSelect('lender')}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400'}`}
+            >
               Lender
             </Button>
-            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button
+              onClick={() => handleOptionSelect('borrower')}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400'}`}
+            >
               Borrower
             </Button>
           </div>
@@ -105,7 +138,7 @@ const BasicInfo: React.FC = () => {
           <div className="flex items-center justify-center">
             <div className="bg-white p-6 rounded-xl w-full max-w-lg">
               <div>
-                <h1 className="text-sm flex  gap-2">
+                <h1 className="text-sm flex gap-2">
                   <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-lg">
                     {currentStep?.number}
                   </span>
@@ -260,11 +293,17 @@ const BasicInfo: React.FC = () => {
                     />
                   </div>
 
+                  {formError && (
+                    <div className="text-red-500 text-center mb-4">
+                      {formError}
+                    </div>
+                  )}
+
                   <div className="flex justify-center mt-4">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-[400px] rounded-xl bg-blue-400 hover:bg-blue-400 "
+                      className="w-[400px] rounded-xl bg-blue-400 hover:bg-blue-600"
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin" />

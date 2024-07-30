@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { EllipsisVertical, Plus, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -7,8 +7,19 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import DatePickerWithRange from '@/components/ui/date-range';
 import BorrowerTable from '@/components/shared/borrower-table';
+import { useRouter } from 'next/navigation';
 
 const BorrowerPage = () => {
+  const [fullName, setFullName] = useState('');
+  const router = useRouter();
+  useEffect(() => {
+    const firstName = localStorage.getItem('firstName');
+    const lastName = localStorage.getItem('lastName');
+    if (firstName && lastName) {
+      setFullName(`${firstName} ${lastName}`);
+    }
+  }, []);
+
   const cards = [
     {
       img: (
@@ -68,10 +79,13 @@ const BorrowerPage = () => {
     <>
       <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
-          <h1 className="font-bold text-xl">Hi Micheal Jackson</h1>
+          <h1 className="font-bold text-xl">Hi {fullName}</h1>
           <p>Welcome to BorrowPointe</p>
         </div>
-        <Button className="bg-blue-500 hover:bg-blue-500 w-[200px] h-[50px] rounded-xl">
+        <Button
+          onClick={() => router.push('/create-offer')}
+          className="bg-blue-500 hover:bg-blue-500 w-[200px] h-[50px] rounded-xl"
+        >
           <Plus color="#ffffff" />
           Create New Offer
         </Button>

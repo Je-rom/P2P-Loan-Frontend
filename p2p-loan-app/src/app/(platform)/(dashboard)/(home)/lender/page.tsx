@@ -7,8 +7,11 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import DatePickerWithRange from '@/components/ui/date-range';
 import LenderTable from '@/components/shared/lender-table';
+import { useRouter } from 'next/navigation';
 
 const LenderPage = () => {
+  const router = useRouter();
+
   const cards = [
     {
       img: (
@@ -45,7 +48,10 @@ const LenderPage = () => {
           <h1 className="font-bold text-xl">Hi Micheal Jackson</h1>
           <p>Welcome to BorrowPointe</p>
         </div>
-        <Button className="bg-blue-500 hover:bg-blue-500 w-[200px] h-[50px] rounded-xl">
+        <Button
+          onClick={() => router.push('/create-offer')}
+          className="bg-blue-500 hover:bg-blue-500 w-[200px] h-[50px] rounded-xl"
+        >
           <Plus color="#ffffff" />
           Create New Offer
         </Button>

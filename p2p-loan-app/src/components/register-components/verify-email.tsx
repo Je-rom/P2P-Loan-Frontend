@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-
 const VerifyEmail: React.FC = () => {
   const {
     formData,
@@ -20,8 +19,10 @@ const VerifyEmail: React.FC = () => {
     formData.emailVerification.isEmailSent,
   );
   const [loading, setLoading] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
+  const email = localStorage.getItem('email');
+  const user_type = localStorage.getItem('user_type');
 
   const handleSendEmail = async () => {
     setLoading(true);
@@ -39,7 +40,11 @@ const VerifyEmail: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    router.push('/login');
+    if (user_type) {
+      router.push(`/${user_type}`);
+    } else {
+      console.error('User type is not set.');
+    }
   };
 
   return (
