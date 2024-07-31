@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import DatePickerWithRange from '@/components/ui/date-range';
-import BorrowerTable from '@/components/shared/borrower-table';
+import BorrowerTable from '@/components/borrower-components/borrower-table';
 import { useRouter } from 'next/navigation';
 
 const BorrowerPage = () => {

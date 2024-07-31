@@ -3,7 +3,6 @@ import DashboardNavbar from '@/components/shared/dashboard-navbar';
 import Sidebar from '@/components/shared/sidebar';
 import React from 'react';
 import { useMediaQuery } from 'usehooks-ts';
-import Bottombar from '@/components/shared/bottomBar';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (

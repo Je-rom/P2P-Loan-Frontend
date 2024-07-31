@@ -29,10 +29,7 @@ const Sidebar = () => {
     {
       title: 'Dashboard',
       icon: LayoutDashboard,
-      href:
-        selectedOption === 'borrower' || selectedOption === 'lender'
-          ? `/${selectedOption}`
-          : '/default',
+      href: selectedOption ? `/${selectedOption}` : '/default',
     },
     {
       title: 'Loan Request',
@@ -64,7 +61,7 @@ const Sidebar = () => {
           {
             title: 'Lenders Offers',
             icon: loanOffer,
-            href: `/lender-offers/${selectedOption}`,
+            href: `${selectedOption}/lender-offers`,
           },
           accountSettingsRoute,
         ]
@@ -74,12 +71,11 @@ const Sidebar = () => {
             {
               title: 'Borrowers Offers',
               icon: loanOffer,
-              href: `/borrower-offers/${selectedOption}`,
+              href: `${selectedOption}/borrower-offers`,
             },
             accountSettingsRoute,
           ]
         : [...commonRoutes, accountSettingsRoute];
-
 
   return (
     <div className="flex flex-col h-full">
