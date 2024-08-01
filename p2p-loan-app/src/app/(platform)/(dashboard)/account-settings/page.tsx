@@ -4,9 +4,13 @@ import Image from 'next/image';
 import axios from 'axios';
 import { IoChevronForward } from 'react-icons/io5';
 import { AiOutlinePoweroff } from 'react-icons/ai';
+import { Switch } from '@mui/material';
+import { Edit as EditIcon } from '@mui/icons-material';
+import Button from '@mui/material/Button';
 
 
-const ProfileSettings = () => {
+const ProfileSettings = () =>{
+
         const [personalInfo, setPersonalInfo] = useState({
           firstName: '',
           middleName: '',
@@ -103,8 +107,19 @@ const ProfileSettings = () => {
         </div>
 
         {/* Personal Information */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Personal Information</h2>
+        <div className="mb-8">
+           <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              startIcon={<EditIcon />}
+              sx={{ minWidth: 'auto', padding: '2px 4px', fontSize: '0.75rem', textTransform: 'none' }}
+            >
+              Edit
+            </Button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="mb-2">
             <span className="font-medium">First Name: </span> Veronica
@@ -120,16 +135,24 @@ const ProfileSettings = () => {
           </div>
           <div className="mb-2">
             <span className="font-medium">Date of Birth: </span> 23-09-1960
-          </div>  
           </div>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg self-start onClick={handleEditPersonalInfo}">
-            Edit
-          </button>       
+          </div>
         </div>
 
         {/* Contact Information */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Contact Information</h2>
+        <div className="mb-8">
+        <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold mb-1">Contact Information</h2>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              startIcon={<EditIcon />}
+              sx={{ minWidth: 'auto', padding: '2px 4px', fontSize: '0.75rem', textTransform: 'none' }}
+            >
+              Edit
+            </Button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="mb-2">
               <span className="font-medium">Phone Number: </span> +234 709854278
@@ -146,14 +169,12 @@ const ProfileSettings = () => {
             <div className="mb-2">
               <span className="font-medium">Zip Code: </span> 23348
             </div>
-            </div> 
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg self-start onClick={handleEditPersonalInfo}">
-            Edit
-          </button>  
+          </div> 
+          
         </div>
 
         {/* Security */}
-          <div className="mb-6">
+          <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Security</h2>
           <div className="border-t border-gray-300 py-2 flex items-center justify-between">
             <span>Change Pin</span>
@@ -166,26 +187,26 @@ const ProfileSettings = () => {
         </div>
 
         <div>
-                    <h2 className="text-xl font-semibold mb-2">Notification</h2>
-                    <div className="flex items-center mb-2">
-                        <span className="text-lg flex-grow">Enable Email Notification</span>
-                        <button
-                            onClick={toggleEmailNotification}
-                            className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${notifications.emailNotification ? 'bg-blue-500' : 'bg-gray-300'}`}
-                        >
-                            <AiOutlinePoweroff size={20} color="white" />
-                        </button>
-                    </div>
-                    <div className="flex items-center mb-2">
-                        <span className="text-lg flex-grow">Enable SMS Notification</span>
-                        <button
-                            onClick={toggleSmsNotification}
-                            className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${notifications.smsNotification ? 'bg-blue-500' : 'bg-gray-300'}`}
-                        >
-                            <AiOutlinePoweroff size={20} color="white" />
-                        </button>
-                    </div>
-                </div>
+          <h2 className="text-xl font-semibold mb-2">Notification</h2>
+          <div className="flex items-center mb-2">
+            <span className="text-lg flex-grow">Email Notification</span>
+            <Switch
+              checked={notifications.emailNotification}
+              onChange={toggleEmailNotification}
+              className="MuiSwitch-root"
+              color="primary"
+            />
+          </div>
+          <div className="flex items-center mb-2">
+            <span className="text-lg flex-grow">SMS Notification</span>
+            <Switch
+              checked={notifications.smsNotification}
+              onChange={toggleSmsNotification}
+              className="MuiSwitch-root"
+              color="primary"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
