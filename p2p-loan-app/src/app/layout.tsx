@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Ubuntu } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
+import { QueryProvider } from '@/providers/query-provider';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const ubuntu = Ubuntu({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 export const metadata: Metadata = {
-  title: 'P2P Loan',
+  title: 'BorrowPointe',
   description:
     "Peer-to-Peer (P2P) Microloan Platform that bridges the gap between borrower's and lenders",
 };
@@ -17,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={ubuntu.className}>
+        <Toaster />
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
