@@ -24,7 +24,11 @@ const Sidebar = () => {
   const selectedOption =
     typeof window !== 'undefined' ? localStorage.getItem('user_type') : null;
 
-  //define the common routes
+  const getHref = (path: string) => {
+    return selectedOption ? `/${selectedOption}/${path}` : `/${path}`;
+  };
+
+  // Define the common routes
   const commonRoutes = [
     {
       title: 'Dashboard',
@@ -34,17 +38,17 @@ const Sidebar = () => {
     {
       title: 'Loan Request',
       icon: LoanRequest,
-      href: `${selectedOption}/loan-request`,
+      href: getHref('loan-request'),
     },
     {
       title: 'Loans',
       icon: Loans,
-      href: `${selectedOption}/loans`,
+      href: getHref('loans'),
     },
     {
       title: 'My Offers',
       icon: myOffer,
-      href: `${selectedOption}/my-offers`,
+      href: getHref('my-offers'),
     },
   ];
 
@@ -61,7 +65,7 @@ const Sidebar = () => {
           {
             title: 'Lenders Offers',
             icon: loanOffer,
-            href: `${selectedOption}/lender-offers`,
+            href: getHref('lender-offers'),
           },
           accountSettingsRoute,
         ]
@@ -71,7 +75,7 @@ const Sidebar = () => {
             {
               title: 'Borrowers Offers',
               icon: loanOffer,
-              href: `${selectedOption}/borrower-offers`,
+              href: getHref('borrower-offers'),
             },
             accountSettingsRoute,
           ]
@@ -80,7 +84,7 @@ const Sidebar = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="px-3 py-10 flex-1 bg-blue-400">
-        <div className="flex items-center justify-between mb-6 lg:mb-14 ">
+        <div className="flex items-center justify-between mb-6 lg:mb-14">
           <div className="ml-5">
             <NavbarLogo />
           </div>

@@ -57,7 +57,7 @@ const BorrowerPage = () => {
           className="bg-pink-200 rounded-full"
         />
       ),
-      amount: 35,
+      number: 35,
       text: 'Loan Request',
     },
     {
@@ -70,7 +70,7 @@ const BorrowerPage = () => {
           className="bg-pink-200 rounded-full"
         />
       ),
-      amount: 320.0,
+      number: 32,
       text: 'Loan Offers',
     },
   ];
@@ -103,7 +103,11 @@ const BorrowerPage = () => {
               <div className="flex justify-between mt-5">
                 <div>
                   <h1>{card.text}</h1>
-                  <p className="font-bold text-xl">₦{card.amount.toFixed(3)}</p>
+                  <p className="font-bold text-xl">
+                    {card.amount !== undefined
+                      ? `₦${card.amount.toFixed(3)}`
+                      : card.number}
+                  </p>
                 </div>
                 <Button className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3">
                   See More

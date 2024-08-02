@@ -2,8 +2,9 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
+import { Button } from '@/components/ui/button';
 
-export function ExpandableCardDemo() {
+export function BorrowerOffer() {
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null,
   );
@@ -67,7 +68,7 @@ export function ExpandableCardDemo() {
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-1/3 md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <motion.div layoutId={`image-${active.title}-${id}`}></motion.div>
 
@@ -93,8 +94,7 @@ export function ExpandableCardDemo() {
                     href={''}
                     target="_blank"
                     className="px-4 py-3 text-sm rounded-full font-bold text-white"
-                  >
-                  </motion.a>
+                  ></motion.a>
                 </div>
                 <div className="pt-4 relative px-4">
                   <motion.div
@@ -107,6 +107,7 @@ export function ExpandableCardDemo() {
                     {typeof active.content === 'function'
                       ? active.content()
                       : active.content}
+                    <Button>Apply here</Button>
                   </motion.div>
                 </div>
               </div>
@@ -194,11 +195,10 @@ const cards = [
       return (
         <div>
           <p>
-            Our personal loans offer you the flexibility to use the funds for
-            various needs, such as consolidating debt, funding a major purchase,
-            or covering unexpected expenses. With competitive interest rates and
-            flexible repayment terms, we aim to provide financial solutions that
-            fit your lifestyle.
+            I am seeking a personal loan to cover various needs, such as
+            consolidating debt, funding a major purchase, or covering unexpected
+            expenses. I am looking for a loan with competitive interest rates
+            and flexible repayment terms to suit my financial situation.
           </p>
           <ul className="mt-4">
             <li>
@@ -232,10 +232,10 @@ const cards = [
       return (
         <div>
           <p>
-            Our home loans are designed to help you purchase or refinance your
-            dream home. We offer a range of options with competitive interest
-            rates, easy application process, and expert guidance to make your
-            home buying journey smooth and hassle-free.
+            I am looking for a home loan to purchase or refinance my dream home.
+            I need a loan with competitive interest rates, an easy application
+            process, and expert guidance to make my home buying journey smooth
+            and hassle-free.
           </p>
           <ul className="mt-4">
             <li>
@@ -269,10 +269,10 @@ const cards = [
       return (
         <div>
           <p>
-            Our business loans are tailored to help you grow and expand your
-            business. Whether you need to purchase new equipment, hire staff, or
-            manage cash flow, we provide the necessary funds with favorable
-            terms to support your business goals.
+            I am in need of a business loan to help grow and expand my business.
+            Whether it's to purchase new equipment, hire staff, or manage cash
+            flow, I am looking for funds with favorable terms to support my
+            business goals.
           </p>
           <ul className="mt-4">
             <li>
@@ -306,10 +306,10 @@ const cards = [
       return (
         <div>
           <p>
-            Our student loans provide financial assistance to help you cover
-            tuition fees, books, and other educational expenses. We offer
-            competitive rates, flexible repayment options, and a simple
-            application process to help you achieve your academic goals.
+            I am seeking a student loan to cover tuition fees, books, and other
+            educational expenses. I need a loan with competitive rates, flexible
+            repayment options, and a simple application process to achieve my
+            academic goals.
           </p>
           <ul className="mt-4">
             <li>
@@ -343,9 +343,9 @@ const cards = [
       return (
         <div>
           <p>
-            Our auto loans provide you with the funds to purchase a new or used
-            vehicle. Enjoy competitive interest rates, flexible terms, and a
-            straightforward application process to get you on the road quickly
+            I am looking for an auto loan to purchase a new or used vehicle. I
+            need a loan with competitive interest rates, flexible terms, and a
+            straightforward application process to get me on the road quickly
             and easily.
           </p>
           <ul className="mt-4">
