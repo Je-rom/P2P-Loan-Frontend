@@ -1,20 +1,20 @@
 'use client';
 import React from 'react';
 import Filter from '@/components/ui/filter';
-import { LendersOffer } from '@/components/borrower-components/lenders-offers';
+import { BorrowerOffer } from '@/components/lender-components/borrowers-offers';
 
-const BorrowerLenderOffers = () => {
+const LenderBorrowerOffers = () => {
   return (
     <>
       <div className="flex flex-row sm:flex-row justify-between items-center">
-        <h1 className="text-xl">Lenders Offers</h1>
+        <h1 className="text-xl">Borrowers Offers</h1>
         <Filter />
       </div>
       <div className="border border-gray-200 rounded-2xl p-4 mt-4">
-        <LendersOffer />
+        <BorrowerOffer />
       </div>
     </>
   );
 };
 
-export default BorrowerLenderOffers;
+export default LenderBorrowerOffers;
