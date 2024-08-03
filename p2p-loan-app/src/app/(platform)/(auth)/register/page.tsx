@@ -20,9 +20,9 @@ const Register: React.FC = () => {
       case 1:
         return <BasicInfo />;
       case 2:
-        return <VerifyEmail />;
-      case 3:
         return <VerifyBVN />;
+      case 3:
+        return <VerifyEmail />;
       default:
         return <BasicInfo />;
     }
