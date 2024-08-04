@@ -14,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import StepIndicator from '@/components/register-components/step-indicator';
 
@@ -22,6 +21,7 @@ const BasicInfo: React.FC = () => {
   const { formData, nextStep, updateFormData } = useFormStore();
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const { step } = useFormStore();
 
   const steps = [
@@ -63,16 +63,43 @@ const BasicInfo: React.FC = () => {
     },
   });
 
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+  };
+
   const onSubmit = async (data: RegisterFormValues) => {
+    if (!selectedOption) {
+      setFormError('Please select either Lender or Borrower.');
+      return;
+    }
+    const {
+      lastName,
+      firstName,
+      confirmPassword,
+      email,
+      ...dataWithoutConfirmPassword
+    } = data;
+    const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
-    // Handle form submission here
-    updateFormData({
-      basicInfo: {
-        ...formData.basicInfo,
-        ...data,
-      },
-    });
-    nextStep();
+    try {
+      // Handle form submission here
+      localStorage.setItem('user_type', user_type);
+      localStorage.setItem('email', email);
+      localStorage.setItem('firstName', firstName);
+      localStorage.setItem('lastName', lastName);
+
+      updateFormData({
+        basicInfo: {
+          ...formData.basicInfo,
+          ...data,
+        },
+      });
+      nextStep();
+    } catch (error) {
+      setFormError('An error occurred while submitting the form.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,17 +110,23 @@ const BasicInfo: React.FC = () => {
             <h1 className="font-bold text-lg md:text-2xl">
               Create your account
             </h1>
-            <p className="text-sm md:text-base p-4">
+            <p className="text-sm md:text-lg p-4">
               Follow these steps to create your account: enter your personal
               details, verify your email, and set up your account securely.
               Lets get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button
+              onClick={() => handleOptionSelect('lender')}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
+            >
               Lender
             </Button>
-            <Button className="bg-blue-400 hover:bg-blue-200 hover:text-blue-600 w-1/2 sm:w-[150px] md:w-[200px] h-[34px]">
+            <Button
+              onClick={() => handleOptionSelect('borrower')}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
+            >
               Borrower
             </Button>
           </div>
@@ -105,18 +138,18 @@ const BasicInfo: React.FC = () => {
           <div className="flex items-center justify-center">
             <div className="bg-white p-6 rounded-xl w-full max-w-lg">
               <div>
-                <h1 className="text-sm flex  gap-2">
+                <h1 className="text-sm flex gap-2">
                   <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-lg">
                     {currentStep?.number}
                   </span>
                   {currentStep?.label}
                 </h1>
-                <p className="text-xs mt-2">
+                <p className="text-xs md:text-lg mt-2">
                   Complete the form below to register for an account. Make sure
                   to fill in all the required fields to proceed to the next
                   step.
                 </p>
-                <h1 className="text-xs font-semibold mt-2">
+                <h1 className="text-sm font-semibold mt-2">
                   *All fields are required
                 </h1>
               </div>
@@ -128,7 +161,7 @@ const BasicInfo: React.FC = () => {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *First name
                           </FormLabel>
                           <FormControl>
@@ -151,7 +184,7 @@ const BasicInfo: React.FC = () => {
                       name="middleName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             Middle name
                           </FormLabel>
                           <FormControl>
@@ -174,7 +207,7 @@ const BasicInfo: React.FC = () => {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Last name
                           </FormLabel>
                           <FormControl>
@@ -197,7 +230,7 @@ const BasicInfo: React.FC = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Email Address
                           </FormLabel>
                           <FormControl>
@@ -220,7 +253,7 @@ const BasicInfo: React.FC = () => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Password
                           </FormLabel>
                           <FormControl>
@@ -243,7 +276,7 @@ const BasicInfo: React.FC = () => {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Confirm Password
                           </FormLabel>
                           <FormControl>
@@ -260,11 +293,17 @@ const BasicInfo: React.FC = () => {
                     />
                   </div>
 
+                  {formError && (
+                    <div className="text-red-500 text-center mb-4">
+                      {formError}
+                    </div>
+                  )}
+
                   <div className="flex justify-center mt-4">
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-[400px] rounded-xl bg-blue-400 hover:bg-blue-400 "
+                      className="w-[400px] rounded-xl bg-blue-600 hover:bg-blue-800 text-lg"
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin" />

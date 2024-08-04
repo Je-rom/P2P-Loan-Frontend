@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 // import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 // import { getFirstLetter } from '@/lib/utils';
@@ -8,20 +8,24 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useMediaQuery } from 'usehooks-ts';
 import MobileSidebar from './mobile-sidebar';
-import NavbarLogo from './navbar-logo';
 
 const DashboardNavbar = () => {
-  const storedEmail = localStorage.getItem('email');
+  const [storedEmail, setStoredEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const email = localStorage.getItem('email');
+    setStoredEmail(email);
+  }, []);
+
   const user = {
     isLoading: false,
-    data: { email: storedEmail || 'Micheal Jackson' },
+    data: { email: storedEmail || 'null' },
   };
   const router = useRouter();
 
   return (
     <nav className="md:flex flex items-center px-8 py-7 shadow-lg bg-white w-full">
       <MobileSidebar />
-      <NavbarLogo />
       <div className="flex justify-end items-center w-full">
         <div className="flex items-center gap-4">
           {user.isLoading ? (

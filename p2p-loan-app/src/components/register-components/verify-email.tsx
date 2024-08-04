@@ -6,7 +6,7 @@ import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
+import { ConfettiSideCannons } from '@/components/ui/confetti';
 
 const VerifyEmail: React.FC = () => {
   const {
@@ -20,8 +20,10 @@ const VerifyEmail: React.FC = () => {
     formData.emailVerification.isEmailSent,
   );
   const [loading, setLoading] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
+  const email = localStorage.getItem('email');
+  const user_type = localStorage.getItem('user_type');
 
   const handleSendEmail = async () => {
     setLoading(true);
@@ -39,7 +41,11 @@ const VerifyEmail: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    router.push('/login');
+    if (user_type) {
+      router.push(`/${user_type}`);
+    } else {
+      console.error('User type is not set.');
+    }
   };
 
   return (
@@ -60,7 +66,7 @@ const VerifyEmail: React.FC = () => {
             disabled={loading}
             className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
           >
-            {loading ? <Loader2 className="animate-spin" /> : 'Open Email App'}
+            {loading ? <Loader2 className="animate-spin" /> : 'Click here to send email'}
           </Button>
           <h1 className="mt-4 flex gap-2">
             Didn't receive any mail?
@@ -71,12 +77,8 @@ const VerifyEmail: React.FC = () => {
             </button>
           </h1>
           <div className="flex items-center mt-4 gap-2">
-            <h1 className="">Continue Registration</h1>
-            <button>
-              <MoveRight
-                onClick={handleNextStep}
-                color="rgba(49, 170, 238, 1)"
-              />
+            <button onClick={handleNextStep}>
+              <ConfettiSideCannons />
             </button>
           </div>
         </div>
