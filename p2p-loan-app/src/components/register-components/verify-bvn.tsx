@@ -66,7 +66,7 @@ const BVNVerification: React.FC = () => {
               {currentStep?.label}
             </h1>
             <p className="text-md mt-2">Why we need your BVN</p>
-            <p className="text-xs mt-2">
+            <p className="text-base mt-2">
               Your Bank Verification Number (BVN) helps us verify your identity
               and ensures the security of your account. It allows us to provide
               better service and protect your personal information.
@@ -81,7 +81,7 @@ const BVNVerification: React.FC = () => {
                     name="bvn"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-light">
+                        <FormLabel className="text-base font-light">
                           Bank Verification Number [11-digits]
                         </FormLabel>
                         <FormControl>

@@ -110,7 +110,7 @@ const BasicInfo: React.FC = () => {
             <h1 className="font-bold text-lg md:text-2xl">
               Create your account
             </h1>
-            <p className="text-sm md:text-base p-4">
+            <p className="text-sm md:text-lg p-4">
               Follow these steps to create your account: enter your personal
               details, verify your email, and set up your account securely.
               Let's get started!
@@ -119,13 +119,13 @@ const BasicInfo: React.FC = () => {
           <div className="flex items-center justify-center gap-4 mb-6">
             <Button
               onClick={() => handleOptionSelect('lender')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400'}`}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
             >
               Lender
             </Button>
             <Button
               onClick={() => handleOptionSelect('borrower')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400'}`}
+              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
             >
               Borrower
             </Button>
@@ -144,12 +144,12 @@ const BasicInfo: React.FC = () => {
                   </span>
                   {currentStep?.label}
                 </h1>
-                <p className="text-xs mt-2">
+                <p className="text-xs md:text-lg mt-2">
                   Complete the form below to register for an account. Make sure
                   to fill in all the required fields to proceed to the next
                   step.
                 </p>
-                <h1 className="text-xs font-semibold mt-2">
+                <h1 className="text-sm font-semibold mt-2">
                   *All fields are required
                 </h1>
               </div>
@@ -161,7 +161,7 @@ const BasicInfo: React.FC = () => {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *First name
                           </FormLabel>
                           <FormControl>
@@ -184,7 +184,7 @@ const BasicInfo: React.FC = () => {
                       name="middleName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             Middle name
                           </FormLabel>
                           <FormControl>
@@ -207,7 +207,7 @@ const BasicInfo: React.FC = () => {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Last name
                           </FormLabel>
                           <FormControl>
@@ -230,7 +230,7 @@ const BasicInfo: React.FC = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Email Address
                           </FormLabel>
                           <FormControl>
@@ -253,7 +253,7 @@ const BasicInfo: React.FC = () => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Password
                           </FormLabel>
                           <FormControl>
@@ -276,7 +276,7 @@ const BasicInfo: React.FC = () => {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-light">
+                          <FormLabel className="text-base font-light">
                             *Confirm Password
                           </FormLabel>
                           <FormControl>
@@ -303,7 +303,7 @@ const BasicInfo: React.FC = () => {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-[400px] rounded-xl bg-blue-400 hover:bg-blue-600"
+                      className="w-[400px] rounded-xl bg-blue-600 hover:bg-blue-800 text-lg"
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin" />

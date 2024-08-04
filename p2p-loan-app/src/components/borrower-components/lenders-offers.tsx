@@ -2,8 +2,9 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
+import { Button } from '../ui/button';
 
-export function ExpandableCardDemo() {
+export function LendersOffer() {
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null,
   );
@@ -67,7 +68,7 @@ export function ExpandableCardDemo() {
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-1/2 md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <motion.div layoutId={`image-${active.title}-${id}`}></motion.div>
 
@@ -93,8 +94,7 @@ export function ExpandableCardDemo() {
                     href={''}
                     target="_blank"
                     className="px-4 py-3 text-sm rounded-full font-bold text-white"
-                  >
-                  </motion.a>
+                  ></motion.a>
                 </div>
                 <div className="pt-4 relative px-4">
                   <motion.div
@@ -107,6 +107,7 @@ export function ExpandableCardDemo() {
                     {typeof active.content === 'function'
                       ? active.content()
                       : active.content}
+                    <Button>Apply here</Button>
                   </motion.div>
                 </div>
               </div>

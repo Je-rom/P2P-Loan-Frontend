@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mui/material": "^5.16.6",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
@@ -24,6 +25,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@tanstack/react-query": "^5.51.11",
     "axios": "^1.7.2",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -45,6 +47,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.6.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
