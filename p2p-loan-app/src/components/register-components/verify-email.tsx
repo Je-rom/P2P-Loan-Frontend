@@ -6,7 +6,7 @@ import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ConfettiSideCannons } from '@/components/ui/confetti';
+import { Confetti } from '@/components/ui/confetti';
 
 const VerifyEmail: React.FC = () => {
   const {
@@ -78,7 +78,7 @@ const VerifyEmail: React.FC = () => {
           </h1>
           <div className="flex items-center mt-4 gap-2">
             <button onClick={handleNextStep}>
-              <ConfettiSideCannons />
+              <Confetti />
             </button>
           </div>
         </div>
