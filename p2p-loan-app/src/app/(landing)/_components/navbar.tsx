@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <>
       <div className="justify-center items-center flex">
-        <nav className="py-2 px-10 md:px-12 shadow-md flex justify-between w-[1300px] rounded-full fixed top-10 bg-white border-b">
+        <nav className="bg-white bg-opacity-25 px-10 md:px-12 shadow-md flex justify-between w-[1300px] rounded-full fixed top-10 border-b">
           <LandingLogo />
 
           <div className="justify-between w-1/2 items-center flex">
@@ -25,7 +25,7 @@ const Navbar = () => {
             <Link href={''}></Link>
           </div>
 
-          <div className=" space-x-4">
+          <div className="pt-2 space-x-4">
             <Button
               asChild
               className="py-3 text-white bg-blue-600 hover:bg-blue-600 w-[130px] rounded-full"
