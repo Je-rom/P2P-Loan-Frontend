@@ -62,7 +62,7 @@ const BorrowerPage = () => {
         <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
       ),
       number: 32,
-      text: 'Loan Offers',
+      text: 'Lenders Offers',
     },
   ];
 

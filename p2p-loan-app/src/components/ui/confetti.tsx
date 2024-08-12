@@ -35,7 +35,9 @@ export function Confetti() {
 
   return (
     <div className="relative">
-      <Button className='bg-blue-400 hover:bg-blue-400' onClick={handleClick}>Welcome</Button>
+      <Button className="bg-blue-400 hover:bg-blue-400" onClick={handleClick}>
+        Welcome
+      </Button>
     </div>
   );
 }
