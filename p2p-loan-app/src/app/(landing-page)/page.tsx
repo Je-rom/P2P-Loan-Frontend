@@ -52,7 +52,7 @@ const LandingPage = () => {
       </div>
 
       <footer className="bg-white text-black text-center py-4">
-        <p className="text-sm">
+        <p className="text-base">
           Copyright &copy; {new Date().getFullYear()} BorrowPointe. All rights
           reserved.
         </p>
@@ -68,7 +68,6 @@ const loanInfo = [
       'Flexible loans designed to help you achieve your personal goals, from home improvements to unexpected expenses.',
     image: '/personal-loan.png',
     backgroundColor: '#e3e6e8',
-    imageHeight: '190px',
   },
   {
     title: 'Student Loans',
@@ -76,7 +75,6 @@ const loanInfo = [
       'Support for your educational journey with tailored loan options that help manage tuition fees and other expenses.',
     image: '/school-loan.png',
     backgroundColor: '#f0f0f0',
-    imageHeight: '190px',
   },
   {
     title: 'Business Loans',
@@ -84,7 +82,6 @@ const loanInfo = [
       'Funding solutions to help you start or grow your business, with flexible terms and competitive rates, to get your business running',
     image: '/business-loan.png',
     backgroundColor: '#e1e8f5',
-    imageHeight: '190px',
   },
   {
     title: 'Peer-to-Peer Lending',
@@ -92,7 +89,6 @@ const loanInfo = [
       'Direct lending between individuals, offering competitive rates and personalized terms without traditional bank intermediaries.',
     image: '/p2p-loan.png',
     backgroundColor: '#f5e1e4',
-    imageHeight: '190px',
   },
 ];
 

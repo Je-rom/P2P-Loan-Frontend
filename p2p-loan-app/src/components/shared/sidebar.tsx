@@ -14,9 +14,18 @@ import Settings from '../../../public/setting-2.svg';
 import Image from 'next/image';
 import { LogoutDialog } from './logoutdialog';
 import NavbarLogo from './navbar-logo';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 
-interface SidebarProps {
-  storageKey?: string;
+interface Route {
+  title: string;
+  icon: any;
+  href?: string;
+  items?: { title: string; href: string }[];
 }
 
 const Sidebar = () => {
@@ -31,8 +40,7 @@ const Sidebar = () => {
     return selectedOption ? `/${selectedOption}/${path}` : `/${path}`;
   };
 
-  // Define the common routes
-  const commonRoutes = [
+  const commonRoutes: Route[] = [
     {
       title: 'Dashboard',
       icon: LayoutDashboard,
@@ -46,7 +54,11 @@ const Sidebar = () => {
     {
       title: 'Loans',
       icon: Loans,
-      href: getHref('loans'),
+      items: [
+        { title: 'Disbursed Loans', href: getHref('loan/disbursed-loan') },
+        { title: 'Active Loans', href: getHref('loan/active-loan') },
+        { title: 'Overdue Loans', href: getHref('loan/overdue-loan') },
+      ],
     },
     {
       title: 'My Offers',
@@ -55,13 +67,13 @@ const Sidebar = () => {
     },
   ];
 
-  const accountSettingsRoute = {
+  const accountSettingsRoute: Route = {
     title: 'Account Settings',
     icon: Settings,
     href: '/settings',
   };
 
-  const routes =
+  const routes: Route[] =
     selectedOption === 'borrower'
       ? [
           ...commonRoutes,
@@ -94,7 +106,7 @@ const Sidebar = () => {
     fetchData();
 
     const path = window.location.pathname;
-    setActiveLink(path);
+    setActiveLink(path || null);
   }, []);
 
   return (
@@ -109,45 +121,92 @@ const Sidebar = () => {
           <div className="md:mt-8">
             {loading ? (
               <div className="space-y-2">
-                {[...Array(6)].map(
-                  (
-                    _,
-                    index,
-                  ) => (
-                    <Skeleton
-                      key={index}
-                      className="w-[250px] py-8 rounded-xl mt-2"
-                    />
-                  ),
-                )}
+                {[...Array(6)].map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className="w-[250px] py-8 rounded-xl mt-2"
+                  />
+                ))}
               </div>
             ) : (
-              routes.map((route, index) => (
-                <Link key={index} href={route.href}>
-                  <Button
-                    className={cn(
-                      'w-[250px] py-8 rounded-xl mt-2',
-                      activeLink === route.href
-                        ? 'bg-white hover:bg-white'
-                        : 'bg-gray-200 hover:bg-white',
-                    )}
-                    onClick={() => setActiveLink(route.href)}
-                  >
-                    <div className="flex items-center w-full">
-                      <Image
-                        src={route.icon}
-                        width={25}
-                        height={20}
-                        alt="icon"
-                        className="mr-4"
-                      />
-                      <span className="text-gray-800 text-xl group-hover:text-blue-400">
-                        {route.title}
-                      </span>
-                    </div>
-                  </Button>
-                </Link>
-              ))
+              routes.map((route, index) => {
+                if (route.items) {
+                  return (
+                    <Accordion key={index} type="single" collapsible>
+                      <AccordionItem value="loans">
+                        <AccordionTrigger>
+                          <div className="flex ml-4">
+                            <Image
+                              src={route.icon}
+                              width={30}
+                              height={20}
+                              alt="icon"
+                              className="mr-4"
+                            />
+                            <span className="text-gray-800 text-xl group-hover:text-blue-400">
+                              {route.title}
+                            </span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="">
+                            {route.items.map((item, subIndex) => (
+                              <Link
+                                key={subIndex}
+                                href={item.href || '#'}
+                                passHref
+                              >
+                                <Button
+                                  className={cn(
+                                    'w-[250px] py-8 rounded-xl mt-2',
+                                    activeLink === item.href
+                                      ? 'bg-white hover:bg-white'
+                                      : 'bg-blue-200 hover:bg-white',
+                                  )}
+                                  onClick={() =>
+                                    setActiveLink(item.href || null)
+                                  }
+                                >
+                                  <span className="text-gray-800 text-lg group-hover:text-blue-400">
+                                    {item.title}
+                                  </span>
+                                </Button>
+                              </Link>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  );
+                } else {
+                  return (
+                    <Link key={index} href={route.href || '#'} passHref>
+                      <Button
+                        className={cn(
+                          'w-[250px] py-8 rounded-xl mt-2',
+                          activeLink === route.href
+                            ? 'bg-white hover:bg-white'
+                            : 'bg-blue-200 hover:bg-white',
+                        )}
+                        onClick={() => setActiveLink(route.href || null)}
+                      >
+                        <div className="flex items-center w-full">
+                          <Image
+                            src={route.icon}
+                            width={25}
+                            height={20}
+                            alt="icon"
+                            className="mr-4"
+                          />
+                          <span className="text-gray-800 text-xl group-hover:text-blue-400">
+                            {route.title}
+                          </span>
+                        </div>
+                      </Button>
+                    </Link>
+                  );
+                }
+              })
             )}
           </div>
           <div className="space-y-2">

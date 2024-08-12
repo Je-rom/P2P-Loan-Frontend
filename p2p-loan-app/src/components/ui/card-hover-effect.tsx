@@ -15,7 +15,6 @@ export const HoverEffect = ({
     description: string;
     image: string;
     backgroundColor: string;
-    imageHeight: string;
   }[];
   className?: string;
 }) => {
@@ -24,7 +23,7 @@ export const HoverEffect = ({
   return (
     <div
       className={cn(
-        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-10',
+        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-10 gap-4',
         className,
       )}
     >
@@ -32,7 +31,7 @@ export const HoverEffect = ({
         <Link
           href={''}
           key={idx}
-          className="relative group  block p-2 h-full w-full"
+          className="relative group block p-2 h-full w-full"
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
@@ -53,11 +52,7 @@ export const HoverEffect = ({
               />
             )}
           </AnimatePresence>
-          <Card
-            image={item.image}
-            backgroundColor={item.backgroundColor}
-            imageHeight={item.imageHeight}
-          >
+          <Card image={item.image} backgroundColor={item.backgroundColor}>
             <CardTitle>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
           </Card>
@@ -72,13 +67,11 @@ export const Card = ({
   children,
   image,
   backgroundColor,
-  imageHeight,
 }: {
   className?: string;
   children: React.ReactNode;
   image: string;
   backgroundColor: string;
-  imageHeight: string;
 }) => {
   return (
     <div
@@ -89,13 +82,15 @@ export const Card = ({
       style={{ backgroundColor }}
     >
       <div className="relative z-50">
-        <Image
-          src={image}
-          alt=""
-          width={400}
-          height={parseInt(imageHeight)}
-          className="w-full mb-4 rounded-t-xl"
-        />
+        <div className="relative w-full h-[190px] mb-4 rounded-t-xl overflow-hidden">
+          <Image
+            src={image}
+            alt=""
+            width={400}
+            height={190}
+            className="w-full h-full object-cover fill"
+          />
+        </div>
         <div className="p-2">{children}</div>
       </div>
       <div className="flex justify-start items-center mt-4">
@@ -108,6 +103,7 @@ export const Card = ({
     </div>
   );
 };
+
 export const CardTitle = ({
   className,
   children,
@@ -121,6 +117,7 @@ export const CardTitle = ({
     </h4>
   );
 };
+
 export const CardDescription = ({
   className,
   children,
