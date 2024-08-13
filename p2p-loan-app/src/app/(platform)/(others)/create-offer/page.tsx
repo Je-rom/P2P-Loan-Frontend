@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import TermsAndConditionDialog from './term-conditions-dialog';
 
 interface FormField {
   label: string;
@@ -27,9 +28,11 @@ interface Errors {
 }
 
 const CreateOfferPage: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const formFields: FormField[] = [
     {
-      label: 'Occupation',
+      label: 'Description',
       placeholder: 'Add your occupation',
       type: 'text',
       name: 'occupation',
@@ -148,10 +151,11 @@ const CreateOfferPage: React.FC = () => {
       <div className="mt-10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
         <div className="w-full md:w-auto">
           <h1>
-            Click to see the{' '}
-            <Link className="text-blue-400" href="">
+            Click to see the
+            <button onClick={() => setIsOpen(true)} className="text-blue-400">
               Terms and Conditions
-            </Link>{' '}
+            </button>
+            <TermsAndConditionDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
           </h1>
           <div className="flex items-start space-x-2 mt-2">
             <Checkbox

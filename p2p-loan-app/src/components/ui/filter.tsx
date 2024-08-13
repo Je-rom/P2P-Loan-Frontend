@@ -26,7 +26,7 @@ export default function AutocompleteHint() {
       inputValue={inputValue}
       id="combo-box-hint-demo"
       options={filterOptions}
-      sx={{ width: 120 }}
+      sx={{ width: 100 }}
       renderInput={(params) => {
         return (
           <Box sx={{ position: 'relative' }}>

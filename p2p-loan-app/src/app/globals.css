@@ -67,3 +67,45 @@
     @apply bg-background text-foreground;
   }
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fade1 {
+  0%, 30% { opacity: 1; }
+  30%, 33.33% { opacity: 0; }
+  33.34%, 100% { opacity: 0; }
+}
+
+@keyframes fade2 {
+  0%, 33.33% { opacity: 0; }
+  33.34%, 63.33% { opacity: 1; }
+  63.34%, 66.66% { opacity: 0; }
+  66.67%, 100% { opacity: 0; }
+}
+
+@keyframes fade3 {
+  0%, 66.66% { opacity: 0; }
+  66.67%, 96.66% { opacity: 1; }
+  96.67%, 100% { opacity: 0; }
+}
+
+.animate-fade1 {
+  animation: fade1 9s ease infinite;
+}
+
+.animate-fade2 {
+  animation: fade2 9s ease infinite;
+}
+
+.animate-fade3 {
+  animation: fade3 9s ease infinite;
+}
+
+
