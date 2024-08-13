@@ -211,7 +211,7 @@ const Sidebar = () => {
           </div>
           <div className="space-y-2">
             <Button
-              className="text-sm flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
+              className="text-sm flex p-5 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
               onClick={() => setIsOpen(true)}
             >
               <LogOut className={cn('h-5 w-10 mr-3 text-xl')} />

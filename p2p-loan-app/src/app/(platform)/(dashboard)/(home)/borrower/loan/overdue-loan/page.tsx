@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import BorrowerTable from '@/components/borrower-components/borrower-table';
-import DatePickerWithRange from '@/components/ui/date-range';
-
+import { DataTable } from '@/components/shared/overdue-loan';
 
 const OverdueLoan = () => {
   const [fullName, setFullName] = useState('');
@@ -14,15 +12,10 @@ const OverdueLoan = () => {
     }
   }, []);
   return (
-    <>
-      <div>
-        <h1 className="text-2xl">{fullName} Disbured Loans</h1>
-        <div className="relative flex-grow w-full max-w-[250px] mt-10">
-          <DatePickerWithRange />
-        </div>
-        <BorrowerTable />
-      </div>
-    </>
+    <div>
+      <h1 className="text-2xl">{fullName} Overdue Loans</h1>
+      <DataTable />
+    </div>
   );
 };
 
