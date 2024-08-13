@@ -24,8 +24,9 @@ const BVNVerification: React.FC = () => {
   const router = useRouter();
   const steps = [
     { number: 1, label: 'Basic Info' },
-    { number: 2, label: 'Verify Email' },
-    { number: 3, label: 'Verify BVN' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Verify Email ' },
+    { number: 4, label: 'Wallet' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);

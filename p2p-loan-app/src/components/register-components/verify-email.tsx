@@ -6,7 +6,6 @@ import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Confetti } from '@/components/ui/confetti';
 
 const VerifyEmail: React.FC = () => {
   const {
@@ -25,6 +24,13 @@ const VerifyEmail: React.FC = () => {
   const email = localStorage.getItem('email');
   const user_type = localStorage.getItem('user_type');
 
+  const steps = [
+    { number: 1, label: 'Basic Info' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Verify Email ' },
+    { number: 4, label: 'Wallet' },
+  ];
+
   const handleSendEmail = async () => {
     setLoading(true);
     try {
@@ -41,11 +47,7 @@ const VerifyEmail: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    if (user_type) {
-      router.push(`/${user_type}`);
-    } else {
-      console.error('User type is not set.');
-    }
+    nextStep();
   };
 
   return (
@@ -66,7 +68,11 @@ const VerifyEmail: React.FC = () => {
             disabled={loading}
             className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
           >
-            {loading ? <Loader2 className="animate-spin" /> : 'Click here to send email'}
+            {loading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              'Click here to send email'
+            )}
           </Button>
           <h1 className="mt-4 flex gap-2">
             Didn't receive any mail?
@@ -77,9 +83,12 @@ const VerifyEmail: React.FC = () => {
             </button>
           </h1>
           <div className="flex items-center mt-4 gap-2">
-            <button onClick={handleNextStep}>
-              <Confetti />
-            </button>
+            <Button
+              className="bg-blue-400 hover:bg-blue-400"
+              onClick={handleNextStep}
+            >
+              Next
+            </Button>
           </div>
         </div>
       </div>

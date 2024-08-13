@@ -26,8 +26,9 @@ const BasicInfo: React.FC = () => {
 
   const steps = [
     { number: 1, label: 'Basic Info' },
-    { number: 2, label: 'Verify Email' },
-    { number: 3, label: 'Verify BVN' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Verify Email ' },
+    { number: 4, label: 'Wallet' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -109,7 +110,7 @@ const BasicInfo: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="w-full max-w-4xl p-4">
+      <div className="w-full max-w-7xl p-4">
         <div className="bg-gray-200 p-6 rounded-lg mx-auto">
           <div className="text-center">
             <h1 className="font-bold text-lg md:text-2xl">
@@ -117,8 +118,8 @@ const BasicInfo: React.FC = () => {
             </h1>
             <p className="text-sm md:text-lg p-4">
               Follow these steps to create your account: enter your personal
-              details, verify your BVN, and set up your account securely.
-              Let's get started!
+              details, verify your BVN, and set up your account securely. Let's
+              get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
@@ -156,12 +157,12 @@ const BasicInfo: React.FC = () => {
             </Button>
           </div>
           <div className="flex items-center justify-center mb-6">
-            <div className="w-full max-w-2xl text-center">
+            <div className="w-full max-w-6xl text-center">
               <StepIndicator />
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <div className="bg-white p-6 rounded-xl w-full max-w-lg">
+            <div className="bg-white p-6 rounded-xl w-full max-w-3xl">
               <div>
                 <h1 className="text-sm flex gap-2">
                   <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-lg">
