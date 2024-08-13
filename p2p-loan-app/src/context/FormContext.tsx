@@ -16,6 +16,9 @@ interface FormData {
   bvnVerification: {
     bvn: string;
   };
+  linkWallet:{
+    walletProvider: string;
+  }
 }
 
 interface FormState {
@@ -30,18 +33,21 @@ interface FormState {
 
 const initialFormData: FormData = {
   basicInfo: {
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   },
   emailVerification: {
     isEmailSent: false,
   },
   bvnVerification: {
-    bvn: "",
+    bvn: '',
+  },
+  linkWallet: {
+    walletProvider: ''
   },
 };
 

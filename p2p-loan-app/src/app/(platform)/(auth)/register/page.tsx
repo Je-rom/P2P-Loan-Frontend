@@ -4,6 +4,7 @@ import { useFormStore } from '@/context/FormContext';
 import BasicInfo from '@/components/register-components/basic-info';
 import VerifyEmail from '@/components/register-components/verify-email';
 import VerifyBVN from '@/components/register-components/verify-bvn';
+import LinkWallet from '@/components/register-components/link-wallet';
 
 const Register: React.FC = () => {
   const { step, setStep } = useFormStore();
@@ -23,6 +24,8 @@ const Register: React.FC = () => {
         return <VerifyBVN />;
       case 3:
         return <VerifyEmail />;
+      case 4:
+        return <LinkWallet />;
       default:
         return <BasicInfo />;
     }

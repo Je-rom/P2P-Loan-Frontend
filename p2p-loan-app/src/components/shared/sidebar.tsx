@@ -70,7 +70,7 @@ const Sidebar = () => {
   const accountSettingsRoute: Route = {
     title: 'Account Settings',
     icon: Settings,
-    href: '/settings',
+    href: '/account-settings',
   };
 
   const routes: Route[] =
