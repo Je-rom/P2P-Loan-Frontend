@@ -42,95 +42,96 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{
-        backgroundImage: "url('/reg-background.svg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className="bg-white p-6 rounded-xl w-[800px] h-[400px]">
-        <div className="flex flex-col justify-center items-center">
-          <h1 className="font-bold text-xl">Welcome Back</h1>
-          <p>We’re so excited to see you again</p>
+      <div
+          className="min-h-screen bg-cover bg-center flex items-center justify-center"
+          style={{
+            backgroundImage: "url('/reg-background.svg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+      >
+        <div className="bg-white p-6 rounded-xl w-[800px] h-[440px] mx-auto">
+          <div className="flex flex-col justify-center items-center h-full">
+            <h1 className="font-bold text-xl">Welcome Back</h1>
+            <p>We’re so excited to see you again</p>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-[400px]">
+                <div className="py-2">
+                  <FormField
+                      control={form.control}
+                      name="email"
+                      render={({field}) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-light">
+                              Email Address
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                  type="text"
+                                  disabled={isLoading}
+                                  {...field}
+                                  className="py-2 px-4 rounded-lg border w-full"
+                              />
+                            </FormControl>
+                            <FormMessage/>
+                          </FormItem>
+                      )}
+                  />
+                </div>
+                <div className="py-2">
+                  <FormField
+                      control={form.control}
+                      name="password"
+                      render={({field}) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-light">
+                              Password
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                  type="password"
+                                  disabled={isLoading}
+                                  {...field}
+                                  className="py-2 px-4 rounded-lg border w-full"
+                              />
+                            </FormControl>
+                            <FormMessage/>
+                          </FormItem>
+                      )}
+                  />
+                </div>
+                <p className="mt-1 text-right">
+                  <Link
+                      href="/forgot-password"
+                      className="text-blue-600 text-base"
+                  >
+                    Forgot Password?
+                  </Link>
+                </p>
+                <div className="flex justify-center mt-4">
+                  <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full max-w-[400px] rounded-xl bg-blue-500 hover:bg-blue-700"
+                  >
+                    {isLoading ? <Loader2 className="animate-spin"/> : 'Login'}
+                  </Button>
+                </div>
+                <p className="mt-3 text-center leading-9 tracking-wide">
+                  Don't have an account?
+                  <Link
+                      href="/register"
+                      className="ml-1 text-base underline text-blue-600"
+                  >
+                    Sign Up
+                  </Link>
+                </p>
+              </form>
+            </Form>
+          </div>
         </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="py-2">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-light">
-                      Email Address
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        disabled={isLoading}
-                        {...field}
-                        className="py-2 px-4 rounded-lg border w-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="py-2">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-light">
-                      Password
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        disabled={isLoading}
-                        {...field}
-                        className="py-2 px-4 rounded-lg border w-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <p className="mt-1 text-right">
-              <Link
-                href=""
-                className="text-primary ml-40 font-semibold text-blue-600"
-              >
-                Forgot Password?
-              </Link>
-            </p>
-            <div className="flex justify-center mt-4">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full md:w-[400px] rounded-xl bg-blue-500 hover:bg-blue-700"
-              >
-                {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
-              </Button>
-            </div>
-            <p className="mt-3 text-start leading-9 tracking-wide">
-              Dont't have an account?
-              <Link
-                href="/register"
-                className="text-primary ml-1 font-semibold text-blue-600"
-              >
-                Sign Up
-              </Link>
-            </p>
-          </form>
-        </Form>
+
       </div>
-    </div>
   );
 };
 

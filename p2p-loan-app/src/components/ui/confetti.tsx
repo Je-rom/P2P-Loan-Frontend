@@ -2,7 +2,7 @@ import confetti from 'canvas-confetti';
 
 import { Button } from '@/components/ui/button';
 
-export function ConfettiSideCannons() {
+export function Confetti() {
   const handleClick = () => {
     const end = Date.now() + 3 * 1000; // 3 seconds
     const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
@@ -35,7 +35,9 @@ export function ConfettiSideCannons() {
 
   return (
     <div className="relative">
-      <Button className='bg-blue-400 hover:bg-blue-400' onClick={handleClick}>Welcome</Button>
+      <Button className="bg-blue-400 hover:bg-blue-400" onClick={handleClick}>
+        Welcome
+      </Button>
     </div>
   );
 }
