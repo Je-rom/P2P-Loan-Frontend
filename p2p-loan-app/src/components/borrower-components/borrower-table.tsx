@@ -1,17 +1,24 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
-const invoices = [
+const invoices: string | any[] = [
   {
     id: 1,
     name: 'Loan Request 1',
@@ -40,34 +47,99 @@ const invoices = [
     totalAmount: '$250.00',
     status: { text: 'Declined', color: 'text-red-500' },
   },
+  {
+    id: 5,
+    name: 'Loan Request 1',
+    date: 'Sat Apr, 2022',
+    totalAmount: '$250.00',
+    status: { text: 'Declined', color: 'text-red-500' },
+  },
+  {
+    id: 6,
+    name: 'Loan Request 1',
+    date: 'Sat Apr, 2022',
+    totalAmount: '$250.00',
+    status: { text: 'Declined', color: 'text-red-500' },
+  },
+  {
+    id: 7,
+    name: 'Loan Request 1',
+    date: 'Sat Apr, 2022',
+    totalAmount: '$250.00',
+    status: { text: 'Declined', color: 'text-red-500' },
+  },
 ];
 
 const BorrowerTable = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+
+  const currentItems = invoices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  const handlePageChange = (page: any) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
-    <div className="mt-5 bg-gray-100 bg-opacity-100">
-      <Table>
-        <TableHeader className="bg-white text-center">
-          <TableRow className="">
-            <TableHead className="">Name</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead className="text-right">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.id}>
-              <TableCell className="font-medium">{invoice.name}</TableCell>
-              <TableCell>{invoice.date}</TableCell>
-              <TableCell>{invoice.totalAmount}</TableCell>
-              <TableCell className={`${invoice.status.color} text-right`}>
-                {invoice.status.text}
-              </TableCell>
+    <>
+      <div className="mt-5 bg-gray-100 bg-opacity-100">
+        <Table>
+          <TableHeader className="bg-white text-center">
+            <TableRow className="">
+              <TableHead className="">Name</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead className="text-right">Status</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {currentItems.map((invoice) => (
+              <TableRow key={invoice.id}>
+                <TableCell className="font-medium">{invoice.name}</TableCell>
+                <TableCell>{invoice.date}</TableCell>
+                <TableCell>{invoice.totalAmount}</TableCell>
+                <TableCell className={`${invoice.status.color} text-right`}>
+                  {invoice.status.text}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="mt-5">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i + 1}>
+                <PaginationLink
+                  isActive={i + 1 === currentPage}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </>
   );
 };
 

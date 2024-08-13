@@ -181,7 +181,7 @@ const CreateOfferPage: React.FC = () => {
             Cancel
           </Button>
           <Button
-            className="bg-blue-400 hover:bg-green-600 font-semibold"
+            className="bg-blue-500 hover:bg-blue-500 font-semibold"
             onClick={handleSubmit}
           >
             Save
