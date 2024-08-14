@@ -23,9 +23,9 @@ const Register: React.FC = () => {
       case 2:
         return <VerifyBVN />;
       case 3:
-        return <VerifyEmail />;
-      case 4:
         return <LinkWallet />;
+      case 4:
+        return <VerifyEmail />;
       default:
         return <BasicInfo />;
     }

@@ -1,11 +1,11 @@
-import React from "react";
-import { useFormStore } from "@/context/FormContext";
+import React from 'react';
+import { useFormStore } from '@/context/FormContext';
 
 const steps = [
   { number: 1, label: 'Basic Info' },
   { number: 2, label: 'Verify BVN' },
-  { number: 3, label: 'Verify Email ' },
-  { number: 4, label: 'Wallet' },
+  { number: 3, label: 'Wallet' },
+  { number: 4, label: 'Verify Email ' },
 ];
 
 const StepIndicator: React.FC = () => {
@@ -19,15 +19,15 @@ const StepIndicator: React.FC = () => {
             <div
               className={`flex items-center justify-center w-4 h-4 text-xs rounded-full ${
                 step >= s.number
-                  ? "bg-black text-white"
-                  : "bg-gray-300 text-gray-700"
+                  ? 'bg-black text-white'
+                  : 'bg-gray-300 text-gray-700'
               }`}
             >
               {s.number}
             </div>
             <div
               className={`mt-2 text-xs md:text-base ${
-                step >= s.number ? "text-black" : "text-gray-700"
+                step >= s.number ? 'text-black' : 'text-gray-700'
               }`}
             >
               {s.label}
