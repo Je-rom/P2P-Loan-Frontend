@@ -16,13 +16,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import StepIndicator from '@/components/register-components/step-indicator';
+import useAuth from '@/hooks/useAuth';
+import { toast } from 'sonner';
+import { RegisterRequest } from '@/services/authService';
 
 const BasicInfo: React.FC = () => {
   const { formData, nextStep, updateFormData } = useFormStore();
-  const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const { step } = useFormStore();
+  const { SignUpMutation } = useAuth();
 
   const steps = [
     { number: 1, label: 'Basic Info' },
@@ -31,6 +34,7 @@ const BasicInfo: React.FC = () => {
     { number: 4, label: 'Wallet' },
   ];
 
+  const signUpMutation = SignUpMutation();
   const currentStep = steps.find((s) => s.number === step);
 
   const registerSchema = z
@@ -72,39 +76,47 @@ const BasicInfo: React.FC = () => {
     setSelectedOption(option);
   };
 
+  const isLoading = signUpMutation.isPending;
+
   const onSubmit = async (data: RegisterFormValues) => {
     if (!selectedOption) {
       setFormError('Please select either Lender or Borrower.');
       return;
     }
-    const {
-      lastName,
-      firstName,
-      confirmPassword,
-      email,
-      dateOfBirth,
-      ...dataWithoutConfirmPassword
-    } = data;
-    const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
-    setIsLoading(true);
-    try {
-      // Handle form submission here
-      localStorage.setItem('user_type', user_type);
-      localStorage.setItem('email', email);
-      localStorage.setItem('firstName', firstName);
-      localStorage.setItem('lastName', lastName);
+    const user_type = selectedOption === 'Lender' ? 'Lender' : 'Borrower';
+    const { lastName, firstName, email, dateOfBirth, password } = data;
 
-      updateFormData({
-        basicInfo: {
-          ...formData.basicInfo,
-          ...data,
-        },
-      });
-      nextStep();
+    const requestBody: RegisterRequest = {
+      firstName,
+      lastName,
+      email,
+      password,
+      dateOfBirth,
+      userType: user_type,
+      BVN: '',
+      walletProviderId: '',
+    };
+
+    try {
+      const mutationResult = await signUpMutation.mutateAsync(requestBody);
+      if (mutationResult.status === 'success') {
+        localStorage.setItem('user_type', user_type);
+        localStorage.setItem('email', email);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('lastName', lastName);
+
+        updateFormData({
+          basicInfo: {
+            ...formData.basicInfo,
+            ...data,
+          },
+        });
+        nextStep();
+      } else {
+        console.error('Registration failed', mutationResult.message);
+      }
     } catch (error) {
       setFormError('An error occurred while submitting the form.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -123,20 +135,8 @@ const BasicInfo: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            {/* <Button
-              onClick={() => handleOptionSelect('lender')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
-            >
-              Lender
-            </Button>
             <Button
-              onClick={() => handleOptionSelect('borrower')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
-            >
-              Borrower
-            </Button> */}
-            <Button
-              onClick={() => handleOptionSelect('lender')}
+              onClick={() => handleOptionSelect('Lender')}
               className={`w-1/2 sm:w-[150px] md:w-[300px] h-[34px] ${
                 selectedOption === 'lender'
                   ? 'bg-blue-500 text-white border-none hover:bg-blue-500'
@@ -146,7 +146,7 @@ const BasicInfo: React.FC = () => {
               Lender
             </Button>
             <Button
-              onClick={() => handleOptionSelect('borrower')}
+              onClick={() => handleOptionSelect('Borrower')}
               className={`w-1/2 sm:w-[150px] md:w-[300px] h-[34px] ${
                 selectedOption === 'borrower'
                   ? 'bg-blue-500 text-white border-none hover:bg-blue-500'
