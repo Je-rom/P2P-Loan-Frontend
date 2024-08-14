@@ -53,15 +53,13 @@ const LinkWallet: React.FC = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof WalletSchema>) => {
-    // Update formData with the selected wallet provider
     updateFormData({
       linkWallet: {
         ...formData.linkWallet,
-        walletProvider: data.wallet, // Update with the selected wallet
+        walletProvider: data.wallet,
       },
     });
 
-    // Check if user_type is set and route accordingly
     if (user_type) {
       router.push(`/${user_type}`);
     } else {
