@@ -250,7 +250,10 @@ export function DataTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="px-24 py-1 text-sm">
+                  <TableHead
+                    key={header.id}
+                    className="px-24 py-1 text-base font-bold"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -271,7 +274,7 @@ export function DataTable() {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-24">
+                    <TableCell key={cell.id} className="px-24 text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

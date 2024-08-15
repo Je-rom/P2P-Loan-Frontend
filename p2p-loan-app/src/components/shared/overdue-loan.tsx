@@ -13,7 +13,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, CircleAlert, MoreHorizontal } from 'lucide-react';
+import {
+  ArrowUpDown,
+  ChevronDown,
+  CircleAlert,
+  MoreHorizontal,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -47,35 +52,35 @@ export type Payment = {
 const initialData: Payment[] = [
   {
     id: 'm5gr84i9',
-    amount: 316,
+    amount: 316000.0,
     status: 'Not paid yet',
     repaymentDate: '12-09-2024',
     fullName: '',
   },
   {
     id: '3u1reuv4',
-    amount: 242,
+    amount: 242000.0,
     status: 'Not paid yet',
     repaymentDate: '12-09-2024',
     fullName: '',
   },
   {
     id: 'derv1ws0',
-    amount: 837,
+    amount: 837000.0,
     status: 'Not paid yet',
     repaymentDate: '12-09-2024',
     fullName: '',
   },
   {
     id: 'h4g5hi6j',
-    amount: 450,
+    amount: 450000.0,
     status: 'Not paid yet',
     repaymentDate: '12-09-2024',
     fullName: '',
   },
   {
     id: 'u7i8jkl9',
-    amount: 123,
+    amount: 123000.0,
     status: 'Not paid yet',
     repaymentDate: '12-09-2024',
     fullName: '',
@@ -253,7 +258,10 @@ export function DataTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="px-24 py-1 text-sm">
+                  <TableHead
+                    key={header.id}
+                    className="px-24 py-1 text-base font-bold"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -274,7 +282,7 @@ export function DataTable() {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-24">
+                    <TableCell key={cell.id} className="px-24 text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

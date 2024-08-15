@@ -26,8 +26,9 @@ const BasicInfo: React.FC = () => {
 
   const steps = [
     { number: 1, label: 'Basic Info' },
-    { number: 2, label: 'Verify Email' },
-    { number: 3, label: 'Verify BVN' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Wallet' },
+    { number: 4, label: 'Verify Email ' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -76,29 +77,26 @@ const BasicInfo: React.FC = () => {
       setFormError('Please select either Lender or Borrower.');
       return;
     }
-    const {
-      lastName,
-      firstName,
-      confirmPassword,
-      email,
-      dateOfBirth,
-      ...dataWithoutConfirmPassword
-    } = data;
+
+    const { lastName, firstName, email, dateOfBirth, password } = data;
     const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
     try {
-      // Handle form submission here
+      updateFormData({
+        basicInfo: {
+          firstName,
+          lastName,
+          email,
+          dateOfBirth,
+          password,
+          user_type,
+        },
+      });
       localStorage.setItem('user_type', user_type);
       localStorage.setItem('email', email);
       localStorage.setItem('firstName', firstName);
       localStorage.setItem('lastName', lastName);
 
-      updateFormData({
-        basicInfo: {
-          ...formData.basicInfo,
-          ...data,
-        },
-      });
       nextStep();
     } catch (error) {
       setFormError('An error occurred while submitting the form.');
@@ -117,8 +115,8 @@ const BasicInfo: React.FC = () => {
             </h1>
             <p className="text-sm md:text-lg p-4">
               Follow these steps to create your account: enter your personal
-              details, verify your BVN, and set up your account securely.
-              Let's get started!
+              details, verify your BVN, and set up your account securely. Let's
+              get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">

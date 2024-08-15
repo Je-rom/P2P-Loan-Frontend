@@ -1,26 +1,41 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
-// import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-// import { getFirstLetter } from '@/lib/utils';
+import { Bell, LogOut } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Skeleton } from '../ui/skeleton';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { useMediaQuery } from 'usehooks-ts';
 import MobileSidebar from './mobile-sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuShortcut,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 const DashboardNavbar = () => {
   const [storedEmail, setStoredEmail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const email = localStorage.getItem('email');
-    setStoredEmail(email);
+    const timer = setTimeout(() => {
+      const email = localStorage.getItem('email');
+      setStoredEmail(email);
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const user = {
-    isLoading: false,
+    isLoading,
     data: { email: storedEmail || 'null' },
   };
+
   const router = useRouter();
 
   return (
@@ -28,6 +43,7 @@ const DashboardNavbar = () => {
       <MobileSidebar />
       <div className="flex justify-end items-center w-full">
         <div className="flex items-center gap-4">
+          <Bell className="cursor-pointer hidden lg:flex" size={24} />
           {user.isLoading ? (
             <div className="flex items-center gap-x-2">
               <div className="w-10 h-10 relative shrink-0">
@@ -41,13 +57,39 @@ const DashboardNavbar = () => {
               </div>
             </div>
           ) : (
-            <>
-              <div>
-                <p className="text-sm font-semibold">
-                  {`${user?.data?.email}`}
-                </p>
-              </div>
-            </>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="cursor-pointer">
+                  <AvatarFallback className="bg-blue-500">
+                    {storedEmail?.charAt(0).toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => router.push('/account-settings')}
+                  >
+                    Profile
+                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  Log out
+                  <DropdownMenuShortcut>
+                    <LogOut className={cn('h-5 w-10 text-xl')} />
+                  </DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          {!user.isLoading && (
+            <div>
+              <p className="text-sm font-semibold">{user.data.email}</p>
+            </div>
           )}
         </div>
       </div>
