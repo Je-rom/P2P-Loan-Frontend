@@ -32,8 +32,8 @@ const VerifyEmail: React.FC = () => {
     walletProviderId: formData.linkWallet.walletProvider,
     email: formData.basicInfo.email,
     password: formData.basicInfo.password,
-    userType: formData.basicInfo.user_type,
-    dateOfBirth: formData.basicInfo.dateOfBirth,
+    userType: formData.basicInfo.userType,
+    BvnDateOfBirth: formData.basicInfo.BvnDateOfBirth,
   };
 
   const isLoading = signUpMutation.isPending;
@@ -42,7 +42,7 @@ const VerifyEmail: React.FC = () => {
     setIsLoading(true);
     try {
       const mutationResult = await signUpMutation.mutateAsync(registrationData);
-      if (mutationResult.status === 'success') {
+      if (mutationResult.status === 'Success') {
         router.push('/login');
       }
     } catch (error) {

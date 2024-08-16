@@ -39,7 +39,7 @@ const BasicInfo: React.FC = () => {
       middleName: z.string().optional(),
       lastName: z.string().min(1, { message: 'Last name is required' }),
       email: z.string().email({ message: 'Invalid email' }),
-      dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+      BvnDateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
         message: 'Please put in a valid date of birth in MM-DD-YYYY format',
       }),
       password: z
@@ -62,7 +62,7 @@ const BasicInfo: React.FC = () => {
       middleName: '',
       lastName: '',
       email: '',
-      dateOfBirth: '',
+      BvnDateOfBirth: '',
       password: '',
       confirmPassword: '',
     },
@@ -78,8 +78,8 @@ const BasicInfo: React.FC = () => {
       return;
     }
 
-    const { lastName, firstName, email, dateOfBirth, password } = data;
-    const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
+    const { lastName, firstName, email, BvnDateOfBirth, password } = data;
+    const userType = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
     try {
       updateFormData({
@@ -87,12 +87,12 @@ const BasicInfo: React.FC = () => {
           firstName,
           lastName,
           email,
-          dateOfBirth,
+          BvnDateOfBirth,
           password,
-          user_type,
+          userType,
         },
       });
-      localStorage.setItem('user_type', user_type);
+      localStorage.setItem('user_type', userType);
       localStorage.setItem('email', email);
       localStorage.setItem('firstName', firstName);
       localStorage.setItem('lastName', lastName);
@@ -273,7 +273,7 @@ const BasicInfo: React.FC = () => {
                   <div className="py-2">
                     <FormField
                       control={form.control}
-                      name="dateOfBirth"
+                      name="BvnDateOfBirth"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-base font-light">

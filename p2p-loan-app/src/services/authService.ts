@@ -9,7 +9,7 @@ export interface RegisterRequest {
   BVN: string;
   userType: string;
   walletProviderId: string;
-  dateOfBirth: string;
+  BvnDateOfBirth: string;
 }
 
 export interface RegisterResponse {
@@ -91,7 +91,13 @@ class AuthService {
   static register = async (
     requestBody: RegisterRequest,
   ): Promise<AxiosResponse<RegisterResponse>> => {
-    return await axiosConfig.post('api/auth/register', requestBody);
+    return await axiosConfig.post('/api/auth/register', requestBody);
+  };
+
+  static login = async (
+    requestBody: LoginRequest,
+  ): Promise<AxiosResponse<LoginResponse>> => {
+    return await axiosConfig.post('/api/auth/login', requestBody);
   };
 }
 

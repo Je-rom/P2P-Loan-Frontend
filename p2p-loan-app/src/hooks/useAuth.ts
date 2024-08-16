@@ -1,5 +1,9 @@
 'use client';
-import AuthService, { RegisterRequest } from '@/services/authService';
+import AuthService, {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+} from '@/services/authService';
 import { useAuthState } from '@/store/authStore';
 import axiosResponseMessage from '@/lib/axiosResponseMessage';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -20,13 +24,8 @@ const useAuth = () => {
         return reponse?.data;
       },
       onError: (error: AxiosError<{ message?: string }>) => {
-        if (
-          error.response?.data?.message ===
-          'User already exists, the email or phone number is already in use'
-        ) {
-          toast.error(
-            'User already exists, the email or phone number is already in use',
-          );
+        if (error.response?.data?.message === 'User already exists') {
+          toast.error('User already exists');
         } else {
           toast.error('Invalid Registration credentials');
         }
@@ -42,42 +41,65 @@ const useAuth = () => {
     });
   };
 
+  const loginMutation = useMutation({
+    mutationFn: async (user: LoginRequest) => {
+      console.log('Sending login request', user);
+      const response = await AuthService.login(user);
+      console.log('Received login response', response);
+      return response?.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Email yet to be verified') {
+        toast.error('Email yet to be verified');
+      } else {
+        toast.error('Invalid Login details, check your email and password');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: LoginResponse) => {
+      const { status, result: responseData } = data;
+      toast.success('Login successful');
+      console.log(responseData);
+      console.log('Login successful, response data:', responseData);
+
+      const {
+        id,
+        firstName,
+        lastName,
+        email,
+        bvnVerified,
+        emailConfirmed,
+        pinCreated,
+        userType,
+        createdAt,
+        modifiedAt,
+        userRoles,
+      } = responseData.user;
+
+      setUser({
+        id,
+        firstName,
+        lastName,
+        email,
+        bvnVerified,
+        emailConfirmed,
+        pinCreated,
+        userType,
+        createdAt,
+        modifiedAt,
+        userRoles,
+      });
+      setToken(responseData.token);
+    },
+  });
+
   return {
     SignUpMutation,
+    loginMutation,
     user,
     token,
   };
 };
 
 export default useAuth;
-//   const loginMutation = useMutation({
-//     mutationFn: async (user: LoginRequest) => {
-//       console.log('Sending login request', user);
-//       const response = await AuthService.login(user);
-//       console.log('Received login response', response);
-//       return response?.data;
-//     },
-//     onError: (error: AxiosError) => {
-//       console.log('Login error:', error);
-//       console.log(axiosResponseMessage(error));
-//     },
-//     onSuccess: (data: LoginResponse) => {
-//       const { status, data: responseData } = data;
-//       toast.success('Login successful');
-//       console.log(responseData);
-//       console.log('Login successful, response data:', responseData);
-//       const user = {
-//         userId: responseData.userId,
-//         username: responseData.username,
-//         phoneNumber: responseData.phoneNumber,
-//         email: responseData.email,
-//         account_type: responseData.account_type,
-//         profileImage: responseData.profileImage,
-//         status: responseData.status,
-//         createdAt: responseData.createdAt,
-//         token: responseData.token,
-//       };
-//       setUser(user);
-//       setToken(responseData.token);
-//     },
-//   });

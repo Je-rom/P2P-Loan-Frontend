@@ -113,7 +113,10 @@ const LinkWallet: React.FC = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem className="text-lg" value="Monnify">
+                            <SelectItem
+                              className="text-lg"
+                              value="509FDCD5-8CE9-4316-CFD2-08DCBDC22D55"
+                            >
                               <div className="flex">
                                 <Image
                                   src={'/monnify.png'}
@@ -125,7 +128,6 @@ const LinkWallet: React.FC = () => {
                                 Monnify
                               </div>
                             </SelectItem>
-                            {/* Add more SelectItems if needed */}
                           </SelectContent>
                         </Select>
                         <FormMessage />
