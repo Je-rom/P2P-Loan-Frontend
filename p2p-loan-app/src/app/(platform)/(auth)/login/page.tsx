@@ -16,8 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import toast from 'sonner';
 import useAuth from '@/hooks/useAuth';
+import { LoginResponse } from '@/services/authService';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -45,19 +45,26 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormValues) => {
     loginMutation.mutate(data, {
-      onSuccess: (data: any) => {
-        const { status, data: responseData } = data;
+      onSuccess: (data: LoginResponse) => {
+        const { status, result: responseData } = data;
 
-        const userType = responseData.userType;
-        localStorage.getItem('user_type');
+        if (status === 'Success') {
+          const { userType, email, firstName, lastName } = responseData.user;
 
-        // Redirect based on user role
-        if (userType === 'borrower') {
-          router.push('/borrower');
-        } else if (userType === 'lender') {
-          router.push('/lender');
-        } else {
-          console.error('Invalid user role:', userType);
+          //save user details to local storage
+          localStorage.setItem('user_type', userType);
+          localStorage.setItem('email', email);
+          localStorage.setItem('firstName', firstName);
+          localStorage.setItem('lastName', lastName);
+
+          // Redirect based on user role
+          if (userType === 'borrower') {
+            router.push('/borrower');
+          } else if (userType === 'lender') {
+            router.push('/lender');
+          } else {
+            console.error('Invalid user role:', userType);
+          }
         }
       },
     });

@@ -62,44 +62,26 @@ const useAuth = () => {
       toast.success('Login successful');
       console.log(responseData);
       console.log('Login successful, response data:', responseData);
-
-      const {
-        id,
-        firstName,
-        lastName,
-        email,
-        bvnVerified,
-        emailConfirmed,
-        pinCreated,
-        userType,
-        createdAt,
-        modifiedAt,
-        userRoles,
-      } = responseData.user;
-
-      setUser({
-        id,
-        firstName,
-        lastName,
-        email,
-        bvnVerified,
-        emailConfirmed,
-        pinCreated,
-        userType,
-        createdAt,
-        modifiedAt,
-        userRoles,
-      });
+      setUser(responseData.user);
       setToken(responseData.token);
     },
   });
 
+  const logOut = () => {
+    clearAuth();
+    localStorage.clear();
+    router.push('/login');
+  };
+
   return {
     SignUpMutation,
     loginMutation,
+    logOut,
     user,
     token,
   };
 };
 
 export default useAuth;
+// DELETE FROM Users
+// WHERE Id = '3AEE0692-CBB7-4FD5-A180-E7D153A92F70';
