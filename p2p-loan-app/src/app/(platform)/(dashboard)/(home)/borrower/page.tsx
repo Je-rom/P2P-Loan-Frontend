@@ -57,13 +57,13 @@ const BorrowerPage = () => {
       number: 35,
       text: 'Loan Request',
     },
-    {
-      img: (
-        <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
-      ),
-      number: 32,
-      text: 'Lenders Offers',
-    },
+    // {
+    //   img: (
+    //     <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
+    //   ),
+    //   number: 32,
+    //   text: 'Lenders Offers',
+    // },
   ];
 
   return (

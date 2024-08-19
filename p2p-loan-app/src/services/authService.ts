@@ -126,13 +126,13 @@ class AuthService {
   static forgotPassword = async (
     requestBody: ForgotPasswordRequest,
   ): Promise<AxiosResponse<ForgotPasswordResponse>> => {
-    return await axiosConfig.post('api/auth/forgot-password', requestBody);
+    return await axiosConfig.post('/api/auth/forgot-password', requestBody);
   };
 
   static resetPassword = async (
     requestBody: ResetPasswordRequest,
   ): Promise<AxiosResponse<ResetPasswordResponse>> => {
-    return await axiosConfig.post('api/auth/reset-password', requestBody);
+    return await axiosConfig.post('/api/auth/reset-password', requestBody);
   };
 }
 

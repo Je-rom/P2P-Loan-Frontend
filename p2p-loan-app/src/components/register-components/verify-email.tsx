@@ -43,6 +43,7 @@ const VerifyEmail: React.FC = () => {
     try {
       const mutationResult = await signUpMutation.mutateAsync(registrationData);
       if (mutationResult.status === 'Success') {
+        localStorage.removeItem('step');
         router.push('/login');
       }
     } catch (error) {

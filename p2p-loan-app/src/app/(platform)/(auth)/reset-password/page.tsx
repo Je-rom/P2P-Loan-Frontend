@@ -58,7 +58,7 @@ const ResetPasswordPage = () => {
       toast.error('Invalid or missing token and email.');
       return;
     }
-    resetPasswordMutation.mutate(
+    resetPasswordMutation.mutateAsync(
       {
         token,
         email,
@@ -70,7 +70,6 @@ const ResetPasswordPage = () => {
         },
       },
     );
-
     triggerConfetti();
   };
 

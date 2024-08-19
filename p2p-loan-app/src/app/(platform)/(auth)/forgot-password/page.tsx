@@ -14,8 +14,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
-import { triggerConfetti } from '@/helper/confetti';
-import router from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import useAuth from '@/hooks/useAuth';
