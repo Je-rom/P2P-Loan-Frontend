@@ -1,8 +1,12 @@
 'use client';
 import AuthService, {
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
 } from '@/services/authService';
 import { useAuthState } from '@/store/authStore';
 import axiosResponseMessage from '@/lib/axiosResponseMessage';
@@ -49,8 +53,11 @@ const useAuth = () => {
       return response?.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (error.response?.data?.message === 'Email yet to be verified') {
-        toast.error('Email yet to be verified');
+      if (
+        error.response?.data?.message ===
+        'Email yet to be verified, Please verify your email'
+      ) {
+        toast.error('Email yet to be verified, Please verify your email');
       } else {
         toast.error('Invalid Login details, check your email and password');
       }
@@ -67,6 +74,37 @@ const useAuth = () => {
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (userEmail: ForgotPasswordRequest) => {
+      const reponse = await AuthService.forgotPassword(userEmail);
+      return reponse.data;
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.message);
+      console.log(axiosResponseMessage(error));
+    },
+    onSuccess: (data: ForgotPasswordResponse) => {
+      const { status, message } = data;
+      console.log('Forgot password successful:', message);
+      toast.success('Token sent, please check your email');
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (user: ResetPasswordRequest) => {
+      const response = await AuthService.resetPassword(user);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.message);
+      console.log(axiosResponseMessage(error));
+    },
+    onSuccess: (data: ResetPasswordResponse) => {
+      const { message } = data;
+      toast.success('Password reset successful, please login');
+    },
+  });
+
   const logOut = () => {
     clearAuth();
     localStorage.clear();
@@ -76,6 +114,8 @@ const useAuth = () => {
   return {
     SignUpMutation,
     loginMutation,
+    forgotPasswordMutation,
+    resetPasswordMutation,
     logOut,
     user,
     token,

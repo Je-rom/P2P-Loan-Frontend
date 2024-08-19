@@ -39,6 +39,7 @@ const LinkWallet: React.FC = () => {
 
   const currentStep = steps.find((s) => s.number === step);
   const router = useRouter();
+  const walletProvider = process.env.NEXT_PUBLIC_WALLET_PROVIDER as string;
 
   const WalletSchema = z.object({
     wallet: z.string({
@@ -115,7 +116,7 @@ const LinkWallet: React.FC = () => {
                           <SelectContent>
                             <SelectItem
                               className="text-lg"
-                              value="509FDCD5-8CE9-4316-CFD2-08DCBDC22D55"
+                              value={walletProvider}
                             >
                               <div className="flex">
                                 <Image

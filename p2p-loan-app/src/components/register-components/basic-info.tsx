@@ -92,11 +92,6 @@ const BasicInfo: React.FC = () => {
           userType,
         },
       });
-      localStorage.setItem('user_type', userType);
-      localStorage.setItem('email', email);
-      localStorage.setItem('firstName', firstName);
-      localStorage.setItem('lastName', lastName);
-
       nextStep();
     } catch (error) {
       setFormError('An error occurred while submitting the form.');

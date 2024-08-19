@@ -18,7 +18,7 @@ interface FormData {
     bvn: string;
   };
   linkWallet: {
-    walletProvider: string;
+    walletProvider: string | undefined;
   };
 }
 
@@ -48,7 +48,7 @@ const initialFormData: FormData = {
     bvn: '',
   },
   linkWallet: {
-    walletProvider: '509FDCD5-8CE9-4316-CFD2-08DCBDC22D55',
+    walletProvider: process.env.NEXT_PUBLIC_WALLET_PROVIDER,
   },
 };
 

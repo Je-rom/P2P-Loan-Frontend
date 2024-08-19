@@ -18,10 +18,12 @@ import { triggerConfetti } from '@/helper/confetti';
 import router from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import useAuth from '@/hooks/useAuth';
 
 const ForgotPasswordPage = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { forgotPasswordMutation } = useAuth();
+
   const ForgotPasswordSchema = z.object({
     email: z.string().email({
       message: 'Invalid email address',
@@ -36,11 +38,18 @@ const ForgotPasswordPage = () => {
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordFormValues) => {
-    setIsLoading(true);
-    router.push('/reset-password');
+  const isLoading = forgotPasswordMutation.isPending;
 
-    // Handle form submission here
+  const onSubmit = async (data: ForgotPasswordFormValues) => {
+    const requestData = { email: data.email };
+    forgotPasswordMutation.mutateAsync(requestData, {
+      onSuccess: () => {
+        router.push('/reset-password');
+      },
+      onError: (error: any) => {
+        console.error('Error occurred during forgot password mutation:', error);
+      },
+    });
   };
 
   return (

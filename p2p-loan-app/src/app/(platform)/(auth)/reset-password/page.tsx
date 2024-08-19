@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -15,24 +15,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import { triggerConfetti } from '@/helper/confetti';
-import router from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useSearchParams, useRouter } from 'next/navigation';
+import useAuth from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const ResetPasswordPage = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const token = searchParams.get('token');
+  const email = searchParams.get('email');
+
+  const { resetPasswordMutation } = useAuth();
 
   const ResetPasswordSchema = z
     .object({
-      password: z
+      newPassword: z
         .string()
         .min(8, { message: 'Your new password must be at least 8 characters' }),
       confirmPassword: z
         .string()
         .min(1, { message: 'Confirm Password is required' }),
     })
-    .refine((data) => data.password === data.confirmPassword, {
+    .refine((data) => data.newPassword === data.confirmPassword, {
       path: ['confirmPassword'],
       message: "Passwords don't match",
     });
@@ -41,16 +46,32 @@ const ResetPasswordPage = () => {
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      password: '',
+      newPassword: '',
       confirmPassword: '',
     },
   });
 
-  const onSubmit = async (data: ResetPasswordFormValues) => {
-    setIsLoading(true);
-    triggerConfetti();
+  const isLoading = resetPasswordMutation.isPending;
 
-    // Handle form submission here
+  const onSubmit = async (data: ResetPasswordFormValues) => {
+    if (!token || !email) {
+      toast.error('Invalid or missing token and email.');
+      return;
+    }
+    resetPasswordMutation.mutate(
+      {
+        token,
+        email,
+        newPassword: data.newPassword,
+      },
+      {
+        onSuccess: () => {
+          router.push('/login');
+        },
+      },
+    );
+
+    triggerConfetti();
   };
 
   return (
@@ -78,7 +99,7 @@ const ResetPasswordPage = () => {
             <div className="py-2">
               <FormField
                 control={form.control}
-                name="password"
+                name="newPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base font-light">
