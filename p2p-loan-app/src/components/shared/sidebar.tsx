@@ -59,7 +59,7 @@ const Sidebar = () => {
     {
       title: 'My Wallet',
       icon: Wallet,
-      href: getHref('my-offers'),
+      href: getHref('wallet'),
     },
   ];
 

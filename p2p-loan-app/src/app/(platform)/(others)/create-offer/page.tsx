@@ -144,7 +144,7 @@ const CreateOfferPage: React.FC = () => {
       );
       try {
         if (result.status === 'Created') {
-          router.push('/borrower');
+          router.push('/borrower/my-offers');
         }
       } catch (error) {
         console.log(error, 'create offer error');

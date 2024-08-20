@@ -26,7 +26,10 @@ const useLoanOffer = () => {
       onSuccess: (data: CreateLoanOfferResponse) => {
         const { status, message } = data;
         console.log('loan offer created', message, status);
+        console.log(data.result);
         toast.success('Loan offer created successfully');
+        const queryParams = new URLSearchParams(data.result).toString();
+        router.push(`/my-offers?${queryParams}`);
       },
     });
   };

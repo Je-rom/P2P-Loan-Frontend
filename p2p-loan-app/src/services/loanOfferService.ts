@@ -23,7 +23,7 @@ class loanOfferService {
   static createLoanOffer = async (
     requestBody: CreateLoanOfferRequest,
   ): Promise<AxiosResponse<CreateLoanOfferResponse>> => {
-    return await axiosConfig.post('api/loan-offer', requestBody);
+    return await axiosConfig.post('/api/loan-offer', requestBody);
   };
 }
 
