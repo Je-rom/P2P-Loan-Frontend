@@ -48,7 +48,7 @@ const initialFormData: FormData = {
     bvn: '',
   },
   linkWallet: {
-    walletProvider: process.env.NEXT_PUBLIC_WALLET_PROVIDER,
+    walletProvider: '',
   },
 };
 

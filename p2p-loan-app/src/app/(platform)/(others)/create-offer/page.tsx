@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -8,6 +8,7 @@ import TermsAndConditionDialog from './term-conditions-dialog';
 import useLoanOffer from '@/hooks/useLoanOffer';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import useWallet from '@/hooks/useWallet';
 
 interface FormField {
   label: string;
@@ -32,11 +33,32 @@ interface Errors {
   [key: string]: string;
 }
 
-const CreateOfferPage: React.FC = () => {
+const CreateOfferPage = () => {
+  const { getWalletQuery } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
   const { CreateLoanOfferMutation } = useLoanOffer();
   const createLoanOfferMutation = CreateLoanOfferMutation();
   const router = useRouter();
+
+  useEffect(() => {
+    if (getWalletQuery.isSuccess && getWalletQuery.data) {
+      const { result } = getWalletQuery.data;
+      if (result.length > 0) {
+        const firstWalletId = result[0].id;
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          walletId: firstWalletId,
+        }));
+      }
+    }
+  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
+
+  useEffect(() => {
+    if (getWalletQuery.isError) {
+      toast.error('Failed to fetch wallet');
+    }
+  }, [getWalletQuery.isError]);
 
   const formFields: FormField[] = [
     {
@@ -95,8 +117,6 @@ const CreateOfferPage: React.FC = () => {
     termsAccepted: false,
   });
 
-  const [errors, setErrors] = useState<Errors>({});
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -123,35 +143,35 @@ const CreateOfferPage: React.FC = () => {
     }
     return newErrors;
   };
+  const userType = localStorage.getItem('user_type');
 
   const handleSubmit = async () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      const createLoanOfferRequest = {
-        walletId: formValues.walletId,
-        amount: formValues.loanAmount,
-        paymentFrequency: formValues.paymentFrequency,
-        gracePeriodDays: parseInt(formValues.gracePeriodDays),
-        loanDurationDays: parseInt(formValues.loanDurationDays),
-        interestRate: parseFloat(formValues.interestRate),
-        accruingInterestRate: formValues.accruingInterestRate,
-        additionalInformation: formValues.additionalNote,
-      };
-      const result = await createLoanOfferMutation.mutateAsync(
-        createLoanOfferRequest,
-      );
       try {
+        const createLoanOfferRequest = {
+          walletId: formValues.walletId,
+          amount: formValues.loanAmount,
+          paymentFrequency: formValues.paymentFrequency,
+          gracePeriodDays: parseInt(formValues.gracePeriodDays, 10),
+          loanDurationDays: parseInt(formValues.loanDurationDays, 10),
+          interestRate: parseFloat(formValues.interestRate),
+          accruingInterestRate: formValues.accruingInterestRate,
+          additionalInformation: formValues.additionalNote,
+        };
+        const result = await createLoanOfferMutation.mutateAsync(
+          createLoanOfferRequest,
+        );
         if (result.status === 'Created') {
-          router.push('/borrower/my-offers');
+          router.push(`${userType}/my-offers`);
         }
       } catch (error) {
         console.log(error, 'create offer error');
       }
     }
   };
-
   return (
     <>
       <div>

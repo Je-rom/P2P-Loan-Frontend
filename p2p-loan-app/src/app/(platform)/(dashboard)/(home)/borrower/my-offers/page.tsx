@@ -1,20 +1,32 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import useLoanOffer from '@/hooks/useLoanOffer';
 import { Loader2 } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const MyOffers = () => {
   const { GetMyLoanOffer } = useLoanOffer();
   const { data, error, isLoading } = GetMyLoanOffer();
+
+  const [currentPage, setCurrentPage] = useState(2);
 
   if (isLoading) {
     return (
@@ -52,12 +64,113 @@ const MyOffers = () => {
     );
   }
 
+  const totalItems = data.result.totalItems;
+  const currentPagef = data.result.pageNumber;
+  const itemsPerPage = data.result.pageSize;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page: any) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div className="mb-10 font-bold text-xl">
         <h1>Your Loan Offers</h1>
       </div>
-      <div className="flex flex-col items-start gap-6 p-6 bg-gray-100">
+      <div className="w-full overflow-x-auto">
+        <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden">
+          <TableHeader className="bg-white border">
+            <TableRow className="bg-blue-100">
+              <TableHead className="font-bold text-black-900">
+                Loan Name
+              </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Loan Amount
+              </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Interest Rate
+              </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Loan Duration
+              </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Repayment Frequency
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="text-lg border">
+            {data.result.items.map((offer) => (
+              <TableRow key={offer.id}>
+                <TableCell>{offer.gracePeriodDays}</TableCell>
+                <TableCell>{offer.amount}</TableCell>
+                <TableCell>{offer.interestRate}%</TableCell>
+                <TableCell>{offer.loanDurationDays} days</TableCell>
+                <TableCell>{offer.repaymentFrequency}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter></TableFooter>
+        </Table>
+        {/* <div className="flex justify-center mt-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() =>
+                    handlePageChange(Math.max(1, currentPagef - 1))
+                  }
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPagef === index + 1}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              {totalPages > 5 && (
+                <>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink
+                      href="#"
+                      onClick={() => handlePageChange(totalPages)}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                </>
+              )}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={() =>
+                    handlePageChange(Math.min(totalPages, currentPagef + 1))
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div> */}
+      </div>
+      <div className="mt-20">
+        <p>Total Offers: {data?.result.pageNumber}</p>
+      </div>
+    </>
+  );
+};
+
+export default MyOffers;
+{
+  /* <div className="flex flex-col items-start gap-6 p-6 bg-gray-100">
         {data?.result.items.map((offer) => (
           <Card
             key={offer.id}
@@ -95,12 +208,5 @@ const MyOffers = () => {
             <CardFooter className="border-gray-200 p-4 text-right"></CardFooter>
           </Card>
         ))}
-      </div>
-      <div className="mt-20">
-        <p>Total Offers: {data?.result.totalItems}</p>
-      </div>
-    </>
-  );
-};
-
-export default MyOffers;
+      </div> */
+}

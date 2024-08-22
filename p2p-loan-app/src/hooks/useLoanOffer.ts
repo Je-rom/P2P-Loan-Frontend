@@ -5,7 +5,7 @@ import loanOfferService, {
   CreateLoanOfferResponse,
   MyLoanOfferResponse,
 } from '@/services/loanOfferService';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -34,27 +34,27 @@ const useLoanOffer = () => {
     });
   };
 
-  const GetMyLoanOffer = (): UseQueryResult<
-    MyLoanOfferResponse,
-    AxiosError<{ message: string }>
-  > => {
-    return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
-      queryKey: ['loanOffer'],
-      queryFn: async () => {
-        const response = await loanOfferService.getMyLoanOffer();
-        return response.data;
-      },
-      onError: (error: AxiosError<{ message: string }>) => {
-        toast.error(`Error: ${error.response?.data.message || error.message}`);
-        console.log('Failed to fetch loan offers:', error.message);
-      },
-      onSuccess: (data: MyLoanOfferResponse) => {
-        const { message, result } = data;
-        console.log('Loan offers fetched successfully:', result);
-        toast.success(message);
-      },
-    });
-  };
+ const GetMyLoanOffer = (): UseQueryResult<
+   MyLoanOfferResponse,
+   AxiosError<{ message: string }>
+ > => {
+   return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
+     queryKey: ['loanOffer'],
+     queryFn: async (): Promise<MyLoanOfferResponse> => {
+       const response = await loanOfferService.getMyLoanOffer();
+       return response.data;
+     },
+     onError: (error: AxiosError<{ message: string }>) => {
+       toast.error(`Error: ${error.response?.data.message || error.message}`);
+       console.log('Failed to fetch loan offers:', error.message);
+     },
+     onSuccess: (data: MyLoanOfferResponse) => {
+       const { message, result } = data;
+       console.log('Loan offers fetched successfully:', result);
+       toast.success(message);
+     },
+   } as UseQueryOptions<MyLoanOfferResponse, AxiosError<{ message: string }>>);
+ };
 
   return {
     CreateLoanOfferMutation,

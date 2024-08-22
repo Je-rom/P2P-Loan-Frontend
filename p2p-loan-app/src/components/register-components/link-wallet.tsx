@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormStore } from '@/context/FormContext';
 import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
@@ -23,12 +23,17 @@ import {
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 import { Confetti } from '@/components/ui/confetti';
+import useWallet from '@/hooks/useWallet';
 
 const LinkWallet: React.FC = () => {
+  const router = useRouter();
   const { formData, nextStep, updateFormData } = useFormStore();
   const { step } = useFormStore();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const { GetWalletProvider } = useWallet();
+  const [walletProvider, setWalletProvider] = useState<string | null>(null);
+  const { data, isLoading, isError, error } = GetWalletProvider();
 
   const steps = [
     { number: 1, label: 'Basic Info' },
@@ -38,8 +43,6 @@ const LinkWallet: React.FC = () => {
   ];
 
   const currentStep = steps.find((s) => s.number === step);
-  const router = useRouter();
-  const walletProvider = process.env.NEXT_PUBLIC_WALLET_PROVIDER as string;
 
   const WalletSchema = z.object({
     wallet: z.string({
@@ -47,10 +50,29 @@ const LinkWallet: React.FC = () => {
     }),
   });
 
-  const form = useForm<z.infer<typeof WalletSchema>>({
+  type WalletFormValues = z.infer<typeof WalletSchema>;
+  const form = useForm<WalletFormValues>({
     resolver: zodResolver(WalletSchema),
+    defaultValues: {
+      wallet: '',
+    },
   });
 
+  useEffect(() => {
+    if (data) {
+      console.log('Fetched wallet providers:', data.result);
+      setWalletProvider(data.result[0]?.slug || null);
+    }
+    if (isError) {
+      console.error('Error fetching wallet providers:', error);
+    }
+  }, [data, isError, error]);
+  if (isLoading) {
+    return <div>Loading wallet providers...</div>;
+  }
+  if (isError) {
+    return <div>Error loading wallet providers: {error?.message}</div>;
+  }
   const handleWalletSubmit: SubmitHandler<{ wallet: string }> = async (
     data,
   ) => {
@@ -114,21 +136,24 @@ const LinkWallet: React.FC = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem
-                              className="text-lg"
-                              value={walletProvider}
-                            >
-                              <div className="flex">
-                                <Image
-                                  src={'/monnify.png'}
-                                  alt="MonnifyLogo"
-                                  width={50}
-                                  height={10}
-                                  className="mr-2"
-                                />
-                                Monnify
-                              </div>
-                            </SelectItem>
+                            {data?.result.map((provider) => (
+                              <SelectItem
+                                key={provider.id}
+                                className="text-lg"
+                                value={provider.id}
+                              >
+                                <div className="flex">
+                                  <Image
+                                    src={'/monnify.png'}
+                                    alt="MonnifyLogo"
+                                    width={50}
+                                    height={10}
+                                    className="mr-2"
+                                  />
+                                  Monnify
+                                </div>
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
