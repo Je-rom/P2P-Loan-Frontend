@@ -3,11 +3,13 @@ import axiosResponseMessage from '@/lib/axiosResponseMessage';
 import loanOfferService, {
   CreateLoanOfferRequest,
   CreateLoanOfferResponse,
+  MyLoanOfferResponse,
 } from '@/services/loanOfferService';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 const useLoanOffer = () => {
   const router = useRouter();
@@ -28,14 +30,35 @@ const useLoanOffer = () => {
         console.log('loan offer created', message, status);
         console.log(data.result);
         toast.success('Loan offer created successfully');
-        const queryParams = new URLSearchParams(data.result).toString();
-        router.push(`/my-offers?${queryParams}`);
+      },
+    });
+  };
+
+  const GetMyLoanOffer = (): UseQueryResult<
+    MyLoanOfferResponse,
+    AxiosError<{ message: string }>
+  > => {
+    return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
+      queryKey: ['loanOffer'],
+      queryFn: async () => {
+        const response = await loanOfferService.getMyLoanOffer();
+        return response.data;
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toast.error(`Error: ${error.response?.data.message || error.message}`);
+        console.log('Failed to fetch loan offers:', error.message);
+      },
+      onSuccess: (data: MyLoanOfferResponse) => {
+        const { message, result } = data;
+        console.log('Loan offers fetched successfully:', result);
+        toast.success(message);
       },
     });
   };
 
   return {
     CreateLoanOfferMutation,
+    GetMyLoanOffer,
   };
 };
 
