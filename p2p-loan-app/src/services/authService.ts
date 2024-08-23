@@ -6,6 +6,7 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: string;
   BVN: string;
   userType: string;
   walletProviderId: string | undefined;

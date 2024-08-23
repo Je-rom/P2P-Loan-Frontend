@@ -39,6 +39,9 @@ const BasicInfo: React.FC = () => {
       middleName: z.string().optional(),
       lastName: z.string().min(1, { message: 'Last name is required' }),
       email: z.string().email({ message: 'Invalid email' }),
+      phoneNumber: z
+        .string()
+        .min(1, { message: 'Please input your phone number' }),
       BvnDateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
         message: 'Please put in a valid date of birth in MM-DD-YYYY format',
       }),
@@ -62,6 +65,7 @@ const BasicInfo: React.FC = () => {
       middleName: '',
       lastName: '',
       email: '',
+      phoneNumber: '',
       BvnDateOfBirth: '',
       password: '',
       confirmPassword: '',
@@ -78,7 +82,7 @@ const BasicInfo: React.FC = () => {
       return;
     }
 
-    const { lastName, firstName, email, BvnDateOfBirth, password } = data;
+    const { lastName, firstName, email, BvnDateOfBirth, password, phoneNumber } = data;
     const userType = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
     try {
@@ -87,6 +91,7 @@ const BasicInfo: React.FC = () => {
           firstName,
           lastName,
           email,
+          phoneNumber,
           BvnDateOfBirth,
           password,
           userType,
@@ -254,6 +259,29 @@ const BasicInfo: React.FC = () => {
                           <FormControl>
                             <Input
                               type="email"
+                              disabled={isLoading}
+                              {...field}
+                              className="py-2 px-4 rounded-lg border w-full"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="py-2">
+                    <FormField
+                      control={form.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-light">
+                            *Phone Number
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
                               disabled={isLoading}
                               {...field}
                               className="py-2 px-4 rounded-lg border w-full"
