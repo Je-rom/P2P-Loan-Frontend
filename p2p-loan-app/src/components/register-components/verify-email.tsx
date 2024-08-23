@@ -64,18 +64,7 @@ const VerifyEmail: React.FC = () => {
         <div className="flex flex-col items-center justify-center mt-8">
           <Image src={'/email-icon.svg'} alt="email" width={70} height={100} />
           <h1 className="font-bold text-lg">Check Your Email</h1>
-          <p>Please open mail app to verify</p>
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
-          >
-            {loading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              'Click here to send email'
-            )}
-          </Button>
+          <p>Please open your mail app to verify your account</p>
           <h1 className="mt-4 flex gap-2">
             Didn't receive any mail?
             <button>
@@ -88,7 +77,7 @@ const VerifyEmail: React.FC = () => {
               disabled={isLoading}
               className="bg-blue-400 hover:bg-blue-400"
             >
-              Done
+              Welcome 
             </Button>
           </div>
         </div>
