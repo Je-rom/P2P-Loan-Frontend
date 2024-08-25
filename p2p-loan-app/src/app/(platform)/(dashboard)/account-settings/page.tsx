@@ -2,85 +2,53 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import ChangePin from '@/services/accountSettingsService';
 import { IoChevronForward } from 'react-icons/io5';
 import { AiOutlinePoweroff } from 'react-icons/ai';
 import { Switch } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import Button from '@mui/material/Button';
+import { Input } from '@/components/ui/input';
+import useAccountSettings from '@/hooks/useAccount';
+import { Form, FormField, FormItem, FormMessage, FormControl, FormLabel } from '@/components/ui/form';
+import { toast } from 'sonner';
 
-const ProfileSettings = () => {
-  const [personalInfo, setPersonalInfo] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth: '',
+
+const AccountSettings = () => {
+ 
+   const ChangePinSchema= z.object({
+      OldPin: z.string().min(4, "Old PIN must be 4 digits"),
+      newPin: z.string().min(4, "New PIN must be 4 digits"),
+      confirmNewPin: z.string().min(4, "Confirm PIN must be 4 digits"),
+    }).refine(data => data.newPin === data.confirmNewPin, {
+      message: "New PIN and confirm PIN must match",
+      path: ["confirmNewPin"],
+    });
+
+  type ChangePinFormValues = z.infer<typeof ChangePinSchema>;
+
+
+  const form = useForm<ChangePinFormValues>({
+    resolver: zodResolver(ChangePinSchema),
+    defaultValues: {
+      OldPin: '',
+      newPin: '',
+      confirmNewPin: '',
+    },
   });
 
-  const [contactInfo, setContactInfo] = useState({
-    phoneNumber: '',
-    email: '',
-    cityTown: '',
-    state: '',
-    zipCode: '',
-  });
+  const { mutate: changePin, isLoading, isError, error } = useAccountSettings();
 
-  const [security, setSecurity] = useState({
-    pin: '',
-    password: '',
-  });
-
-  const [notifications, setNotifications] = useState({
-    emailNotification: true,
-    smsNotification: false,
-  });
-
-  useEffect(() => {
-    const fetchSettingData = async () => {
-      try {
-        const response = await axios.get('');
-        const data = response.data();
-
-        setPersonalInfo(data.personalInfo);
-        setContactInfo(data.contactInfo);
-        setSecurity(data.security);
-        setNotifications(data.notifications);
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-      }
-    };
-    fetchSettingData();
-  }, []);
-
-  // Handlers for Editing (you can implement your own logic for handling changes)
-  const handleEditPersonalInfo = () => {
-    // Logic for editing personal info (e.g., open a modal to edit)
-  };
-
-  const handleEditContactInfo = () => {
-    // Logic for editing contact info (e.g., open a modal to edit)
-  };
-
-  const handleChangePin = () => {
-    // Logic for changing pin (e.g., open a modal to change)
-  };
-
-  const handleChangePassword = () => {
-    // Logic for changing password (e.g., open a modal to change)
-  };
-  const toggleEmailNotification = () => {
-    setNotifications((prev) => ({
-      ...prev,
-      emailNotification: !prev.emailNotification,
-    }));
-  };
-
-  const toggleSmsNotification = () => {
-    setNotifications((prev) => ({
-      ...prev,
-      smsNotification: !prev.smsNotification,
-    }));
-  };
+  const onSubmit =async (data: ChangePinFormValues) => {
+    if (data.newPin !== data.confirmNewPin) {
+        toast.error('New PIN and confirm PIN do not match.');
+        return;
+    }
+    changePin(data);
+};
 
   return (
     <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
@@ -96,45 +64,6 @@ const ProfileSettings = () => {
             <p className="text-gray-600">11, Thomas street, Lekki Lagos</p>
           </div>
         </div>
-
-        {/* Personal Information */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              startIcon={<EditIcon />}
-              sx={{
-                minWidth: 'auto',
-                padding: '2px 4px',
-                fontSize: '0.75rem',
-                textTransform: 'none',
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="mb-2">
-              <span className="font-medium">First Name: </span> Veronica
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Middle Name: </span> Rhiana
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Last Name: </span> Smith
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Gender: </span> Female
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Date of Birth: </span> 23-09-1960
-            </div>
-          </div>
-        </div>
-
         {/* Contact Information */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
@@ -173,51 +102,54 @@ const ProfileSettings = () => {
           </div>
         </div>
 
-        {/* Security */}
+        {/* Change PIN */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Security</h2>
-          <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Pin</span>
-            <IoChevronForward
-              size={20}
-              className="text-blue-500"
-              onClick={handleChangePin}
-            />
-          </div>
-          <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Password</span>
-            <IoChevronForward
-              size={20}
-              className="text-blue-500"
-              onClick={handleChangePassword}
-            />
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Notification</h2>
-          <div className="flex items-center mb-2">
-            <span className="text-lg flex-grow">Email Notification</span>
-            <Switch
-              checked={notifications.emailNotification}
-              onChange={toggleEmailNotification}
-              className="MuiSwitch-root"
-              color="primary"
-            />
-          </div>
-          <div className="flex items-center mb-2">
-            <span className="text-lg flex-grow">SMS Notification</span>
-            <Switch
-              checked={notifications.smsNotification}
-              onChange={toggleSmsNotification}
-              className="MuiSwitch-root"
-              color="primary"
-            />
-          </div>
+          <h2 className="text-xl font-semibold mb-4">Change PIN</h2>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div>
+                    <Input 
+                        {...form.register('OldPin')} 
+                        placeholder="Old PIN" 
+                        type="password" 
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {form.formState.errors.OldPin && <p>{form.formState.errors.OldPin.message}</p>}
+                </div>
+                <div>
+                    <Input 
+                        {...form.register('newPin')} 
+                        placeholder="New PIN" 
+                        type="password" 
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {form.formState.errors.newPin && <p>{form.formState.errors.newPin.message}</p>}
+                </div>
+                <div>
+                    <Input 
+                        {...form.register('confirmNewPin')} 
+                        placeholder="Confirm New PIN" 
+                        type="password" 
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {form.formState.errors.confirmNewPin && <p>{form.formState.errors.confirmNewPin.message}</p>}
+                </div>
+                <div className="flex justify-center mt-4">
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full max-w-[400px] rounded-xl bg-blue-500 hover:bg-blue-700"
+                    >
+                        {isLoading ? 'Changing...' : 'Change PIN'}
+                    </Button>
+                </div>
+                {isError && <div>Error: {error?.message}</div>}
+            </form>
         </div>
       </div>
     </div>
   );
-};
 
-export default ProfileSettings;
+}
+
+
+export default AccountSettings;
