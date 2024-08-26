@@ -137,9 +137,22 @@ export function BorrowerOffer() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <p>Amount: ${active.amount}</p>
-                    <p>Interest Rate: {active.interestRate}%</p>
-                    <p>Loan Duration: {active.loanDurationDays} days</p>
+                    <p className="font-bold">Amount: ₦{active.amount}</p>
+                    <p className="font-bold">
+                      Interest Rate: {active.interestRate}%
+                    </p>
+                    <p className="font-bold">
+                      Loan Duration: {active.loanDurationDays} days
+                    </p>
+                    <p className="font-bold">
+                      Repayment Frequency: {active.repaymentFrequency}
+                    </p>
+                    <p className="font-bold">
+                      Grace Period: {active.gracePeriodDays} days
+                    </p>
+                    <p className="font-bold">
+                      Accruning InterestRate: {active.accruingInterestRate} %
+                    </p>
                     <Button>Apply here</Button>
                   </motion.div>
                 </div>
