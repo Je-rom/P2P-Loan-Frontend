@@ -6,45 +6,50 @@ import StepIndicator from '@/components/register-components/step-indicator';
 import Image from 'next/image';
 import { Loader2, MoveRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ConfettiSideCannons } from '@/components/ui/confetti';
+import { RegisterRequest } from '@/services/authService';
+import useAuth from '@/hooks/useAuth';
 
 const VerifyEmail: React.FC = () => {
-  const {
-    formData,
-    nextStep,
-    prevStep,
-    updateFormData,
-    sendVerificationEmail,
-  } = useFormStore();
+  const steps = [
+    { number: 1, label: 'Basic Info' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Wallet' },
+    { number: 4, label: 'Verify Email ' },
+  ];
+  const { formData, updateFormData, sendVerificationEmail } = useFormStore();
   const [isEmailSent, setIsEmailSent] = useState(
     formData.emailVerification.isEmailSent,
   );
   const [loading, setLoading] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
+  const { SignUpMutation } = useAuth();
+  const signUpMutation = SignUpMutation();
   const router = useRouter();
 
-  const email = localStorage.getItem('email');
-  const user_type = localStorage.getItem('user_type');
-
-  const handleSendEmail = async () => {
-    setLoading(true);
-    try {
-      await sendVerificationEmail();
-      setIsEmailSent(true);
-      updateFormData({
-        emailVerification: { ...formData.emailVerification, isEmailSent: true },
-      });
-    } catch (error) {
-      console.error('Failed to send verification email:', error);
-    } finally {
-      setLoading(false);
-    }
+  const registrationData: RegisterRequest = {
+    ...formData.basicInfo,
+    BVN: formData.bvnVerification.bvn,
+    walletProviderId: formData.linkWallet.walletProvider,
+    email: formData.basicInfo.email,
+    password: formData.basicInfo.password,
+    userType: formData.basicInfo.userType,
+    BvnDateOfBirth: formData.basicInfo.BvnDateOfBirth,
   };
 
-  const handleNextStep = () => {
-    if (user_type) {
-      router.push(`/${user_type}`);
-    } else {
-      console.error('User type is not set.');
+  const isLoading = signUpMutation.isPending;
+
+  const handleDone = async () => {
+    setIsLoading(true);
+    try {
+      const mutationResult = await signUpMutation.mutateAsync(registrationData);
+      if (mutationResult.status === 'Success') {
+        localStorage.removeItem('step');
+        router.push('/login');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,24 +67,29 @@ const VerifyEmail: React.FC = () => {
           <p>Please open mail app to verify</p>
           <Button
             type="submit"
-            onClick={handleSendEmail}
             disabled={loading}
             className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
           >
-            {loading ? <Loader2 className="animate-spin" /> : 'Click here to send email'}
+            {loading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              'Click here to send email'
+            )}
           </Button>
           <h1 className="mt-4 flex gap-2">
             Didn't receive any mail?
             <button>
-              <span onClick={handleSendEmail} className="text-blue-400">
-                Click to resend
-              </span>
+              <span className="text-blue-400">Click to resend</span>
             </button>
           </h1>
           <div className="flex items-center mt-4 gap-2">
-            <button onClick={handleNextStep}>
-              <ConfettiSideCannons />
-            </button>
+            <Button
+              onClick={handleDone}
+              disabled={isLoading}
+              className="bg-blue-400 hover:bg-blue-400"
+            >
+              Done
+            </Button>
           </div>
         </div>
       </div>

@@ -26,8 +26,9 @@ const BasicInfo: React.FC = () => {
 
   const steps = [
     { number: 1, label: 'Basic Info' },
-    { number: 2, label: 'Verify Email' },
-    { number: 3, label: 'Verify BVN' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Wallet' },
+    { number: 4, label: 'Verify Email ' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -38,6 +39,9 @@ const BasicInfo: React.FC = () => {
       middleName: z.string().optional(),
       lastName: z.string().min(1, { message: 'Last name is required' }),
       email: z.string().email({ message: 'Invalid email' }),
+      BvnDateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: 'Please put in a valid date of birth in MM-DD-YYYY format',
+      }),
       password: z
         .string()
         .min(8, { message: 'Password must be at least 8 characters' }),
@@ -58,6 +62,7 @@ const BasicInfo: React.FC = () => {
       middleName: '',
       lastName: '',
       email: '',
+      BvnDateOfBirth: '',
       password: '',
       confirmPassword: '',
     },
@@ -72,26 +77,19 @@ const BasicInfo: React.FC = () => {
       setFormError('Please select either Lender or Borrower.');
       return;
     }
-    const {
-      lastName,
-      firstName,
-      confirmPassword,
-      email,
-      ...dataWithoutConfirmPassword
-    } = data;
-    const user_type = selectedOption === 'lender' ? 'lender' : 'borrower';
+
+    const { lastName, firstName, email, BvnDateOfBirth, password } = data;
+    const userType = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
     try {
-      // Handle form submission here
-      localStorage.setItem('user_type', user_type);
-      localStorage.setItem('email', email);
-      localStorage.setItem('firstName', firstName);
-      localStorage.setItem('lastName', lastName);
-
       updateFormData({
         basicInfo: {
-          ...formData.basicInfo,
-          ...data,
+          firstName,
+          lastName,
+          email,
+          BvnDateOfBirth,
+          password,
+          userType,
         },
       });
       nextStep();
@@ -112,12 +110,12 @@ const BasicInfo: React.FC = () => {
             </h1>
             <p className="text-sm md:text-lg p-4">
               Follow these steps to create your account: enter your personal
-              details, verify your email, and set up your account securely.
-              Lets get started!
+              details, verify your BVN, and set up your account securely. Let's
+              get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            <Button
+            {/* <Button
               onClick={() => handleOptionSelect('lender')}
               className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
             >
@@ -126,6 +124,26 @@ const BasicInfo: React.FC = () => {
             <Button
               onClick={() => handleOptionSelect('borrower')}
               className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
+            >
+              Borrower
+            </Button> */}
+            <Button
+              onClick={() => handleOptionSelect('lender')}
+              className={`w-1/2 sm:w-[150px] md:w-[300px] h-[34px] ${
+                selectedOption === 'lender'
+                  ? 'bg-blue-500 text-white border-none hover:bg-blue-500'
+                  : 'bg-gray-200 text-blue-500 border border-black hover:bg-gray-200'
+              }`}
+            >
+              Lender
+            </Button>
+            <Button
+              onClick={() => handleOptionSelect('borrower')}
+              className={`w-1/2 sm:w-[150px] md:w-[300px] h-[34px] ${
+                selectedOption === 'borrower'
+                  ? 'bg-blue-500 text-white border-none hover:bg-blue-500'
+                  : 'bg-gray-200 text-blue-500 border border-black hover:bg-gray-200'
+              }`}
             >
               Borrower
             </Button>
@@ -236,6 +254,29 @@ const BasicInfo: React.FC = () => {
                           <FormControl>
                             <Input
                               type="email"
+                              disabled={isLoading}
+                              {...field}
+                              className="py-2 px-4 rounded-lg border w-full"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="py-2">
+                    <FormField
+                      control={form.control}
+                      name="BvnDateOfBirth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-light">
+                            *Date of Birth
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="date"
                               disabled={isLoading}
                               {...field}
                               className="py-2 px-4 rounded-lg border w-full"

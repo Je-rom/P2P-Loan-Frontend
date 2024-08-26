@@ -12,7 +12,7 @@ const NavbarLogo = () => {
           width={90}
           height={40}
         /> */}
-        <h1 className="font-bold text-2xl hidden md:block ml-2">
+        <h1 className="font-bold text-2xl text-white hidden md:block ml-2">
           BorrowPointe
         </h1>
       </div>

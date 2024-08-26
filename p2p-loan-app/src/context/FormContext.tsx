@@ -1,20 +1,24 @@
-import { create } from "zustand";
-import { ReactNode, useEffect } from "react";
+import { create } from 'zustand';
+import { ReactNode, useEffect } from 'react';
 
 interface FormData {
   basicInfo: {
-    firstName?: string;
+    firstName: string;
     middleName?: string;
     lastName: string;
     email: string;
+    BvnDateOfBirth: string;
     password: string;
-    confirmPassword: string;
+    userType: string;
   };
   emailVerification: {
     isEmailSent: boolean;
   };
   bvnVerification: {
     bvn: string;
+  };
+  linkWallet: {
+    walletProvider: string | undefined;
   };
 }
 
@@ -30,34 +34,42 @@ interface FormState {
 
 const initialFormData: FormData = {
   basicInfo: {
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    BvnDateOfBirth: '',
+    password: '',
+    userType: '',
   },
   emailVerification: {
     isEmailSent: false,
   },
   bvnVerification: {
-    bvn: "",
+    bvn: '',
+  },
+  linkWallet: {
+    walletProvider: '',
   },
 };
 
 export const useFormStore = create<FormState>((set) => ({
-  step: typeof window !== 'undefined' ? Number(localStorage.getItem('step')) || 1 : 1,
+  step:
+    typeof window !== 'undefined'
+      ? Number(localStorage.getItem('step')) || 1
+      : 1,
   formData: initialFormData,
-  nextStep: () => set((state) => {
-    const nextStep = state.step + 1;
-    localStorage.setItem('step', String(nextStep));
-    return { step: nextStep };
-  }),
-  prevStep: () => set((state) => {
-    const prevStep = state.step - 1;
-    localStorage.setItem('step', String(prevStep));
-    return { step: prevStep };
-  }),
+  nextStep: () =>
+    set((state) => {
+      const nextStep = state.step + 1;
+      localStorage.setItem('step', String(nextStep));
+      return { step: nextStep };
+    }),
+  prevStep: () =>
+    set((state) => {
+      const prevStep = state.step - 1;
+      localStorage.setItem('step', String(prevStep));
+      return { step: prevStep };
+    }),
   updateFormData: (data: Partial<FormData>) =>
     set((state) => ({
       formData: {
@@ -71,7 +83,7 @@ export const useFormStore = create<FormState>((set) => ({
   setStep: (step: number) => {
     localStorage.setItem('step', String(step));
     set({ step });
-  }
+  },
 }));
 
 interface FormProviderProps {

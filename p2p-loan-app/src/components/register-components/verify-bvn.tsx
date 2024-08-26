@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormStore } from '@/context/FormContext';
 import {
   Form,
@@ -21,11 +21,15 @@ import { useRouter } from 'next/navigation';
 const BVNVerification: React.FC = () => {
   const { formData, nextStep, updateFormData } = useFormStore();
   const { step } = useFormStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
   const router = useRouter();
   const steps = [
     { number: 1, label: 'Basic Info' },
-    { number: 2, label: 'Verify Email' },
-    { number: 3, label: 'Verify BVN' },
+    { number: 2, label: 'Verify BVN' },
+    { number: 3, label: 'Wallet' },
+    { number: 4, label: 'Verify Email ' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
@@ -45,8 +49,20 @@ const BVNVerification: React.FC = () => {
   });
 
   const onSubmit = (data: BVNFormValues) => {
-    updateFormData({ bvnVerification: data });
-    nextStep();
+    setIsLoading(true);
+    try {
+      updateFormData({
+        bvnVerification: {
+          ...formData.bvnVerification,
+          bvn: data.bvn,
+        },
+      });
+      nextStep();
+    } catch (error) {
+      setFormError('An error occurred while verifying the BVN.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -57,13 +57,13 @@ const BorrowerPage = () => {
       number: 35,
       text: 'Loan Request',
     },
-    {
-      img: (
-        <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
-      ),
-      number: 32,
-      text: 'Loan Offers',
-    },
+    // {
+    //   img: (
+    //     <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
+    //   ),
+    //   number: 32,
+    //   text: 'Lenders Offers',
+    // },
   ];
 
   return (
@@ -81,7 +81,7 @@ const BorrowerPage = () => {
           Create New Offer
         </Button>
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+      <div className="flex flex-wrap items-center justify-start gap-4 mt-6">
         {cards.map((card, index) => (
           <Card key={index} className="w-full md:w-[315px] shadow-xl">
             <CardHeader>

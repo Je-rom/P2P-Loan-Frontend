@@ -6,7 +6,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
-// import useAuth from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 
 export function LogoutDialog({
   open = false,
@@ -21,7 +21,7 @@ export function LogoutDialog({
     }
   };
   const router = useRouter();
-  //   const { logout } = useAuth();
+  const { logOut } = useAuth();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -33,7 +33,7 @@ export function LogoutDialog({
           </h1>
           <div className="mt-14 flex justify-center items-center gap-8">
             <Button
-              // onClick={logout}
+              onClick={logOut}
               className="bg-gray-200 px-10 py-7 hover:bg-blue-400 hover:text-white text-blue-900"
             >
               Yes

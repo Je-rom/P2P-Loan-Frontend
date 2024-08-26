@@ -6,17 +6,21 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import LoanRequest from '../../../public/loan-request.svg';
-import Loans from '../../../public/loans.svg';
 import myOffer from '../../../public/loans.svg';
 import loanOffer from '../../../public/lender-offer.svg';
 import LayoutDashboard from '../../../public/dashboard.svg';
 import Settings from '../../../public/setting-2.svg';
+import Wallet from '../../../public/wallet.png';
+import Loan from '../../../public/loan.png';
 import Image from 'next/image';
 import { LogoutDialog } from './logoutdialog';
 import NavbarLogo from './navbar-logo';
 
-interface SidebarProps {
-  storageKey?: string;
+interface Route {
+  title: string;
+  icon: any;
+  href?: string;
+  items?: { title: string; href: string }[];
 }
 
 const Sidebar = () => {
@@ -31,8 +35,7 @@ const Sidebar = () => {
     return selectedOption ? `/${selectedOption}/${path}` : `/${path}`;
   };
 
-  // Define the common routes
-  const commonRoutes = [
+  const commonRoutes: Route[] = [
     {
       title: 'Dashboard',
       icon: LayoutDashboard,
@@ -45,23 +48,28 @@ const Sidebar = () => {
     },
     {
       title: 'Loans',
-      icon: Loans,
-      href: getHref('loans'),
+      icon: Loan,
+      href: getHref('loan'),
     },
     {
       title: 'My Offers',
       icon: myOffer,
       href: getHref('my-offers'),
     },
+    {
+      title: 'My Wallet',
+      icon: Wallet,
+      href: getHref('wallet'),
+    },
   ];
 
-  const accountSettingsRoute = {
+  const accountSettingsRoute: Route = {
     title: 'Account Settings',
     icon: Settings,
-    href: '/settings',
+    href: '/account-settings',
   };
 
-  const routes =
+  const routes: Route[] =
     selectedOption === 'borrower'
       ? [
           ...commonRoutes,
@@ -94,7 +102,7 @@ const Sidebar = () => {
     fetchData();
 
     const path = window.location.pathname;
-    setActiveLink(path);
+    setActiveLink(path || null);
   }, []);
 
   return (
@@ -109,60 +117,54 @@ const Sidebar = () => {
           <div className="md:mt-8">
             {loading ? (
               <div className="space-y-2">
-                {[...Array(6)].map(
-                  (
-                    _,
-                    index,
-                  ) => (
-                    <Skeleton
-                      key={index}
-                      className="w-[250px] py-8 rounded-xl mt-2"
-                    />
-                  ),
-                )}
+                {[...Array(6)].map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className="w-[250px] py-8 rounded-xl mt-2"
+                  />
+                ))}
               </div>
             ) : (
-              routes.map((route, index) => (
-                <Link key={index} href={route.href}>
-                  <Button
-                    className={cn(
-                      'w-[250px] py-8 rounded-xl mt-2',
-                      activeLink === route.href
-                        ? 'bg-white hover:bg-white'
-                        : 'bg-gray-200 hover:bg-white',
-                    )}
-                    onClick={() => setActiveLink(route.href)}
-                  >
-                    <div className="flex items-center w-full">
-                      <Image
-                        src={route.icon}
-                        width={25}
-                        height={20}
-                        alt="icon"
-                        className="mr-4"
-                      />
-                      <span className="text-gray-800 text-xl group-hover:text-blue-400">
-                        {route.title}
-                      </span>
-                    </div>
-                  </Button>
-                </Link>
-              ))
+              routes.map((route, index) => {
+                return (
+                  <Link key={index} href={route.href || '#'} passHref>
+                    <Button
+                      className={cn(
+                        'w-[250px] py-8 rounded-xl mt-2',
+                        activeLink === route.href
+                          ? 'bg-white hover:bg-white'
+                          : 'bg-blue-200 hover:bg-white',
+                      )}
+                      onClick={() => setActiveLink(route.href || null)}
+                    >
+                      <div className="flex items-center w-full">
+                        <Image
+                          src={route.icon}
+                          width={26}
+                          height={20}
+                          alt="icon"
+                          className="mr-4"
+                        />
+                        <span className="text-gray-800 text-xl group-hover:text-blue-400">
+                          {route.title}
+                        </span>
+                      </div>
+                    </Button>
+                  </Link>
+                );
+              })
             )}
           </div>
-          <div className="space-y-2">
-            <Button
-              className="text-sm flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
-              onClick={() => setIsOpen(true)}
-            >
-              <LogOut className={cn('h-5 w-10 mr-3 text-xl')} />
-              <h1 className="text-lg">Sign Out</h1>
-            </Button>
-            <LogoutDialog
-              open={isOpen}
-              onOpenChange={() => setIsOpen(!isOpen)}
-            />
-          </div>
+        </div>
+        <div className="mt-5">
+          <Button
+            className="text-sm flex p-5 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
+            onClick={() => setIsOpen(true)}
+          >
+            <LogOut className={cn('h-6 w-14 mr-3 text-xl')} />
+            <h1 className="text-xl">Sign Out</h1>
+          </Button>
+          <LogoutDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
         </div>
       </div>
     </div>

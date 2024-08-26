@@ -1,12 +1,14 @@
 'use client';
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
-import LoanOptions from '@/components/shared/create-offer-select-options';
 import { Textarea } from '@/components/ui/textarea';
-import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import TermsAndConditionDialog from './term-conditions-dialog';
+import useLoanOffer from '@/hooks/useLoanOffer';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import useWallet from '@/hooks/useWallet';
 
 interface FormField {
   label: string;
@@ -16,9 +18,13 @@ interface FormField {
 }
 
 interface FormValues {
-  occupation: string;
+  interestRate: string;
+  accruingInterestRate: string;
+  loanDurationDays: string;
   loanAmount: string;
-  loanPurpose: string;
+  gracePeriodDays: string;
+  paymentFrequency: string;
+  walletId: string;
   additionalNote: string;
   termsAccepted: boolean;
 }
@@ -27,16 +33,34 @@ interface Errors {
   [key: string]: string;
 }
 
-const CreateOfferPage: React.FC = () => {
+const CreateOfferPage = () => {
+  const { getWalletQuery } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+  const { CreateLoanOfferMutation } = useLoanOffer();
+  const createLoanOfferMutation = CreateLoanOfferMutation();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (getWalletQuery.isSuccess && getWalletQuery.data) {
+      const { result } = getWalletQuery.data;
+      if (result.length > 0) {
+        const firstWalletId = result[0].id;
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          walletId: firstWalletId,
+        }));
+      }
+    }
+  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
+
+  useEffect(() => {
+    if (getWalletQuery.isError) {
+      toast.error('Failed to fetch wallet');
+    }
+  }, [getWalletQuery.isError]);
 
   const formFields: FormField[] = [
-    {
-      label: 'Description',
-      placeholder: 'Add your occupation',
-      type: 'text',
-      name: 'occupation',
-    },
     {
       label: 'Loan Amount',
       placeholder: 'Enter the loan amount',
@@ -44,22 +68,54 @@ const CreateOfferPage: React.FC = () => {
       name: 'loanAmount',
     },
     {
-      label: 'Loan Purpose',
-      placeholder: 'Specify the loan purpose',
+      label: 'Your Wallet',
+      placeholder: 'Add your borrow pointe wallet',
       type: 'text',
-      name: 'loanPurpose',
+      name: 'walletId',
+    },
+    {
+      label: 'Interest Rate',
+      placeholder: 'Specify the interest rate for this loan',
+      type: 'text',
+      name: 'interestRate',
+    },
+    {
+      label: 'Accruing Interest Rate',
+      placeholder: 'Accuring interest rate',
+      type: 'text',
+      name: 'accruingInterestRate',
+    },
+    {
+      label: 'Loan duration',
+      placeholder: 'Specify the duration for this loan',
+      type: 'text',
+      name: 'loanDurationDays',
+    },
+    {
+      label: 'Grace Period',
+      placeholder: 'Give a fair grace period for your offer',
+      type: 'text',
+      name: 'gracePeriodDays',
+    },
+    {
+      label: 'Payment Frequency',
+      placeholder: 'Payment frequency can only be in Days, Weeks and Month',
+      type: 'text',
+      name: 'paymentFrequency',
     },
   ];
 
   const [formValues, setFormValues] = useState<FormValues>({
-    occupation: '',
     loanAmount: '',
-    loanPurpose: '',
+    interestRate: '',
+    gracePeriodDays: '',
+    loanDurationDays: '',
+    paymentFrequency: '',
+    accruingInterestRate: '',
+    walletId: '',
     additionalNote: '',
     termsAccepted: false,
   });
-
-  const [errors, setErrors] = useState<Errors>({});
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -82,25 +138,40 @@ const CreateOfferPage: React.FC = () => {
         newErrors[field.name] = `${field.label} is required`;
       }
     });
-    if (!formValues.additionalNote) {
-      newErrors.additionalNote = 'Additional Note is required';
-    }
     if (!formValues.termsAccepted) {
       newErrors.termsAccepted = 'You must accept the terms and conditions';
     }
     return newErrors;
   };
+  const userType = localStorage.getItem('user_type');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      // Handle form submission
-      console.log('Form submitted successfully', formValues);
+      try {
+        const createLoanOfferRequest = {
+          walletId: formValues.walletId,
+          amount: formValues.loanAmount,
+          paymentFrequency: formValues.paymentFrequency,
+          gracePeriodDays: parseInt(formValues.gracePeriodDays, 10),
+          loanDurationDays: parseInt(formValues.loanDurationDays, 10),
+          interestRate: parseFloat(formValues.interestRate),
+          accruingInterestRate: formValues.accruingInterestRate,
+          additionalInformation: formValues.additionalNote,
+        };
+        const result = await createLoanOfferMutation.mutateAsync(
+          createLoanOfferRequest,
+        );
+        if (result.status === 'Created') {
+          router.push(`${userType}/my-offers`);
+        }
+      } catch (error) {
+        console.log(error, 'create offer error');
+      }
     }
   };
-
   return (
     <>
       <div>
@@ -131,10 +202,9 @@ const CreateOfferPage: React.FC = () => {
           </div>
         ))}
       </div>
-      <LoanOptions />
       <div className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full p-4">
         <h1 className="mb-2 md:mb-0 md:w-1/4">
-          Additional Note <span className="text-red-500">*</span>
+          Additional Note <span className="text-red-500"></span>
         </h1>
         <div className="relative w-full md:w-3/4">
           <Textarea
@@ -155,7 +225,10 @@ const CreateOfferPage: React.FC = () => {
             <button onClick={() => setIsOpen(true)} className="text-blue-400">
               Terms and Conditions
             </button>
-            <TermsAndConditionDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
+            <TermsAndConditionDialog
+              open={isOpen}
+              onOpenChange={() => setIsOpen(!isOpen)}
+            />
           </h1>
           <div className="flex items-start space-x-2 mt-2">
             <Checkbox
@@ -181,7 +254,7 @@ const CreateOfferPage: React.FC = () => {
             Cancel
           </Button>
           <Button
-            className="bg-blue-400 hover:bg-green-600 font-semibold"
+            className="bg-blue-500 hover:bg-blue-500 font-semibold"
             onClick={handleSubmit}
           >
             Save
