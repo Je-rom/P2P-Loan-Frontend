@@ -15,25 +15,29 @@ export interface changePinResponse{
 }
 
 
-export interface editContactInformation
-{
-    phone_number:string;
+export interface editContactInformation {
+    phone_number: string;
     email: string;
     state: string;
-
 }
 
-export interface editContactResponse{
-
+export interface editContactResponse {
+    status: string;
+    statusCode: string;
+    message: string;
+    result: null;
 }
 
-class ChangePinService {
-    static changepin = async (
-        requestBody: changePin,
-    ): Promise<AxiosResponse<changePinResponse>> => {
-        return await axiosConfig.post(`/api/auth/change-pin`, requestBody);
-    };
+class AccountSettingsService {
+    static changePin(requestBody: changePin): Promise<AxiosResponse<changePinResponse>> {
+        return axios.post(`/api/auth/change-pin`, requestBody);
+    }
 
-};
+    static editContactInfo(requestBody: editContactInformation): Promise<AxiosResponse<editContactResponse>> {
+        return axios.post(`/api/auth/edit-contact-info`, requestBody);
+    }
+}
 
-export default ChangePinService;
+
+
+export default AccountSettingsService;

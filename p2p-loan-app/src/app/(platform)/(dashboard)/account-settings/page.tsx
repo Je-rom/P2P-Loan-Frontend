@@ -18,6 +18,12 @@ import { toast } from 'sonner';
 
 
 const AccountSettings = () => {
+
+  const EditContactSchema = z.object({
+    phone_number: z.string().min(10, 'Phone number must be at least 10 digits'),
+    email: z.string().email('Invalid email address'),
+    state: z.string().min(2, 'State must be at least 2 characters'),
+});
  
    const ChangePinSchema= z.object({
       OldPin: z.string().min(4, "Old PIN must be 4 digits"),
@@ -29,7 +35,25 @@ const AccountSettings = () => {
     });
 
   type ChangePinFormValues = z.infer<typeof ChangePinSchema>;
+  type EditContactFormValues = z.infer<typeof EditContactSchema>;
 
+  const changePinForm = useForm<ChangePinFormValues>({
+    resolver: zodResolver(ChangePinSchema),
+    defaultValues: {
+        OldPin: '',
+        newPin: '',
+        confirmNewPin: '',
+    },
+});
+
+const editContactForm = useForm<EditContactFormValues>({
+    resolver: zodResolver(EditContactSchema),
+    defaultValues: {
+        phone_number: '',
+        email: '',
+        state: '',
+    },
+});
 
   const form = useForm<ChangePinFormValues>({
     resolver: zodResolver(ChangePinSchema),
@@ -39,8 +63,9 @@ const AccountSettings = () => {
       confirmNewPin: '',
     },
   });
+  
 
-  const { mutate: changePin, isLoading, isError, error } = useAccountSettings();
+  const { changePin, editContactInfo, isLoading, changePinStatus, editContactInfoStatus, changePinError, editContactInfoError } = useAccountSettings();
 
   const onSubmit =async (data: ChangePinFormValues) => {
     if (data.newPin !== data.confirmNewPin) {
@@ -49,6 +74,10 @@ const AccountSettings = () => {
     }
     changePin(data);
 };
+
+const handleEditContactInfo = (data: EditContactFormValues) => {
+  editContactInfo(data);
+}
 
   return (
     <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
@@ -67,39 +96,41 @@ const AccountSettings = () => {
         {/* Contact Information */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold mb-1">Contact Information</h2>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              startIcon={<EditIcon />}
-              sx={{
-                minWidth: 'auto',
-                padding: '2px 4px',
-                fontSize: '0.75rem',
-                textTransform: 'none',
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="mb-2">
-              <span className="font-medium">Phone Number: </span> +234 709854278
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Email: </span> veronica256@yahoo.com
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">City/Town: </span> Lekki
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">State: </span> Lagos
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Zip Code: </span> 23348
-            </div>
-          </div>
+          <h2 className="text-xl font-semibold mt-8 mb-4">Edit Contact Information</h2>
+            <form onSubmit={editContactForm.handleSubmit(handleEditContactInfo)} className="space-y-4">
+                <div>
+                    <Input
+                        {...editContactForm.register('phone_number')}
+                        placeholder="Phone Number"
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {editContactForm.formState.errors.phone_number && <p>{editContactForm.formState.errors.phone_number.message}</p>}
+                </div>
+                <div>
+                    <Input
+                        {...editContactForm.register('email')}
+                        placeholder="Email Address"
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {editContactForm.formState.errors.email && <p>{editContactForm.formState.errors.email.message}</p>}
+                </div>
+                <div>
+                    <Input
+                        {...editContactForm.register('state')}
+                        placeholder="State"
+                        className="py-2 px-4 rounded-lg border w-full"
+                    />
+                    {editContactForm.formState.errors.state && <p>{editContactForm.formState.errors.state.message}</p>}
+                </div>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full max-w-[400px] rounded-xl bg-blue-500 hover:bg-blue-700"
+                >
+                    {isLoading && (editContactInfoStatus === 'pending') ? 'Updating Contact...' : 'Update Contact Information'}
+                </Button>
+                {editContactInfoError && <div>Error: {editContactInfoError.message}</div>}
+            </form>
         </div>
 
         {/* Change PIN */}
@@ -142,11 +173,12 @@ const AccountSettings = () => {
                         {isLoading ? 'Changing...' : 'Change PIN'}
                     </Button>
                 </div>
-                {isError && <div>Error: {error?.message}</div>}
+                {changePinError && <div>Error: {changePinError.message}</div>}
             </form>
         </div>
       </div>
     </div>
+  </div>
   );
 
 }
