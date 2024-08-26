@@ -27,7 +27,7 @@ const BasicInfo: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Wallet' },
+    { number: 3, label: 'Link Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
 
@@ -82,7 +82,14 @@ const BasicInfo: React.FC = () => {
       return;
     }
 
-    const { lastName, firstName, email, BvnDateOfBirth, password, phoneNumber } = data;
+    const {
+      lastName,
+      firstName,
+      email,
+      BvnDateOfBirth,
+      password,
+      phoneNumber,
+    } = data;
     const userType = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
     try {
@@ -107,7 +114,7 @@ const BasicInfo: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="w-full max-w-4xl p-4">
+      <div className="w-full max-w-6xl p-4">
         <div className="bg-gray-200 p-6 rounded-lg mx-auto">
           <div className="text-center">
             <h1 className="font-bold text-lg md:text-2xl">
@@ -120,18 +127,6 @@ const BasicInfo: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">
-            {/* <Button
-              onClick={() => handleOptionSelect('lender')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'lender' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
-            >
-              Lender
-            </Button>
-            <Button
-              onClick={() => handleOptionSelect('borrower')}
-              className={`w-1/2 sm:w-[150px] md:w-[200px] h-[34px] ${selectedOption === 'borrower' ? 'bg-blue-400' : 'bg-blue-800 hover:bg-blue-400 text-lg'}`}
-            >
-              Borrower
-            </Button> */}
             <Button
               onClick={() => handleOptionSelect('lender')}
               className={`w-1/2 sm:w-[150px] md:w-[300px] h-[34px] ${
@@ -154,12 +149,12 @@ const BasicInfo: React.FC = () => {
             </Button>
           </div>
           <div className="flex items-center justify-center mb-6">
-            <div className="w-full max-w-2xl text-center">
+            <div className="w-full max-w-5xl text-center">
               <StepIndicator />
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <div className="bg-white p-6 rounded-xl w-full max-w-lg">
+            <div className="bg-white p-6 rounded-xl w-full max-w-3xl">
               <div>
                 <h1 className="text-sm flex gap-2">
                   <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-lg">
@@ -372,12 +367,12 @@ const BasicInfo: React.FC = () => {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-[400px] rounded-xl bg-blue-600 hover:bg-blue-800 text-lg"
+                      className="w-full rounded-xl bg-blue-600 hover:bg-blue-800 text-lg"
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin" />
                       ) : (
-                        'Next'
+                        'NEXT'
                       )}
                     </Button>
                   </div>

@@ -28,16 +28,21 @@ const BVNVerification: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Wallet' },
+    { number: 3, label: 'Link Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
 
   const bvnSchema = z.object({
-    bvn: z.string().length(11, {
-      message: 'BVN must be 11 digits',
-    }),
+    bvn: z
+      .string()
+      .min(9, {
+        message: 'BVN must be at least 9 digits',
+      })
+      .max(11, {
+        message: 'BVN must be at most 11 digits',
+      }),
   });
 
   type BVNFormValues = z.infer<typeof bvnSchema>;
@@ -67,7 +72,7 @@ const BVNVerification: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
@@ -97,7 +102,7 @@ const BVNVerification: React.FC = () => {
                     name="bvn"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-light">
+                        <FormLabel className="text-sm font-light">
                           Bank Verification Number [11-digits]
                         </FormLabel>
                         <FormControl>
@@ -105,6 +110,14 @@ const BVNVerification: React.FC = () => {
                             type="text"
                             {...field}
                             className="py-3 px-4 rounded-xl w-full"
+                            maxLength={11}
+                            pattern="\d{11}"
+                            title="Please enter exactly 11 digits"
+                            inputMode="numeric"
+                            onInput={(e) => {
+                              const input = e.target as HTMLInputElement;
+                              input.value = input.value.replace(/\D/g, '');
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -114,13 +127,13 @@ const BVNVerification: React.FC = () => {
                 </div>
                 <div className="py-2 flex justify-center items-center">
                   <Button
-                    className="w-[550px] rounded-xl bg-blue-400 hover:bg-blue-400 text-white"
+                    className="w-[550px] rounded-xl bg-blue-600 hover:bg-blue-800 text-white"
                     type="submit"
                   >
                     {form.formState.isSubmitting ? (
                       <Loader2 className="animate-spin" />
                     ) : (
-                      'Verify BVN'
+                      'VERIFY BVN'
                     )}
                   </Button>
                 </div>

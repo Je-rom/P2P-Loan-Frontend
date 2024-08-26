@@ -55,11 +55,17 @@ const useAuth = () => {
       return response?.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (
-        error.response?.data?.message ===
-        'Email yet to be verified, Please verify your email'
+      const errorMessage = error.message;
+      const responseMessage = error.response?.data?.message;
+
+      if (errorMessage === 'Network Error') {
+        toast.error('Network Error');
+      } else if (
+        responseMessage === 'Email yet to be verified, Please verify your email'
       ) {
         toast.error('Email yet to be verified, Please verify your email');
+      } else if (responseMessage) {
+        toast.error(responseMessage);
       } else {
         toast.error('Invalid Login details, check your email and password');
       }
