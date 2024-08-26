@@ -4,44 +4,66 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
 import { Button } from '../ui/button';
 import useLoanOffer from '@/hooks/useLoanOffer';
+import Image from 'next/image';
 
 export function LendersOffer() {
-   const { GetLoanOffers } = useLoanOffer();
-   const [active, setActive] = useState<any>(null);
-   const { data, isLoading, error } = GetLoanOffers();
-   const ref = useRef<HTMLDivElement>(null);
-   const id = useId();
+  const { GetLoanOffers } = useLoanOffer();
+  const [active, setActive] = useState<any>(null);
+  const { data, isLoading, error } = GetLoanOffers();
+  const ref = useRef<HTMLDivElement>(null);
+  const id = useId();
 
-   const borrowerOffers = data?.result.items.filter(
-     (offer: { type: string }) => offer.type === 'lender',
-   );
+  const borrowerOffers = data?.result.items.filter(
+    (offer: { type: string }) => offer.type === 'lender',
+  );
 
-   useEffect(() => {
-     function onKeyDown(event: KeyboardEvent) {
-       if (event.key === 'Escape') {
-         setActive(false);
-       }
-     }
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setActive(false);
+      }
+    }
 
-     if (active && typeof active === 'object') {
-       document.body.style.overflow = 'hidden';
-     } else {
-       document.body.style.overflow = 'auto';
-     }
+    if (active && typeof active === 'object') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
 
-     window.addEventListener('keydown', onKeyDown);
-     return () => window.removeEventListener('keydown', onKeyDown);
-   }, [active]);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [active]);
 
-   useOutsideClick(ref, () => setActive(null));
+  useOutsideClick(ref, () => setActive(null));
 
-   if (isLoading) {
-     return <div>Loading...</div>;
-   }
+  if (isLoading) {
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center">
+          <Image
+            src={'/loadingLoanOffer.gif'}
+            alt="loading"
+            width={300}
+            height={10}
+          />
+          <h1 className="font-bold text-2xl">Loading lender's offers...</h1>
+        </div>
+      </>
+    );
+  }
 
-   if (error) {
-     return <div>Error loading offers.</div>;
-   }
+  if (error) {
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center">
+          <Image src={'/failed.gif'} alt="loading" width={100} height={10} />
+          <h1 className="font-bold text-2xl">
+            Failed to get lender's offers...
+          </h1>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -115,9 +137,22 @@ export function LendersOffer() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <p>Amount: ${active.amount}</p>
-                    <p>Interest Rate: {active.interestRate}%</p>
-                    <p>Loan Duration: {active.loanDurationDays} days</p>
+                    <p className="font-bold">Amount: ₦{active.amount}</p>
+                    <p className="font-bold">
+                      Interest Rate: {active.interestRate}%
+                    </p>
+                    <p className="font-bold">
+                      Loan Duration: {active.loanDurationDays} days
+                    </p>
+                    <p className="font-bold">
+                      Repayment Frequency: {active.repaymentFrequency}
+                    </p>
+                    <p className="font-bold">
+                      Grace Period: {active.gracePeriodDays} days
+                    </p>
+                    <p className="font-bold">
+                      Accruning InterestRate: {active.accruingInterestRate} %
+                    </p>
                     <Button>Apply here</Button>
                   </motion.div>
                 </div>

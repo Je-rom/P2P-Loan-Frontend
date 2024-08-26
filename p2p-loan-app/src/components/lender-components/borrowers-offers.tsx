@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
 import { Button } from '@/components/ui/button';
 import useLoanOffer from '@/hooks/useLoanOffer';
+import Image from 'next/image'
 
 export function BorrowerOffer() {
   const { GetLoanOffers } = useLoanOffer();
@@ -36,11 +37,32 @@ export function BorrowerOffer() {
   useOutsideClick(ref, () => setActive(null));
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center">
+          <Image
+            src={'/loadingLoanOffer.gif'}
+            alt="loading"
+            width={300}
+            height={10}
+          />
+          <h1 className="font-bold text-2xl">Loading borrower's offers...</h1>
+        </div>
+      </>
+    );
   }
 
   if (error) {
-    return <div>Error loading offers.</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center">
+          <Image src={'/failed.gif'} alt="loading" width={100} height={10} />
+          <h1 className="font-bold text-2xl">
+            Failed to get borrower's offers...
+          </h1>
+        </div>
+      </>
+    );
   }
 
   return (
