@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { IoChevronForward } from 'react-icons/io5';
-import { AiOutlinePoweroff } from 'react-icons/ai';
 import { Switch } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import Button from '@mui/material/Button';
