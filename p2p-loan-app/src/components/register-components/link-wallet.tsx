@@ -38,7 +38,7 @@ const LinkWallet: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Wallet' },
+    { number: 3, label: 'Link Wallet' },
     { number: 4, label: 'Verify Email' },
   ];
 
@@ -67,12 +67,7 @@ const LinkWallet: React.FC = () => {
       console.error('Error fetching wallet providers:', error);
     }
   }, [data, isError, error]);
-  if (isLoading) {
-    return <div>Loading wallet providers...</div>;
-  }
-  if (isError) {
-    return <div>Error loading wallet providers: {error?.message}</div>;
-  }
+
   const handleWalletSubmit: SubmitHandler<{ wallet: string }> = async (
     data,
   ) => {
@@ -95,7 +90,7 @@ const LinkWallet: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl h-[500px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
@@ -116,7 +111,7 @@ const LinkWallet: React.FC = () => {
             </p>
             {formError && <p className="text-red-500">{formError}</p>}
             <div className="mt-10 flex justify-center items-center">
-              <Form {...form}>
+              {/* <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleWalletSubmit)}
                   className="w-2/3 space-y-6"
@@ -136,24 +131,52 @@ const LinkWallet: React.FC = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {data?.result.map((provider) => (
-                              <SelectItem
-                                key={provider.id}
-                                className="text-lg"
-                                value={provider.id}
-                              >
-                                <div className="flex">
-                                  <Image
-                                    src={'/monnify.png'}
-                                    alt="MonnifyLogo"
-                                    width={50}
-                                    height={10}
-                                    className="mr-2"
-                                  />
-                                  Monnify
+                            {isLoading ? (
+                              <SelectItem value="loading" disabled>
+                                <div className="flex justify-center items-center">
+                                  <svg
+                                    className="animate-spin h-5 w-5 mr-3 text-gray-600"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8v8H4z"
+                                    ></path>
+                                  </svg>
+                                  Loading wallet providers...
                                 </div>
                               </SelectItem>
-                            ))}
+                            ) : (
+                              data?.result.map((provider) => (
+                                <SelectItem
+                                  key={provider.id}
+                                  className="text-lg"
+                                  value={provider.id}
+                                >
+                                  <div className="flex">
+                                    <Image
+                                      src={'/monnify.png'}
+                                      alt="MonnifyLogo"
+                                      width={50}
+                                      height={10}
+                                      className="mr-2"
+                                    />
+                                    {provider.name || 'Monnify'}
+                                  </div>
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -170,7 +193,116 @@ const LinkWallet: React.FC = () => {
                         'Submitting...'
                       ) : (
                         <>
-                          <Confetti /> Done
+                          <Confetti /> Next
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form> */}
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(handleWalletSubmit)}
+                  className="w-2/3 space-y-6"
+                >
+                  <FormField
+                    control={form.control}
+                    name="wallet"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="border-2 border-black">
+                              <SelectValue placeholder="Select a wallet provider" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {isLoading ? (
+                              <SelectItem value="loading" disabled>
+                                <div className="flex justify-center items-center">
+                                  <svg
+                                    className="animate-spin h-5 w-5 mr-3 text-gray-600"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8v8H4z"
+                                    ></path>
+                                  </svg>
+                                  Loading wallet providers...
+                                </div>
+                              </SelectItem>
+                            ) : error ? (
+                              <SelectItem value="error" disabled>
+                                <div className="flex justify-center items-center text-red-600">
+                                  <svg
+                                    className="h-5 w-5 mr-3"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M18.364 5.636l-12.728 12.728m12.728 0L5.636 5.636"
+                                    />
+                                  </svg>
+                                  Failed to load wallet providers
+                                </div>
+                              </SelectItem>
+                            ) : (
+                              data?.result.map((provider) => (
+                                <SelectItem
+                                  key={provider.id}
+                                  className="text-lg"
+                                  value={provider.id}
+                                >
+                                  <div className="flex">
+                                    <Image
+                                      src={'/monnify.png'}
+                                      alt="MonnifyLogo"
+                                      width={50}
+                                      height={10}
+                                      className="mr-2"
+                                    />
+                                    {provider.name}
+                                  </div>
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex justify-center">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-800 w-full"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        'Submitting...'
+                      ) : (
+                        <>
+                          <Confetti /> NEXT
                         </>
                       )}
                     </Button>

@@ -82,9 +82,7 @@ const MyOffers = () => {
         <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden">
           <TableHeader className="bg-white border">
             <TableRow className="bg-blue-100">
-              <TableHead className="font-bold text-black-900">
-                Loan Name
-              </TableHead>
+              <TableHead className="font-bold text-black-900">Name</TableHead>
               <TableHead className="font-bold text-black-900">
                 Loan Amount
               </TableHead>
@@ -97,16 +95,20 @@ const MyOffers = () => {
               <TableHead className="font-bold text-black-900">
                 Repayment Frequency
               </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Accruing Interest
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-lg border">
             {data.result.items.map((offer) => (
               <TableRow key={offer.id}>
-                <TableCell>{offer.gracePeriodDays}</TableCell>
+                <TableCell>{offer.user.firstName}</TableCell>
                 <TableCell>{offer.amount}</TableCell>
                 <TableCell>{offer.interestRate}%</TableCell>
                 <TableCell>{offer.loanDurationDays} days</TableCell>
                 <TableCell>{offer.repaymentFrequency}</TableCell>
+                <TableCell>{offer.accruingInterestRate}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -172,7 +174,6 @@ export default MyOffers;
           </Pagination>
         </div> */
 }
-
 
 {
   /* <div className="flex flex-col items-start gap-6 p-6 bg-gray-100">

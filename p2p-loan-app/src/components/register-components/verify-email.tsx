@@ -55,28 +55,19 @@ const VerifyEmail: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-[800px] h-[600px]">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl h-[500px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
         <div className="flex flex-col items-center justify-center mt-8">
-          <Image src={'/email-icon.svg'} alt="email" width={70} height={100} />
+          <Image src={'/email-icon.svg'} alt="email" width={90} height={100} />
           <h1 className="font-bold text-lg">Check Your Email</h1>
-          <p>Please open mail app to verify</p>
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
-          >
-            {loading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              'Click here to send email'
-            )}
-          </Button>
-          <h1 className="mt-4 flex gap-2">
+          <p className="text-center mt-2">
+            Please open your mail app to verify your account
+          </p>
+          <h1 className="mt-4 flex">
             Didn't receive any mail?
             <button>
               <span className="text-blue-400">Click to resend</span>
@@ -86,9 +77,9 @@ const VerifyEmail: React.FC = () => {
             <Button
               onClick={handleDone}
               disabled={isLoading}
-              className="bg-blue-400 hover:bg-blue-400"
+              className="bg-blue-600 hover:bg-blue-800 w-full"
             >
-              Done
+              DONE
             </Button>
           </div>
         </div>

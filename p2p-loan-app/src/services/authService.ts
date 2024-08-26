@@ -6,6 +6,7 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: string;
   BVN: string;
   userType: string;
   walletProviderId: string | undefined;
@@ -61,7 +62,7 @@ export interface LoginResponse {
   };
 }
 
-export interface emailVerificationRequest {
+export interface EmailVerificationRequest {
   email: string;
   token: string;
 }
@@ -133,6 +134,12 @@ class AuthService {
     requestBody: ResetPasswordRequest,
   ): Promise<AxiosResponse<ResetPasswordResponse>> => {
     return await axiosConfig.post('/api/auth/reset-password', requestBody);
+  };
+
+  static verifyEmail = async (
+    requestBody: EmailVerificationRequest,
+  ): Promise<AxiosResponse<EmailVerificationResponse>> => {
+    return await axiosConfig.post('/api/auth/verify-email', requestBody);
   };
 }
 

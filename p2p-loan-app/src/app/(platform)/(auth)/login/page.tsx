@@ -79,14 +79,14 @@ const LoginPage = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="bg-white p-6 rounded-xl w-[800px] h-[440px] mx-auto">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-4xl h-[550px] mx-auto">
         <div className="flex flex-col justify-center items-center h-full">
           <h1 className="font-bold text-xl">Welcome Back</h1>
           <p>We’re so excited to see you again</p>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full max-w-[400px]"
+              className="w-full max-w-[400px] mt-2"
             >
               <div className="py-2">
                 <FormField
@@ -146,7 +146,7 @@ const LoginPage = () => {
                   disabled={isLoading}
                   className="w-full max-w-[400px] rounded-xl bg-blue-500 hover:bg-blue-700"
                 >
-                  {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
+                  {isLoading ? <Loader2 className="animate-spin" /> : 'LOGIN'}
                 </Button>
               </div>
               <p className="mt-3 text-center leading-9 tracking-wide">

@@ -1,5 +1,7 @@
 'use client';
 import AuthService, {
+  EmailVerificationRequest,
+  EmailVerificationResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   LoginRequest,
@@ -53,11 +55,17 @@ const useAuth = () => {
       return response?.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (
-        error.response?.data?.message ===
-        'Email yet to be verified, Please verify your email'
+      const errorMessage = error.message;
+      const responseMessage = error.response?.data?.message;
+
+      if (errorMessage === 'Network Error') {
+        toast.error('Network Error');
+      } else if (
+        responseMessage === 'Email yet to be verified, Please verify your email'
       ) {
         toast.error('Email yet to be verified, Please verify your email');
+      } else if (responseMessage) {
+        toast.error(responseMessage);
       } else {
         toast.error('Invalid Login details, check your email and password');
       }
@@ -96,12 +104,31 @@ const useAuth = () => {
       return response.data;
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.message);
+      toast.error(error.response?.data.message);
       console.log(axiosResponseMessage(error));
     },
     onSuccess: (data: ResetPasswordResponse) => {
       const { message } = data;
       toast.success('Password reset successful, please login');
+    },
+  });
+
+  const verifyEmailPasswordMutation = useMutation({
+    mutationFn: async (user: EmailVerificationRequest) => {
+      const response = await AuthService.verifyEmail(user);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Invalid verification token.') {
+        toast.error('Invalid verification token.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: EmailVerificationResponse) => {
+      const { message } = data;
+      console.log('email', message);
+      toast.success('Email verification successful. You can now log in');
     },
   });
 
@@ -116,6 +143,7 @@ const useAuth = () => {
     loginMutation,
     forgotPasswordMutation,
     resetPasswordMutation,
+    verifyEmailPasswordMutation,
     logOut,
     user,
     token,
@@ -123,5 +151,3 @@ const useAuth = () => {
 };
 
 export default useAuth;
-// DELETE FROM Users
-// WHERE Id = '3AEE0692-CBB7-4FD5-A180-E7D153A92F70';

@@ -8,6 +8,7 @@ interface FormData {
     lastName: string;
     email: string;
     BvnDateOfBirth: string;
+    phoneNumber: string;
     password: string;
     userType: string;
   };
@@ -38,6 +39,7 @@ const initialFormData: FormData = {
     lastName: '',
     email: '',
     BvnDateOfBirth: '',
+    phoneNumber: '',
     password: '',
     userType: '',
   },
