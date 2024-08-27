@@ -73,7 +73,7 @@ const DashboardNavbar = () => {
                     onClick={() => router.push('/account-settings')}
                   >
                     Profile
-                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                    <DropdownMenuShortcut></DropdownMenuShortcut>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

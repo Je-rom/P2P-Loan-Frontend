@@ -23,7 +23,7 @@ interface FormValues {
   loanDurationDays: string;
   loanAmount: string;
   gracePeriodDays: string;
-  paymentFrequency: string;
+  repaymentFrequency: string;
   walletId: string;
   additionalNote: string;
   termsAccepted: boolean;
@@ -101,7 +101,7 @@ const CreateOfferPage = () => {
       label: 'Payment Frequency',
       placeholder: 'Payment frequency can only be in Days, Weeks and Month',
       type: 'text',
-      name: 'paymentFrequency',
+      name: 'repaymentFrequency',
     },
   ];
 
@@ -110,7 +110,7 @@ const CreateOfferPage = () => {
     interestRate: '',
     gracePeriodDays: '',
     loanDurationDays: '',
-    paymentFrequency: '',
+    repaymentFrequency: '',
     accruingInterestRate: '',
     walletId: '',
     additionalNote: '',
@@ -154,7 +154,7 @@ const CreateOfferPage = () => {
         const createLoanOfferRequest = {
           walletId: formValues.walletId,
           amount: formValues.loanAmount,
-          paymentFrequency: formValues.paymentFrequency,
+          repaymentFrequency: formValues.repaymentFrequency,
           gracePeriodDays: parseInt(formValues.gracePeriodDays, 10),
           loanDurationDays: parseInt(formValues.loanDurationDays, 10),
           interestRate: parseFloat(formValues.interestRate),

@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 export interface CreateLoanOfferRequest {
   walletId: string;
   amount: string;
-  paymentFrequency: string;
+  repaymentFrequency: string;
   gracePeriodDays: number;
   loanDurationDays: number;
   interestRate: number;

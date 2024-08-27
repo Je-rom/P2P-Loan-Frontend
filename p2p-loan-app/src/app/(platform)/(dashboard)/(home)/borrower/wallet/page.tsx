@@ -12,9 +12,11 @@ import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import WalletService, { WalletBalance } from '@/services/walletService';
 import { useQuery } from '@tanstack/react-query';
+import { TopUpDialog } from './topUpDialog';
 
 const Wallet = () => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
@@ -150,10 +152,6 @@ const Wallet = () => {
         </div>
         <div className="mt-5 flex gap-4">
           <Button className="bg-blue-400 hover:bg-blue-400">
-            <CircleDollarSign color="#ffffff" className="mr-1" />
-            Deposit
-          </Button>
-          <Button className="bg-blue-400 hover:bg-blue-400">
             <Image
               src={'/withdraw.svg'}
               alt="top up"
@@ -163,7 +161,10 @@ const Wallet = () => {
             />
             <span>Withdraw</span>
           </Button>
-          <Button className="bg-blue-400 hover:bg-blue-400" onClick={() => {}}>
+          <Button
+            className="bg-blue-400 hover:bg-blue-400"
+            onClick={() => setIsOpen(true)}
+          >
             <Image
               src={'/plus.svg'}
               alt="top up"
@@ -173,6 +174,7 @@ const Wallet = () => {
             />
             <span>Top Up</span>
           </Button>
+          <TopUpDialog open={isOpen} onOpenChange={() => setIsOpen(false)} />
         </div>
         <div>
           <BorrowerWalletTable />
