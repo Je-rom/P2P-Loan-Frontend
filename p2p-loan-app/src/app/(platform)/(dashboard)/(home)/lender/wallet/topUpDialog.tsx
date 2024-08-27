@@ -31,7 +31,6 @@ export function TopUpDialog({
   const accountNumberRef = useRef<HTMLInputElement>(null);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [topUpAccountName, setTopUpAccountName] = useState<string | null>(null);
-  const [accountNumber, setAccountNumber] = useState<string | null>(null);
   const [topupAccountNumber, setTopupAccountNumber] = useState<string | null>(
     null,
   );
@@ -43,9 +42,8 @@ export function TopUpDialog({
       if (result.length > 0) {
         const firstWallet = result[0];
         setWalletId(firstWallet.id);
-        setAccountNumber(firstWallet.accountNumber);
-        setTopUpAccountName(firstWallet.topUpAccountName);
         setTopupAccountNumber(firstWallet.topUpAccountNumber);
+        setTopUpAccountName(firstWallet.topUpAccountName);
       }
     }
   }, [getWalletQuery.isSuccess, getWalletQuery.data]);

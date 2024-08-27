@@ -70,7 +70,6 @@ const ResetPasswordPage = () => {
         },
       },
     );
-    triggerConfetti();
   };
 
   return (

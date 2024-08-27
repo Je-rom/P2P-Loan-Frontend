@@ -10,16 +10,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Copy } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import useWallet from '@/hooks/useWallet';
+import { toast } from 'sonner';
 import WalletService, { WalletBalance } from '@/services/walletService';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { Copy } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
 
-export function TopUpDialog({
+export function WithdrawDialog({
   open = false,
   onOpenChange,
 }: {
@@ -27,15 +26,10 @@ export function TopUpDialog({
   onOpenChange?: () => void;
 }) {
   const [copySuccess, setCopySuccess] = useState('');
-  const nameRef = useRef<HTMLInputElement>(null);
   const accountNumberRef = useRef<HTMLInputElement>(null);
   const [walletId, setWalletId] = useState<string | null>(null);
-  const [topUpAccountName, setTopUpAccountName] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const [topupAccountNumber, setTopupAccountNumber] = useState<string | null>(
-    null,
-  );
-  const { getWalletQuery } = useWallet();
+  const { getWalletQuery, getWalletBalanceQuery } = useWallet();
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -44,8 +38,6 @@ export function TopUpDialog({
         const firstWallet = result[0];
         setWalletId(firstWallet.id);
         setAccountNumber(firstWallet.accountNumber);
-        setTopUpAccountName(firstWallet.topUpAccountName);
-        setTopupAccountNumber(firstWallet.topUpAccountNumber);
       }
     }
   }, [getWalletQuery.isSuccess, getWalletQuery.data]);
@@ -55,6 +47,12 @@ export function TopUpDialog({
       toast.error('Failed to fetch wallet');
     }
   }, [getWalletQuery.isError]);
+
+  const {
+    data: balanceData,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = getWalletBalanceQuery(walletId || '');
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -69,66 +67,46 @@ export function TopUpDialog({
       <DialogContent className="max-w-[95%] sm:max-w-[500px] h-auto rounded-2xl px-4 py-6 mx-auto">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
-            Top up your wallet
+            Withdraw funds from your wallet
           </DialogTitle>
           <DialogDescription className="text-sm sm:text-base">
-            Easily add funds to your wallet to continue enjoying seamless
-            transactions. Choose your preferred payment method, enter the
-            amount, and confirm to top up instantly.
+            Effortlessly withdraw funds from your wallet to your preferred
+            account. Choose the withdrawal method, enter the amount, and confirm
+            to complete the transaction instantly.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
             <Label className="text-start text-sm sm:text-base">
-              Topup Account Name
+              Destination Account
             </Label>
             <div className="relative sm:col-span-3 w-full">
-              <Input
-                ref={nameRef}
-                defaultValue={topUpAccountName || ''}
-                className="border-black pr-10 w-full text-sm sm:text-base"
-                disabled
-              />
-              <div
-                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={() => copyToClipboard(nameRef.current?.value || '')}
-              >
-                <Copy />
-              </div>
+              <Input className="border-black pr-10 w-full text-sm sm:text-base" />
             </div>
-          </div>
+          </div> */}
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
             <Label className="text-start text-sm sm:text-base">
-              Topup Account Number
+              Account Number
             </Label>
             <div className="relative sm:col-span-3 w-full">
-              <Input
-                ref={accountNumberRef}
-                defaultValue={topupAccountNumber || ''}
-                className="border-black pr-10 w-full text-sm sm:text-base"
-                disabled
-              />
-              <div
-                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={() =>
-                  copyToClipboard(accountNumberRef.current?.value || '')
-                }
-              >
-                <Copy />
-              </div>
+              <Input className="border-black pr-10 w-full text-sm sm:text-base" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
             <Label className="text-start text-sm sm:text-base">Amount</Label>
             <Input className="sm:col-span-3 w-full border-black text-sm sm:text-base" />
           </div>
+          <h1 className="text-end">
+            Available Balance: ₦
+            {balanceData?.result.availableBalance.toFixed(2)}
+          </h1>
         </div>
         <DialogFooter>
           <Button
             type="submit"
             className="items-center flex justify-center w-full bg-blue-600 hover:bg-blue-800 text-sm sm:text-base"
           >
-            Top Up Now
+            Withdraw
           </Button>
         </DialogFooter>
         {copySuccess && (

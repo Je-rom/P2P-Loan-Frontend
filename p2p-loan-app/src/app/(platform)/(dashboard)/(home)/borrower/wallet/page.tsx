@@ -4,23 +4,30 @@ import { Card, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FaCopy, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { CircleDollarSign } from 'lucide-react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import BorrowerWalletTable from '@/components/borrower-components/borrower-wallet-table';
 import useWallet from '@/hooks/useWallet';
 import { toast } from 'sonner';
-import { AxiosError } from 'axios';
-import WalletService, { WalletBalance } from '@/services/walletService';
-import { useQuery } from '@tanstack/react-query';
+import { Copy } from 'lucide-react';
 import { TopUpDialog } from './topUpDialog';
+import { WithdrawDialog } from './withdrawDialog';
 
 const Wallet = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const { getWalletQuery } = useWallet();
+  const { getWalletQuery, getWalletBalanceQuery } = useWallet();
+  const [copySuccess, setCopySuccess] = useState('');
+
+  const copyToClipboard = (text: any) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopySuccess('Copied!');
+      setTimeout(() => setCopySuccess(''), 2000);
+    });
+  };
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -43,26 +50,7 @@ const Wallet = () => {
     data: balanceData,
     isLoading: isBalanceLoading,
     isError: isBalanceError,
-  } = useQuery<WalletBalance, AxiosError<{ message: string }>>({
-    queryKey: ['walletBalance', walletId],
-    queryFn: async (): Promise<WalletBalance> => {
-      if (!walletId) {
-        throw new Error('Wallet ID not found');
-      }
-      const response = await WalletService.getWalletBalance(walletId);
-      return response.data;
-    },
-    enabled: !!walletId,
-    onError: (error: AxiosError<{ message: string }>) => {
-      console.error('Failed to fetch wallet balance:', error.message);
-      toast.error(`Error: ${error.response?.data.message || error.message}`);
-    },
-    onSuccess: (data: WalletBalance) => {
-      const { message, result } = data;
-      console.log('Wallet balance fetched successfully:', result);
-      toast.success(message);
-    },
-  });
+  } = getWalletBalanceQuery(walletId || '');
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -92,6 +80,11 @@ const Wallet = () => {
 
   return (
     <>
+      {copySuccess && (
+        <div className="text-green-400 text-center font-bold text-2xl">
+          {copySuccess}
+        </div>
+      )}
       <div className="px-2 md:px-2">
         <h1 className="font-bold text-xl md:text-2xl lg:text-3xl">
           Your Wallet
@@ -126,10 +119,12 @@ const Wallet = () => {
                 <h1 className="mr-1 font-semibold text-sm md:text-base">
                   Account Number: {accountNumber}
                 </h1>
-                <h2 className="mr-2 text-sm md:text-base"></h2>
-                <button className="text-lg md:text-xl">
-                  <FaCopy />
-                </button>
+                <div
+                  className="flex ml-2 items-center pr-3 cursor-pointer"
+                  onClick={() => copyToClipboard(accountNumber)}
+                >
+                  <Copy className="w-5" />
+                </div>
               </div>
               <div className="flex items-center mt-5">
                 <h1 className="mr-6 font-semibold text-sm md:text-base">
@@ -151,19 +146,27 @@ const Wallet = () => {
           </Card>
         </div>
         <div className="mt-5 flex gap-4">
-          <Button className="bg-blue-400 hover:bg-blue-400">
+          <Button
+            className="bg-blue-400 hover:bg-blue-400"
+            onClick={() => setIsWithdrawOpen(true)} 
+          >
             <Image
               src={'/withdraw.svg'}
-              alt="top up"
+              alt="withdraw"
               width={16}
               height={16}
               className="mr-2"
             />
             <span>Withdraw</span>
           </Button>
+          <WithdrawDialog
+            open={isWithdrawOpen}
+            onOpenChange={() => setIsWithdrawOpen(false)}
+          />
+
           <Button
             className="bg-blue-400 hover:bg-blue-400"
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsTopUpOpen(true)}
           >
             <Image
               src={'/plus.svg'}
@@ -174,7 +177,10 @@ const Wallet = () => {
             />
             <span>Top Up</span>
           </Button>
-          <TopUpDialog open={isOpen} onOpenChange={() => setIsOpen(false)} />
+          <TopUpDialog
+            open={isTopUpOpen}
+            onOpenChange={() => setIsTopUpOpen(false)}
+          />
         </div>
         <div>
           <BorrowerWalletTable />
