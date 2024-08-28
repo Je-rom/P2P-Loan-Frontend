@@ -53,6 +53,10 @@ export interface WalletBalance {
   };
 }
 
+export interface WalletTransaction{
+  
+}
+
 class WalletService {
   static getWalletProvider = async (): Promise<
     AxiosResponse<WalletProvidersResponse>

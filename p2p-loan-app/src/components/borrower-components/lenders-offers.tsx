@@ -103,10 +103,10 @@ export function LendersOffer() {
             <motion.div
               layoutId={`card-${active.id}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px] h-1/2 md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl"
+              className="w-full max-w-[500px] h-1/2 md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <div>
-                <div className="flex justify-between items-start p-4">
+              <div className="overflow-y-auto max-h-[70vh] p-4">
+                <div className="flex justify-between items-start">
                   <div className="">
                     <motion.h3
                       layoutId={`title-${active.id}-${id}`}
@@ -129,13 +129,13 @@ export function LendersOffer() {
                     className="px-4 py-3 text-sm rounded-full font-bold text-white"
                   ></motion.a>
                 </div>
-                <div className="pt-4 relative px-4">
+                <div className="pt-4">
                   <motion.div
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
+                    className="text-neutral-600 text-xs md:text-sm lg:text-base pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
                     <p className="font-bold">Amount: ₦{active.amount}</p>
                     <p className="font-bold">
@@ -151,7 +151,7 @@ export function LendersOffer() {
                       Grace Period: {active.gracePeriodDays} days
                     </p>
                     <p className="font-bold">
-                      Accruning InterestRate: {active.accruingInterestRate} %
+                      Accruing Interest Rate: {active.accruingInterestRate} %
                     </p>
                     <Button>Apply here</Button>
                   </motion.div>
@@ -181,7 +181,7 @@ export function LendersOffer() {
                   layoutId={`description-${offer.id}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
                 >
-                  {offer.additionalInformation}
+                  {offer.additionalInformation.substring(0, 100)}...
                 </motion.p>
               </div>
             </div>
@@ -230,43 +230,3 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
-
-const cards = [
-  // {
-  //   description: 'Get the funds to purchase your dream car.',
-  //   title: 'Auto Loan',
-  //   ctaText: 'See More',
-  //   content: () => {
-  //     return (
-  //       <div>
-  //         <p>
-  //           Our auto loans provide you with the funds to purchase a new or used
-  //           vehicle. Enjoy competitive interest rates, flexible terms, and a
-  //           straightforward application process to get you on the road quickly
-  //           and easily.
-  //         </p>
-  //         <ul className="mt-4">
-  //           <li>
-  //             <strong>Loan Amount:</strong> Up to $40,000
-  //           </li>
-  //           <li>
-  //             <strong>Loan Purpose:</strong> Vehicle purchase
-  //           </li>
-  //           <li>
-  //             <strong>Loan Category:</strong> Secured
-  //           </li>
-  //           <li>
-  //             <strong>Loan Duration:</strong> 2 to 7 years
-  //           </li>
-  //           <li>
-  //             <strong>Interest Rate:</strong> 3.99% to 7.99% APR
-  //           </li>
-  //           <li>
-  //             <strong>Frequency of Repayment:</strong> Monthly
-  //           </li>
-  //         </ul>
-  //       </div>
-  //     );
-  //   },
-  // },
-];

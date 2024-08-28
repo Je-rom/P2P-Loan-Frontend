@@ -11,9 +11,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useWallet from '@/hooks/useWallet';
-import WalletService, { WalletBalance } from '@/services/walletService';
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { Copy } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';

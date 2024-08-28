@@ -10,13 +10,10 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Copy } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import useWallet from '@/hooks/useWallet';
 import { toast } from 'sonner';
-import WalletService, { WalletBalance } from '@/services/walletService';
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+
 
 export function WithdrawDialog({
   open = false,
@@ -29,7 +26,7 @@ export function WithdrawDialog({
   const accountNumberRef = useRef<HTMLInputElement>(null);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const { getWalletQuery, getWalletBalanceQuery } = useWallet();
+  const { getWalletQuery, useWalletBalanceQuery } = useWallet();
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -52,7 +49,7 @@ export function WithdrawDialog({
     data: balanceData,
     isLoading: isBalanceLoading,
     isError: isBalanceError,
-  } = getWalletBalanceQuery(walletId || '');
+  } = useWalletBalanceQuery(walletId || '');
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {

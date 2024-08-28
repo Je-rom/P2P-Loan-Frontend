@@ -39,6 +39,7 @@ const CreateOfferPage = () => {
   const [errors, setErrors] = useState<Errors>({});
   const { CreateLoanOfferMutation } = useLoanOffer();
   const createLoanOfferMutation = CreateLoanOfferMutation();
+  const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -59,6 +60,12 @@ const CreateOfferPage = () => {
       toast.error('Failed to fetch wallet');
     }
   }, [getWalletQuery.isError]);
+
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('user_type');
+    setUserType(storedUserType);
+  }, []);
+
 
   const formFields: FormField[] = [
     {
@@ -143,7 +150,6 @@ const CreateOfferPage = () => {
     }
     return newErrors;
   };
-  const userType = localStorage.getItem('user_type');
 
   const handleSubmit = async () => {
     const newErrors = validateForm();

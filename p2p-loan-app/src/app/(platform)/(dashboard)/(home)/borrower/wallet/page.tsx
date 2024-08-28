@@ -19,7 +19,7 @@ const Wallet = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const { getWalletQuery, getWalletBalanceQuery } = useWallet();
+  const { getWalletQuery, useWalletBalanceQuery } = useWallet();
   const [copySuccess, setCopySuccess] = useState('');
 
   const copyToClipboard = (text: any) => {
@@ -50,7 +50,7 @@ const Wallet = () => {
     data: balanceData,
     isLoading: isBalanceLoading,
     isError: isBalanceError,
-  } = getWalletBalanceQuery(walletId || '');
+  } = useWalletBalanceQuery(walletId || '');
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
