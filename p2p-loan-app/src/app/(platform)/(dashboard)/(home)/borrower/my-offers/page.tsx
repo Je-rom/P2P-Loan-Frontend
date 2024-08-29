@@ -113,7 +113,7 @@ const MyOffers = () => {
           <TableFooter></TableFooter>
         </Table>
       </div>
-      <div className="mt-20">
+      <div className="mt-20 text-end">
         <p>Total Offers: {data?.result.totalItems}</p>
       </div>
     </>

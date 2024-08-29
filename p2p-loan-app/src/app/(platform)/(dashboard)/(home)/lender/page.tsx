@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input';
 import DatePickerWithRange from '@/components/ui/date-range';
 import LenderTable from '@/components/lender-components/lender-table';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import useWallet from '@/hooks/useWallet';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface ImageComponentProps {
   src: string;
@@ -26,28 +29,59 @@ const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt }) => {
   );
 };
 
-
 const LenderPage = () => {
-   const [fullName, setFullName] = useState('');
-   const router = useRouter();
-   useEffect(() => {
-     const firstName = localStorage.getItem('firstName');
-     const lastName = localStorage.getItem('lastName');
-     if (firstName && lastName) {
-       setFullName(`${firstName} ${lastName}`);
-     }
-   }, []);
+  const [fullName, setFullName] = useState('');
+  const router = useRouter();
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const [walletId, setWalletId] = useState<string | null>(null);
+  const { getWalletQuery, useWalletBalanceQuery } = useWallet();
+
+  useEffect(() => {
+    if (getWalletQuery.isSuccess && getWalletQuery.data) {
+      const { result } = getWalletQuery.data;
+      if (result.length > 0) {
+        const firstWallet = result[0];
+        setWalletId(firstWallet.id);
+      }
+    }
+  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
+
+  useEffect(() => {
+    if (getWalletQuery.isError) {
+      toast.error('Failed to fetch wallet');
+    }
+  }, [getWalletQuery.isError]);
+
+  const {
+    data: balanceData,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useWalletBalanceQuery(walletId || '');
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+  };
+
+  useEffect(() => {
+    const firstName = localStorage.getItem('firstName');
+    const lastName = localStorage.getItem('lastName');
+    if (firstName && lastName) {
+      setFullName(`${firstName} ${lastName}`);
+    }
+  }, []);
 
   const cards = [
     {
       img: <ImageComponent src="balance.svg" alt="Total balance" />,
       amount: 632.0,
       text: 'Total Balance',
+      showBalance: true,
     },
     {
       img: <ImageComponent src="active-loans.svg" alt="Active Loan" />,
       amount: 529.0,
       text: 'Active Loan',
+      showBalance: false,
     },
   ];
 
@@ -79,9 +113,26 @@ const LenderPage = () => {
               <div className="flex justify-between mt-5">
                 <div>
                   <h1>{card.text}</h1>
-                  <p className="font-bold text-xl">₦{card.amount.toFixed(3)}</p>
+                  <p className="font-bold text-xl">
+                    {card.showBalance
+                      ? isBalanceVisible
+                        ? `₦ ${balanceData?.result.availableBalance.toFixed(2)}`
+                        : '******'
+                      : `₦ ${card.amount.toFixed(2)}`}
+                    {card.showBalance && (
+                      <button
+                        onClick={toggleBalanceVisibility}
+                        className="text-lg md:text-xl ml-2"
+                      >
+                        {isBalanceVisible ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    )}
+                  </p>
                 </div>
-                <Button className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3">
+                <Button
+                  className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[80px] mt-3"
+                  onClick={() => router.push('/lender/wallet')}
+                >
                   See More
                 </Button>
               </div>

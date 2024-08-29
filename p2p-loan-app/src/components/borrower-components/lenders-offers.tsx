@@ -43,7 +43,7 @@ export function LendersOffer() {
           <Image
             src={'/loadingLoanOffer.gif'}
             alt="loading"
-            width={300}
+            width={250}
             height={10}
           />
           <h1 className="font-bold text-2xl">Loading lender's offers...</h1>
@@ -116,9 +116,9 @@ export function LendersOffer() {
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.id}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400"
+                      className="text-neutral-600 dark:text-neutral-400 font-bold text-2xl"
                     >
-                      {active.additionalInformation}
+                      Loan Amount: {active.amount}
                     </motion.p>
                   </div>
 
@@ -137,23 +137,44 @@ export function LendersOffer() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <p className="font-bold">Amount: ₦{active.amount}</p>
-                    <p className="font-bold">
-                      Interest Rate: {active.interestRate}%
-                    </p>
-                    <p className="font-bold">
-                      Loan Duration: {active.loanDurationDays} days
-                    </p>
-                    <p className="font-bold">
-                      Repayment Frequency: {active.repaymentFrequency}
-                    </p>
-                    <p className="font-bold">
-                      Grace Period: {active.gracePeriodDays} days
-                    </p>
-                    <p className="font-bold">
-                      Accruing Interest Rate: {active.accruingInterestRate} %
-                    </p>
-                    <Button>Apply here</Button>
+                    <div className="flex">
+                      <div>
+                        <p className="font-bold">
+                          Interest Rate: {active.interestRate}%
+                        </p>
+                        <p className="font-bold">
+                          Loan Duration: {active.loanDurationDays} days
+                        </p>
+                        <p className="font-bold">
+                          Repayment Frequency: {active.repaymentFrequency}
+                        </p>
+                        <p className="font-bold">
+                          Grace Period: {active.gracePeriodDays} days
+                        </p>
+                        <p className="font-bold">
+                          Accruing Interest Rate: {active.accruingInterestRate}{' '}
+                          %
+                        </p>
+                        <h1 className="font-bold mt-1">
+                          Offer status:
+                          <Button
+                            className={
+                              active.active
+                                ? 'ml-2 bg-green-400 hover:bg-green-500 h-8'
+                                : 'ml-2 bg-red-400 hover:bg-red-500'
+                            }
+                          >
+                            {active.active ? 'ACTIVE' : 'INACTIVE'}
+                          </Button>
+                        </h1>
+                        <p className="font-medium mt-5">
+                          {active.additionalInformation}
+                        </p>
+                      </div>
+                    </div>
+                    <Button className="w-full mt-5 bg-blue-400 hover:bg-blue-400 text-lg">
+                      Apply here
+                    </Button>
                   </motion.div>
                 </div>
               </div>
@@ -181,7 +202,7 @@ export function LendersOffer() {
                   layoutId={`description-${offer.id}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
                 >
-                  {offer.additionalInformation.substring(0, 100)}...
+                  Loan Amount: {offer.amount}
                 </motion.p>
               </div>
             </div>
