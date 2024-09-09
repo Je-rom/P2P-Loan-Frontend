@@ -59,7 +59,7 @@ const Wallet = () => {
   if (getWalletQuery.isLoading || isBalanceLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src="/Opener Loading.gif" alt="load" width={300} height={30} />;
+        <Image src="/Opener Loading.gif" alt="load" width={300} height={30} />
         <h1 className="font-bold text-xl">
           We are getting your wallet details...
         </h1>
@@ -86,9 +86,7 @@ const Wallet = () => {
         </div>
       )}
       <div className="px-2 md:px-2">
-        <h1 className="font-bold text-xl md:text-2xl lg:text-3xl">
-          Your Wallet
-        </h1>
+        <h1 className="font-bold text-xl">Your Wallet</h1>
         <div className="flex justify-start mt-5">
           <Card
             className="w-full max-w-[600px] h-[220px] rounded-3xl relative"
@@ -117,7 +115,10 @@ const Wallet = () => {
             <CardFooter className="flex flex-col items-start px-4 md:px-6">
               <div className="flex items-center">
                 <h1 className="mr-1 font-semibold text-sm md:text-base">
-                  Account Number: {accountNumber}
+                  Account Number:{' '}
+                  {accountNumber
+                    ? `${accountNumber.slice(0, 8)}...`
+                    : 'Not available'}
                 </h1>
                 <div
                   className="flex ml-2 items-center pr-3 cursor-pointer"
@@ -148,7 +149,7 @@ const Wallet = () => {
         <div className="mt-5 flex gap-4">
           <Button
             className="bg-blue-400 hover:bg-blue-400"
-            onClick={() => setIsWithdrawOpen(true)} 
+            onClick={() => setIsWithdrawOpen(true)}
           >
             <Image
               src={'/withdraw.svg'}

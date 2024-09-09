@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import useWallet from '@/hooks/useWallet';
 import { Loader2 } from 'lucide-react';
+import { MoveLeft } from 'lucide-react';
 
 interface FormField {
   label: string;
@@ -206,8 +207,14 @@ const CreateOfferPage = () => {
 
   return (
     <>
+      <button onClick={() => router.back()}>
+        <div className="flex items-center">
+          <MoveLeft />
+          <h1 className="ml-1 font-bold">Back</h1>
+        </div>
+      </button>
       <div>
-        <h1 className="font-bold text-xl">Create New Offer</h1>
+        <h1 className="font-bold text-xl mt-10">Create New Offer</h1>
       </div>
       <div className="flex flex-col space-y-6 p-4 mt-10">
         {formFields.map((field, index) => (
@@ -245,7 +252,7 @@ const CreateOfferPage = () => {
         </h1>
         <div className="relative w-full md:w-3/4">
           <Textarea
-            placeholder="Add any additional notes here, reason why you need the loan, loan type etc.."
+            placeholder="Add any additional notes here, reason why you need the loan or why you are offering the loan etc.."
             name="additionalNote"
             value={formValues.additionalNote}
             onChange={handleInputChange}

@@ -48,6 +48,10 @@ const VerifyEmail: React.FC = () => {
       }
     } catch (error) {
       console.log(error);
+      localStorage.removeItem('step');
+      setTimeout(() => {
+        window.location.reload();
+      }, 90000);
     } finally {
       setIsLoading(false);
     }
@@ -67,19 +71,19 @@ const VerifyEmail: React.FC = () => {
           <p className="text-center mt-2">
             Please open your mail app to verify your account
           </p>
-          <h1 className="mt-4 flex">
+          {/* <h1 className="mt-4 flex">
             Didn't receive any mail?
             <button>
               <span className="text-blue-400">Click to resend</span>
             </button>
-          </h1>
+          </h1> */}
           <div className="flex items-center mt-4 gap-2">
             <Button
               onClick={handleDone}
               disabled={isLoading}
               className="bg-blue-600 hover:bg-blue-800 w-full"
             >
-              DONE
+              {isLoading ? <Loader2 className="animate-spin" /> : 'DONE'}
             </Button>
           </div>
         </div>

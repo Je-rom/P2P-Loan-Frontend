@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useWallet from '@/hooks/useWallet';
 import { Copy } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -24,14 +23,11 @@ export function TopUpDialog({
   onOpenChange?: () => void;
 }) {
   const [copySuccess, setCopySuccess] = useState('');
-  const nameRef = useRef<HTMLInputElement>(null);
-  const accountNumberRef = useRef<HTMLInputElement>(null);
+  const nameRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const accountNumberRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const bankNameRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [walletId, setWalletId] = useState<string | null>(null);
-  const [topUpAccountName, setTopUpAccountName] = useState<string | null>(null);
-  const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const [topupAccountNumber, setTopupAccountNumber] = useState<string | null>(
-    null,
-  );
+  const [topUpDetails, setTopUpDetails] = useState<any[]>([]);
   const { getWalletQuery } = useWallet();
 
   useEffect(() => {
@@ -40,9 +36,7 @@ export function TopUpDialog({
       if (result.length > 0) {
         const firstWallet = result[0];
         setWalletId(firstWallet.id);
-        setAccountNumber(firstWallet.accountNumber);
-        setTopUpAccountName(firstWallet.topUpAccountName);
-        setTopupAccountNumber(firstWallet.topUpAccountNumber);
+        setTopUpDetails(firstWallet.topUpDetails); // Save all top-up details to the state
       }
     }
   }, [getWalletQuery.isSuccess, getWalletQuery.data]);
@@ -70,64 +64,94 @@ export function TopUpDialog({
           </DialogTitle>
           <DialogDescription className="text-sm sm:text-base">
             Easily add funds to your wallet to continue enjoying seamless
-            transactions. Choose your preferred payment method, enter the
-            amount, and confirm to top up instantly.
+            transactions. Transfer funds into any of the below bank accounts,
+            and once processed, your wallet balance will be updated accordingly.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-            <Label className="text-start text-sm sm:text-base">
-              Topup Account Name
-            </Label>
-            <div className="relative sm:col-span-3 w-full">
-              <Input
-                ref={nameRef}
-                defaultValue={topUpAccountName || ''}
-                className="border-black pr-10 w-full text-sm sm:text-base"
-                disabled
-              />
+        <div className="dialog-container w-full h-[400px] p-4 overflow-hidden">
+          <div className="content-container h-full overflow-y-auto">
+            {topUpDetails.map((detail, index) => (
               <div
-                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={() => copyToClipboard(nameRef.current?.value || '')}
+                key={index}
+                className="grid gap-4 py-4 rounded-lg border border-black mb-4 p-2"
               >
-                <Copy />
+                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                  <Label className="text-start text-sm sm:text-base">
+                    Topup Account Name
+                  </Label>
+                  <div className="relative sm:col-span-3 w-full">
+                    <Input
+                      ref={(el) => {
+                        nameRefs.current[index] = el;
+                      }}
+                      defaultValue={detail.accountName || ''}
+                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      disabled
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() =>
+                        copyToClipboard(nameRefs.current[index]?.value || '')
+                      }
+                    >
+                      <Copy />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                  <Label className="text-start text-sm sm:text-base">
+                    Topup Account Number
+                  </Label>
+                  <div className="relative sm:col-span-3 w-full">
+                    <Input
+                      ref={(el) => {
+                        accountNumberRefs.current[index] = el;
+                      }}
+                      defaultValue={detail.accountNumber || ''}
+                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      disabled
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() =>
+                        copyToClipboard(
+                          accountNumberRefs.current[index]?.value || '',
+                        )
+                      }
+                    >
+                      <Copy />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                  <Label className="text-start text-sm sm:text-base">
+                    Topup Bank Name
+                  </Label>
+                  <div className="relative sm:col-span-3 w-full">
+                    <Input
+                      ref={(el) => {
+                        bankNameRefs.current[index] = el;
+                      }}
+                      defaultValue={detail.bankName || ''}
+                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      disabled
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() =>
+                        copyToClipboard(
+                          bankNameRefs.current[index]?.value || '',
+                        )
+                      }
+                    >
+                      <Copy />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-            <Label className="text-start text-sm sm:text-base">
-              Topup Account Number
-            </Label>
-            <div className="relative sm:col-span-3 w-full">
-              <Input
-                ref={accountNumberRef}
-                defaultValue={topupAccountNumber || ''}
-                className="border-black pr-10 w-full text-sm sm:text-base"
-                disabled
-              />
-              <div
-                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={() =>
-                  copyToClipboard(accountNumberRef.current?.value || '')
-                }
-              >
-                <Copy />
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-            <Label className="text-start text-sm sm:text-base">Amount</Label>
-            <Input className="sm:col-span-3 w-full border-black text-sm sm:text-base" />
+            ))}
           </div>
         </div>
-        <DialogFooter>
-          <Button
-            type="submit"
-            className="items-center flex justify-center w-full bg-blue-600 hover:bg-blue-800 text-sm sm:text-base"
-          >
-            Top Up Now
-          </Button>
-        </DialogFooter>
         {copySuccess && (
           <div className="text-green-600 text-center mt-2">{copySuccess}</div>
         )}
@@ -135,3 +159,16 @@ export function TopUpDialog({
     </Dialog>
   );
 }
+
+// useEffect(() => {
+// //     if (getWalletQuery.isSuccess && getWalletQuery.data) {
+// //       const { result } = getWalletQuery.data;
+// //       if (result.length > 0) {
+// //         const firstWallet = result[0];
+// //         setWalletId(firstWallet.id);
+// //         setTopUpAccountName(firstWallet.topUpDetails[0]?.accountName || '');
+// //         setTopupAccountNumber(firstWallet.topUpDetails[0]?.accountNumber || '');
+// //         setTopUpBankName(firstWallet.topUpDetails[0]?.bankName || '');
+// //       }
+// //     }
+// //   }, [getWalletQuery.isSuccess, getWalletQuery.data]);

@@ -117,7 +117,10 @@ const Wallet = () => {
             <CardFooter className="flex flex-col items-start px-4 md:px-6">
               <div className="flex items-center">
                 <h1 className="mr-1 font-semibold text-sm md:text-base">
-                  Account Number: {accountNumber}
+                  Account Number:{' '}
+                  {accountNumber
+                    ? `${accountNumber.slice(0, 8)}...`
+                    : 'Not available'}
                 </h1>
                 <div
                   className="flex ml-2 items-center pr-3 cursor-pointer"

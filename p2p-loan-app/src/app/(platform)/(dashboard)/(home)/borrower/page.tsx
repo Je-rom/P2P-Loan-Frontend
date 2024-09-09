@@ -10,27 +10,176 @@ import BorrowerTable from '@/components/borrower-components/borrower-table';
 import { useRouter } from 'next/navigation';
 import Filter from '@/components/ui/filter';
 import BorrowerRepaymentTable from '@/components/borrower-components/borrower-repayment-table';
+import useWallet from '@/hooks/useWallet';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { toast } from 'sonner';
+import useProfile from '@/hooks/useProfile';
+import CreatePinDialog from '@/components/shared/create-pin-dialog';
 
 interface ImageComponentProps {
   src: string;
   alt: string;
 }
 
-const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt }) => {
+const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt }) => (
+  <Image
+    src={src}
+    alt={alt}
+    width={50}
+    height={50}
+    className="bg-pink-200 rounded-full"
+  />
+);
+
+const BalanceCard: React.FC<{
+  walletId: string | null;
+  isBalanceVisible: boolean;
+  toggleBalanceVisibility: () => void;
+  onSeeMoreClick: () => void;
+}> = ({
+  walletId,
+  isBalanceVisible,
+  toggleBalanceVisibility,
+  onSeeMoreClick,
+}) => {
+  const {
+    data: balanceData,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useWallet().useWalletBalanceQuery(walletId || '');
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={50}
-      height={50}
-      className="bg-pink-200 rounded-full"
-    />
+    <>
+      <Card className="w-full md:w-[350px] shadow-xl">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <ImageComponent src="balance.svg" alt="Total balance" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-between mt-5">
+            <div>
+              <h1>Total Balance</h1>
+              <p className="font-bold text-lg">
+                {isBalanceLoading
+                  ? 'Loading...'
+                  : isBalanceError
+                    ? 'Error fetching balance'
+                    : isBalanceVisible
+                      ? `₦ ${balanceData?.result.availableBalance.toFixed(2)}`
+                      : '******'}
+                {walletId && !isBalanceLoading && (
+                  <button
+                    onClick={toggleBalanceVisibility}
+                    className="text-lg md:text-xl ml-1"
+                  >
+                    {isBalanceVisible ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                )}
+              </p>
+            </div>
+            <Button
+              className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[80px] mt-3"
+              onClick={onSeeMoreClick}
+            >
+              See More
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
+const ActiveLoanCard: React.FC<{
+  onSeeMoreClick: () => void;
+}> = ({ onSeeMoreClick }) => (
+  <Card className="w-full md:w-[315px] shadow-xl">
+    <CardHeader>
+      <div className="flex justify-between items-center">
+        <ImageComponent src="active-loans.svg" alt="Active Loan" />
+        <EllipsisVertical color="#000000" />
+      </div>
+    </CardHeader>
+    <CardContent>
+      <div className="flex justify-between mt-5">
+        <div>
+          <h1>Active Loan</h1>
+          <p className="font-bold text-xl">99</p>
+        </div>
+        <Button
+          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+          onClick={onSeeMoreClick}
+        >
+          See More
+        </Button>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const LoanRequestCard: React.FC<{
+  onSeeMoreClick: () => void;
+}> = ({ onSeeMoreClick }) => (
+  <Card className="w-full md:w-[315px] shadow-xl">
+    <CardHeader>
+      <div className="flex justify-between items-center">
+        <Image
+          src="loan-req.svg"
+          alt="Loan request"
+          width={50}
+          height={50}
+          className="bg-pink-200 rounded-full"
+        />
+        <EllipsisVertical color="#000000" />
+      </div>
+    </CardHeader>
+    <CardContent>
+      <div className="flex justify-between mt-5">
+        <div>
+          <h1>Loan Request</h1>
+          <p className="font-bold text-xl">8</p>
+        </div>
+        <Button
+          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+          onClick={onSeeMoreClick}
+        >
+          See More
+        </Button>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 const BorrowerPage = () => {
   const [fullName, setFullName] = useState('');
+  const [walletId, setWalletId] = useState<string | null>(null);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const { getWalletQuery } = useWallet();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
+  const { GetCurrentUser } = useProfile();
+  const { data: userProfile, isLoading: isProfileLoading } = GetCurrentUser();
+
+  useEffect(() => {
+    if (getWalletQuery.isSuccess && getWalletQuery.data) {
+      const { result } = getWalletQuery.data;
+      if (result.length > 0) {
+        const firstWallet = result[0];
+        setWalletId(firstWallet.id);
+      }
+    }
+  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
+
+  useEffect(() => {
+    if (getWalletQuery.isError) {
+      toast.error('Failed to fetch wallet');
+    }
+  }, [getWalletQuery.isError]);
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+  };
+
   useEffect(() => {
     const firstName = localStorage.getItem('firstName');
     const lastName = localStorage.getItem('lastName');
@@ -39,35 +188,26 @@ const BorrowerPage = () => {
     }
   }, []);
 
-  const cards = [
-    {
-      img: <ImageComponent src="balance.svg" alt="Total balance" />,
-      amount: 632.0,
-      text: 'Total Balance',
-    },
-    {
-      img: <ImageComponent src="active-loans.svg" alt="Active Loan" />,
-      amount: 529.0,
-      text: 'Active Loan',
-    },
-    {
-      img: (
-        <Image src="loan-req.svg" alt="Loan request" width={50} height={10} />
-      ),
-      number: 35,
-      text: 'Loan Request',
-    },
-    // {
-    //   img: (
-    //     <Image src="loan-offer.svg" alt="Loan offers" width={50} height={10} />
-    //   ),
-    //   number: 32,
-    //   text: 'Lenders Offers',
-    // },
-  ];
+  useEffect(() => {
+    if (userProfile && !isProfileLoading) {
+      console.log('User Profile:', userProfile);
+      if (!userProfile.pinCreated) {
+        console.log(
+          'PIN has not been created for this user. Opening dialog...',
+        );
+        setIsDialogOpen(true);
+      } else {
+        console.log('User has already created a PIN.');
+      }
+    }
+  }, [userProfile, isProfileLoading]);
 
   return (
     <>
+      <CreatePinDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+      />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
           <h1 className="font-bold text-xl">Hi {fullName}</h1>
@@ -82,31 +222,16 @@ const BorrowerPage = () => {
         </Button>
       </div>
       <div className="flex flex-wrap items-center justify-start gap-4 mt-6">
-        {cards.map((card, index) => (
-          <Card key={index} className="w-full md:w-[315px] shadow-xl">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                {card.img}
-                <EllipsisVertical color="#000000" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between mt-5">
-                <div>
-                  <h1>{card.text}</h1>
-                  <p className="font-bold text-xl">
-                    {card.amount !== undefined
-                      ? `₦${card.amount.toFixed(3)}`
-                      : card.number}
-                  </p>
-                </div>
-                <Button className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3">
-                  See More
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <BalanceCard
+          walletId={walletId}
+          isBalanceVisible={isBalanceVisible}
+          toggleBalanceVisibility={toggleBalanceVisibility}
+          onSeeMoreClick={() => router.push('/borrower/wallet')}
+        />
+        <ActiveLoanCard onSeeMoreClick={() => router.push('/borrower/loan')} />
+        <LoanRequestCard
+          onSeeMoreClick={() => router.push('/borrower/loan-request')}
+        />
       </div>
       <div className="p-6 mt-14 rounded-2xl border border-gray-200">
         <div className="flex justify-between items-center">

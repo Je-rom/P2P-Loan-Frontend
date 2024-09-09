@@ -45,6 +45,7 @@ const BasicInfo: React.FC = () => {
       BvnDateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
         message: 'Please put in a valid date of birth in MM-DD-YYYY format',
       }),
+      NIN: z.string(),
       password: z
         .string()
         .min(8, { message: 'Password must be at least 8 characters' }),
@@ -69,6 +70,7 @@ const BasicInfo: React.FC = () => {
       BvnDateOfBirth: '',
       password: '',
       confirmPassword: '',
+      NIN: '',
     },
   });
 
@@ -89,6 +91,7 @@ const BasicInfo: React.FC = () => {
       BvnDateOfBirth,
       password,
       phoneNumber,
+      NIN,
     } = data;
     const userType = selectedOption === 'lender' ? 'lender' : 'borrower';
     setIsLoading(true);
@@ -102,6 +105,7 @@ const BasicInfo: React.FC = () => {
           BvnDateOfBirth,
           password,
           userType,
+          NIN,
         },
       });
       nextStep();
@@ -277,6 +281,29 @@ const BasicInfo: React.FC = () => {
                           <FormControl>
                             <Input
                               type="number"
+                              disabled={isLoading}
+                              {...field}
+                              className="py-2 px-4 rounded-lg border w-full"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="py-2">
+                    <FormField
+                      control={form.control}
+                      name="NIN"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-light">
+                            *NIN
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="string"
                               disabled={isLoading}
                               {...field}
                               className="py-2 px-4 rounded-lg border w-full"

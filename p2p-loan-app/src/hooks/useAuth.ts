@@ -1,5 +1,7 @@
 'use client';
 import AuthService, {
+  CreatePinRequest,
+  CreatePinResponse,
   EmailVerificationRequest,
   EmailVerificationResponse,
   ForgotPasswordRequest,
@@ -132,10 +134,31 @@ const useAuth = () => {
     },
   });
 
+  const createPinMutation = useMutation({
+    mutationFn: async (pin: CreatePinRequest) => {
+      const response = await AuthService.createPin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to create pin.') {
+        toast.error('Failed to create pin.');
+      } else if (error.response?.data?.message === 'You already have a pin') {
+        toast.error('You already have a pin.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: CreatePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+
   const logOut = () => {
     clearAuth();
     localStorage.clear();
-    router.push('/login');
+    //to prevent the browser from keeping the protected route in history.
+    router.replace('/login');
   };
 
   return {
@@ -144,6 +167,7 @@ const useAuth = () => {
     forgotPasswordMutation,
     resetPasswordMutation,
     verifyEmailPasswordMutation,
+    createPinMutation,
     logOut,
     user,
     token,

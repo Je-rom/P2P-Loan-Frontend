@@ -98,6 +98,7 @@ const MyOffers = () => {
               <TableHead className="font-bold text-black-900">
                 Accruing Interest
               </TableHead>
+              <TableHead className="font-bold text-black-900">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-lg border">
@@ -109,6 +110,7 @@ const MyOffers = () => {
                 <TableCell>{offer.loanDurationDays} days</TableCell>
                 <TableCell>{offer.repaymentFrequency}</TableCell>
                 <TableCell>{offer.accruingInterestRate}</TableCell>
+                <TableCell>{offer.active}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Filter from '@/components/ui/filter';
+import useLoanRequest from '@/hooks/useLoanRequest';
+import Image from 'next/image';
 
 interface LenderOfferCardProps {
   lenderName: string;
@@ -18,8 +20,28 @@ interface LenderOfferCardProps {
   repaymentOptions: string;
   interestRate: number;
   showButtons: boolean;
-  userName?: string;
+  status: string;
+  gracePeriod: number;
+  loanDuration: number;
+  accruingInterestRate: number;
 }
+
+const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'text-yellow-500';
+    case 'processing':
+      return 'text-amber-500';
+    case 'approved':
+      return 'text-green-500';
+    case 'declined':
+      return 'text-red-500';
+    case 'failed':
+      return 'text-red-800';
+    default:
+      return 'text-gray-500';
+  }
+};
 
 const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   lenderName,
@@ -27,7 +49,10 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   repaymentOptions,
   interestRate,
   showButtons,
-  userName,
+  status,
+  gracePeriod,
+  loanDuration,
+  accruingInterestRate,
 }) => {
   return (
     <div className="flex justify-center sm:justify-start mb-4">
@@ -38,15 +63,14 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <span className="ml-4">{userName || lenderName}</span>
+            <span className="ml-4">{lenderName}</span>
           </CardTitle>
-          <CardDescription>Loan Offer</CardDescription>
+          <CardDescription>Loan request</CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
+          <div className="space-y-2">
             <p>
-              <span className="font-bold">Loan Amount: </span>Up to $
-              {loanAmount}
+              <span className="font-bold">Loan Amount: </span>₦{loanAmount}
             </p>
             <p>
               <span className="font-bold">Interest Rate: </span>
@@ -55,6 +79,23 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
             <p>
               <span className="font-bold">Frequency of Repayment: </span>
               {repaymentOptions}
+            </p>
+
+            <p>
+              <span className="font-bold">Loan Duration: </span>
+              {loanDuration} days
+            </p>
+            <p>
+              <span className="font-bold">Accruing Interest Rate: </span>
+              {accruingInterestRate} %
+            </p>
+            <p>
+              <span className="font-bold">Grace period: </span>
+              {gracePeriod} days
+            </p>
+            <p>
+              <span className="font-bold">Status: </span>
+              <span className={getStatusColor(status)}>{status}</span>
             </p>
           </div>
         </CardContent>
@@ -76,56 +117,26 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
 const BorrowersLenderOffer: React.FC = () => {
   const [view, setView] = useState<'received' | 'sent'>('received');
   const [userName, setUserName] = useState<string | undefined>(undefined);
+  const { GetLoanRequest } = useLoanRequest();
+  const [pageSize] = useState(5);
+  const [pageNumber, setPageNumber] = useState(1);
 
-  useEffect(() => {
-    const firstName = localStorage.getItem('firstName');
-    const lastName = localStorage.getItem('lastName');
-    if (firstName && lastName) {
-      setUserName(`${firstName} ${lastName}`);
-    }
-  }, []);
+  const { data: loanRequests, error } = GetLoanRequest(
+    view,
+    pageNumber,
+    pageSize,
+  );
 
-  const offers = [
-    {
-      lenderName: 'Lesane Crooks',
-      loanAmount: 50000,
-      repaymentOptions: 'Monthly',
-      interestRate: 5,
-    },
-    {
-      lenderName: 'John Doe',
-      loanAmount: 30000,
-      repaymentOptions: 'Quarterly',
-      interestRate: 4.5,
-    },
-    {
-      lenderName: 'Jane Smith',
-      loanAmount: 25000,
-      repaymentOptions: 'Monthly',
-      interestRate: 6,
-    },
-    {
-      lenderName: 'Alice Johnson',
-      loanAmount: 45000,
-      repaymentOptions: 'Annually',
-      interestRate: 7,
-    },
-    {
-      lenderName: 'Bob Brown',
-      loanAmount: 35000,
-      repaymentOptions: 'Monthly',
-      interestRate: 5.5,
-    },
-    {
-      lenderName: 'Eve Davis',
-      loanAmount: 40000,
-      repaymentOptions: 'Semi-Annually',
-      interestRate: 4.8,
-    },
-  ];
+  const totalItems = loanRequests?.result.totalItems || 0;
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  if (error) {
+    return <div>Error loading loan requests.</div>;
+  }
 
   return (
     <>
+      <h1 className="font-bold text-xl">Your Loan Requests</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-4">
           <h1
@@ -143,19 +154,83 @@ const BorrowersLenderOffer: React.FC = () => {
         </div>
         <Filter />
       </div>
-      <div className="mt-10 space-y-4">
-        {offers.map((offer, index) => (
-          <LenderOfferCard
-            key={index}
-            lenderName={offer.lenderName}
-            loanAmount={offer.loanAmount}
-            repaymentOptions={offer.repaymentOptions}
-            interestRate={offer.interestRate}
-            showButtons={view === 'received'}
-            userName={view === 'sent' ? userName : undefined}
+
+      {view === 'received' && !loanRequests?.result.items.length && (
+        <div className="flex flex-col items-center text-center space-y-4">
+          <Image
+            src={'/no-results-found.png'}
+            alt="No loan requests received"
+            width={350}
+            height={300}
           />
-        ))}
+          <p className="text-xl font-semibold text-gray-700">
+            You haven't received any loan requests yet
+          </p>
+          <p className="text-lg text-gray-500">It's coming 😊.</p>
+        </div>
+      )}
+
+      {view === 'sent' && !loanRequests?.result.items.length && (
+        <div className="flex flex-col items-center text-center space-y-4">
+          <Image
+            src={'/no-results-found.png'}
+            alt="No loan requests sent"
+            width={350}
+            height={300}
+          />
+          <p className="text-xl font-semibold text-gray-700">
+            You haven't sent any loan requests yet
+          </p>
+        </div>
+      )}
+
+      <div className="mt-10 space-y-4">
+        {loanRequests?.result.items.slice(0, pageSize).map((offer, index) => {
+          const displayName =
+            view === 'received'
+              ? `${offer.user.firstName} ${offer.user.lastName}`
+              : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
+
+          return (
+            <LenderOfferCard
+              key={index}
+              lenderName={displayName}
+              loanAmount={offer.loanOffer.amount}
+              repaymentOptions={offer.loanOffer.repaymentFrequency}
+              interestRate={offer.loanOffer.interestRate}
+              showButtons={view === 'received'}
+              loanDuration={offer.loanOffer.loanDurationDays}
+              gracePeriod={offer.loanOffer.gracePeriodDays}
+              accruingInterestRate={offer.loanOffer.accruingInterestRate}
+              status={offer.status}
+            />
+          );
+        })}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-4">
+          <Button
+            disabled={pageNumber === 1}
+            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            className="h-8 bg-blue-600 hover:bg-blue-600"
+          >
+            Previous
+          </Button>
+          <span className="mx-4">
+            Page {pageNumber} of {totalPages}
+          </span>
+          <Button
+            disabled={pageNumber === totalPages}
+            onClick={() =>
+              setPageNumber((prev) => Math.min(prev + 1, totalPages))
+            }
+            className="h-8 bg-blue-600 hover:bg-blue-600"
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </>
   );
 };

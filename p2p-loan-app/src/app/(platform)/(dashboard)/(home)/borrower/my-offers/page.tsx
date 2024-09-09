@@ -40,7 +40,7 @@ const MyOffers = () => {
   if (error) {
     return (
       <div className="flex justify-center text-red-500">
-        <p>Failed to load loan offers: {error.message}</p>
+        <p>Failed to load loan offers</p>
       </div>
     );
   }
@@ -76,7 +76,7 @@ const MyOffers = () => {
   return (
     <>
       <div className="mb-10 font-bold text-xl">
-        <h1>Your Loan Offers</h1>
+        <h1 className="font-bold text-xl">Your Loan Offers</h1>
       </div>
       <div className="w-full overflow-x-auto">
         <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden">
@@ -172,7 +172,6 @@ export default MyOffers;
           </Pagination>
         </div> */
 }
-
 
 {
   /* <div className="flex flex-col items-start gap-6 p-6 bg-gray-100">

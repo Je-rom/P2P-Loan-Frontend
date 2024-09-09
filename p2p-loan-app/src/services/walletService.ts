@@ -30,16 +30,28 @@ export interface WalletResponse {
     walletProviderId: string;
     accountNumber: string;
     referenceId: string;
-    topUpAccountNumber: string;
-    topUpAccountName: string;
-    topUpBankCode: string;
-    topUpBankName: string;
+    user: null;
+    walletProvider: null;
+    topUpDetails: {
+      id: string;
+      walletId: string;
+      accountNumber: string;
+      accountName: string;
+      bankCode: string;
+      bankName: string;
+      createdAt: string;
+      modifiedAt: string;
+      createdById: string;
+      createdBy: null;
+      modifiedById: string;
+      modifiedBy: null;
+    }[];
     createdAt: string;
     modifiedAt: string;
     createdById: string;
-    createdBy: any;
+    createdBy: null;
     modifiedById: string;
-    modifiedBy: any;
+    modifiedBy: null;
   }[];
 }
 
@@ -53,9 +65,7 @@ export interface WalletBalance {
   };
 }
 
-export interface WalletTransaction{
-  
-}
+export interface WalletTransaction {}
 
 class WalletService {
   static getWalletProvider = async (): Promise<

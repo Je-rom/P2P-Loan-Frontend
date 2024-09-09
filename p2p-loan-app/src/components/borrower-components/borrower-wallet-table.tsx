@@ -113,8 +113,8 @@ const BorrowerWalletTable = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="mt-5">
-        <Pagination>
+      <div>
+        <Pagination className="mt-5 flex justify-end items-end">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

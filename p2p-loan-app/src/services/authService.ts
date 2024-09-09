@@ -11,6 +11,7 @@ export interface RegisterRequest {
   userType: string;
   walletProviderId: string | undefined;
   BvnDateOfBirth: string;
+  NIN: string;
 }
 
 export interface RegisterResponse {
@@ -111,6 +112,17 @@ export interface ResetPasswordResponse {
   result: null;
 }
 
+export interface CreatePinRequest {
+  pin: string;
+  confirmPin: string;
+}
+
+export interface CreatePinResponse {
+  status: string;
+  message: string;
+  result: null;
+}
+
 class AuthService {
   static register = async (
     requestBody: RegisterRequest,
@@ -140,6 +152,12 @@ class AuthService {
     requestBody: EmailVerificationRequest,
   ): Promise<AxiosResponse<EmailVerificationResponse>> => {
     return await axiosConfig.post('/api/auth/verify-email', requestBody);
+  };
+
+  static createPin = async (
+    requeestBody: CreatePinRequest,
+  ): Promise<AxiosResponse<CreatePinResponse>> => {
+    return await axiosConfig.post('/api/auth/create-pin', requeestBody);
   };
 }
 

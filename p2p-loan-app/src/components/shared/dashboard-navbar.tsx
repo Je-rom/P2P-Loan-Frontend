@@ -39,61 +39,63 @@ const DashboardNavbar = () => {
   const router = useRouter();
 
   return (
-    <nav className="md:flex flex items-center px-8 py-7 shadow-lg bg-white w-full">
-      <MobileSidebar />
-      <div className="flex justify-end items-center w-full">
-        <div className="flex items-center gap-4">
-          <Bell className="cursor-pointer hidden lg:flex" size={24} />
-          {user.isLoading ? (
-            <div className="flex items-center gap-x-2">
-              <div className="w-10 h-10 relative shrink-0">
-                <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
+    <>
+      <nav className="md:flex flex items-center px-8 py-7 shadow-lg bg-white w-full">
+        <MobileSidebar />
+        <div className="flex justify-end items-center w-full">
+          <div className="flex items-center gap-4">
+            <Bell className="cursor-pointer hidden lg:flex" size={24} />
+            {user.isLoading ? (
+              <div className="flex items-center gap-x-2">
+                <div className="w-10 h-10 relative shrink-0">
+                  <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
+                </div>
+                <div className="w-10 h-10 relative shrink-0">
+                  <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
+                </div>
+                <div className="w-10 h-10 relative shrink-0">
+                  <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
+                </div>
               </div>
-              <div className="w-10 h-10 relative shrink-0">
-                <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
-              </div>
-              <div className="w-10 h-10 relative shrink-0">
-                <Skeleton className="h-full w-full absolute bg-neutral-800/10" />
-              </div>
-            </div>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar className="cursor-pointer">
-                  <AvatarFallback className="bg-blue-500">
-                    {storedEmail?.charAt(0).toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() => router.push('/account-settings')}
-                  >
-                    Profile
-                    <DropdownMenuShortcut></DropdownMenuShortcut>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Avatar className="cursor-pointer">
+                    <AvatarFallback className="bg-blue-500">
+                      {storedEmail?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => router.push('/account-settings')}
+                    >
+                      Profile
+                      <DropdownMenuShortcut></DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    Log out
+                    <DropdownMenuShortcut>
+                      <LogOut className={cn('h-5 w-10 text-xl')} />
+                    </DropdownMenuShortcut>
                   </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  Log out
-                  <DropdownMenuShortcut>
-                    <LogOut className={cn('h-5 w-10 text-xl')} />
-                  </DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          {!user.isLoading && (
-            <div>
-              <p className="text-sm font-semibold">{user.data.email}</p>
-            </div>
-          )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            {!user.isLoading && (
+              <div>
+                <p className="text-sm font-semibold">{user.data.email}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 

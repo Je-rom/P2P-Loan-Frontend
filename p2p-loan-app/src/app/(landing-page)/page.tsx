@@ -24,10 +24,10 @@ const LandingPage = () => {
               </p>
 
               <div className="hidden md:block md:pt-10">
-                <Link href='/register'>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full">
-                  Get Started
-                </button>
+                <Link href="/register">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full mb-2">
+                    Get Started
+                  </button>
                 </Link>
               </div>
             </div>
@@ -90,8 +90,8 @@ const LandingPage = () => {
         <CardStack />
       </div>
 
-      <footer className="bg-white text-black text-center py-4">
-        <p className="text-base">
+      <footer className="bg-white text-black text-center p-2">
+        <p className="text-sm">
           Copyright &copy; {new Date().getFullYear()} BorrowPointe. All rights
           reserved.
         </p>
