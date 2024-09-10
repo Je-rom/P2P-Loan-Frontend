@@ -40,11 +40,11 @@ const DashboardNavbar = () => {
 
   return (
     <>
-      <nav className="md:flex flex items-center px-8 py-7 shadow-lg bg-white w-full">
+      <nav className="md:flex flex items-center px-8 py-6 shadow-lg bg-white w-full">
         <MobileSidebar />
         <div className="flex justify-end items-center w-full">
-          <div className="flex items-center gap-4">
-            <Bell className="cursor-pointer hidden lg:flex" size={24} />
+          <div className="flex items-center gap-2">
+            <Bell className="cursor-pointer hidden lg:flex" size={18} />
             {user.isLoading ? (
               <div className="flex items-center gap-x-2">
                 <div className="w-10 h-10 relative shrink-0">
@@ -60,13 +60,13 @@ const DashboardNavbar = () => {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Avatar className="cursor-pointer">
-                    <AvatarFallback className="bg-blue-500">
+                  <Avatar className="cursor-pointer w-[24px] h-[23px]">
+                    <AvatarFallback className="bg-blue-500 text-white text-xs">
                       {storedEmail?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
+                <DropdownMenuContent className="w-48">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
@@ -89,7 +89,7 @@ const DashboardNavbar = () => {
             )}
             {!user.isLoading && (
               <div>
-                <p className="text-sm font-semibold">{user.data.email}</p>
+                <p className="text-xs font-semibold">{user.data.email}</p>
               </div>
             )}
           </div>

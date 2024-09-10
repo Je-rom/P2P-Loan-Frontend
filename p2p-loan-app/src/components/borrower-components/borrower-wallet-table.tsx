@@ -90,7 +90,7 @@ const BorrowerWalletTable = () => {
   return (
     <>
       <div className="mt-5 bg-gray-100 bg-opacity-100">
-        <Table>
+        <Table className="text-xs">
           <TableHeader className="bg-white text-center">
             <TableRow className="">
               <TableHead className="">Name</TableHead>
@@ -114,11 +114,12 @@ const BorrowerWalletTable = () => {
         </Table>
       </div>
       <div>
-        <Pagination className="mt-5 flex justify-end items-end">
+        <Pagination className="mt-5 flex justify-end items-end text-xs">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
+                className="text-xs"
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => (
@@ -134,6 +135,7 @@ const BorrowerWalletTable = () => {
             <PaginationItem>
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
+                className="text-xs"
               />
             </PaginationItem>
           </PaginationContent>

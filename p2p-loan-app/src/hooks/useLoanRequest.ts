@@ -39,6 +39,7 @@ const useLoanRequest = () => {
     trafficType: 'sent' | 'received',
     pageNumber: number,
     pageSize: number = 5,
+    totalItems: number,
   ): UseQueryResult<LoanRequestResponse, AxiosError<{ message: string }>> => {
     return useQuery<LoanRequestResponse, AxiosError<{ message: string }>>({
       queryKey: ['loanRequest', trafficType],
@@ -47,6 +48,7 @@ const useLoanRequest = () => {
           trafficType,
           pageNumber,
           pageSize,
+          totalItems,
         );
         return response.data;
       },

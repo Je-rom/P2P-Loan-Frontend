@@ -13,8 +13,8 @@ const ActiveLoan = () => {
   // }, []);
   return (
     <div>
-      <h1 className="font-bold text-xl">Your Loans</h1>
-      <div className="mt-4 text-lg">
+      <h1 className="font-bold text-base">Your Loans</h1>
+      <div className="mt-4 text-xs">
         <p>
           The table below shows the details of your active loans, including the
           loan amount, interest rates, repayment frequency, and more. To view

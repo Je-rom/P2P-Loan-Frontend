@@ -59,10 +59,10 @@ export function TopUpDialog({
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="max-w-[95%] sm:max-w-[500px] h-auto rounded-2xl px-4 py-6 mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">
+          <DialogTitle className="text-xs sm:text-xs">
             Top up your wallet
           </DialogTitle>
-          <DialogDescription className="text-sm sm:text-base">
+          <DialogDescription className="text-xs sm:text-xs">
             Easily add funds to your wallet to continue enjoying seamless
             transactions. Transfer funds into any of the below bank accounts,
             and once processed, your wallet balance will be updated accordingly.
@@ -75,9 +75,9 @@ export function TopUpDialog({
                 key={index}
                 className="grid gap-4 py-4 rounded-lg border border-black mb-4 p-2"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-                  <Label className="text-start text-sm sm:text-base">
-                    Topup Account Name
+                <div className="grid grid-cols-2 sm:grid-cols-4 items-center gap-2">
+                  <Label className="text-start text-xs sm:text-xs">
+                    Account Name
                   </Label>
                   <div className="relative sm:col-span-3 w-full">
                     <Input
@@ -85,22 +85,22 @@ export function TopUpDialog({
                         nameRefs.current[index] = el;
                       }}
                       defaultValue={detail.accountName || ''}
-                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      className="border-white pr-10 w-full text-xs sm:text-xs"
                       disabled
                     />
                     <div
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex items-center pr- cursor-pointer"
                       onClick={() =>
                         copyToClipboard(nameRefs.current[index]?.value || '')
                       }
                     >
-                      <Copy />
+                      <Copy className="w-3" />
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-                  <Label className="text-start text-sm sm:text-base">
-                    Topup Account Number
+                <div className="grid grid-cols-2 sm:grid-cols-4 items-center gap-2">
+                  <Label className="text-start text-xs sm:text-xs">
+                    Account Number
                   </Label>
                   <div className="relative sm:col-span-3 w-full">
                     <Input
@@ -108,24 +108,24 @@ export function TopUpDialog({
                         accountNumberRefs.current[index] = el;
                       }}
                       defaultValue={detail.accountNumber || ''}
-                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      className="border-white pr-10 w-full text-xs sm:text-xs"
                       disabled
                     />
                     <div
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex items-center pr-1 cursor-pointer"
                       onClick={() =>
                         copyToClipboard(
                           accountNumberRefs.current[index]?.value || '',
                         )
                       }
                     >
-                      <Copy />
+                      <Copy className="w-3" />
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-                  <Label className="text-start text-sm sm:text-base">
-                    Topup Bank Name
+                <div className="grid grid-cols-2 sm:grid-cols-4 items-center gap-1">
+                  <Label className="text-start text-xs sm:text-xs">
+                    Bank Name
                   </Label>
                   <div className="relative sm:col-span-3 w-full">
                     <Input
@@ -133,18 +133,18 @@ export function TopUpDialog({
                         bankNameRefs.current[index] = el;
                       }}
                       defaultValue={detail.bankName || ''}
-                      className="border-white pr-10 w-full text-sm sm:text-base"
+                      className="border-white pr-10 w-full text-xs sm:text-xs"
                       disabled
                     />
                     <div
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex items-center pr-1 cursor-pointer"
                       onClick={() =>
                         copyToClipboard(
                           bankNameRefs.current[index]?.value || '',
                         )
                       }
                     >
-                      <Copy />
+                      <Copy className="w-3" />
                     </div>
                   </div>
                 </div>

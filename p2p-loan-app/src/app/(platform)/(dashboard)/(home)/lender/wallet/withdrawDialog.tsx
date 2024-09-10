@@ -80,9 +80,11 @@ export function WithdrawDialog({
     setVerificationMessage(null);
     setAccountName(null);
     try {
+      const selectedBank1 = parseInt(selectedBank, 10);
+      const accountNumber1 = parseInt(accountNumber, 10);
       const response = await BankService.getAccountDetails(
-        accountNumber,
-        selectedBank,
+        accountNumber1,
+        selectedBank1,
       );
       const { accountName } = response.data.result.responseBody;
       setAccountName(accountName);

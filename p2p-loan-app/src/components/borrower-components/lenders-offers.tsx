@@ -87,10 +87,10 @@ export function LendersOffer() {
         <Image
           src={'/loadingLoanOffer.gif'}
           alt="loading"
-          width={250}
+          width={200}
           height={10}
         />
-        <h1 className="font-bold text-2xl">Loading lender's offers...</h1>
+        <h1 className="font-bold text-sm">Loading lender's offers...</h1>
       </div>
     );
   }
@@ -98,8 +98,8 @@ export function LendersOffer() {
   if (error) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src={'/failed.gif'} alt="loading" width={100} height={10} />
-        <h1 className="font-bold text-2xl">Failed to get lenders offers...</h1>
+        <Image src={'/failed.gif'} alt="loading" width={60} height={10} />
+        <h1 className="font-bold text-sm">Failed to get lenders offers...</h1>
       </div>
     );
   }
@@ -167,7 +167,7 @@ export function LendersOffer() {
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.id}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400 font-bold text-2xl"
+                      className="text-neutral-600 dark:text-neutral-400 font-bold text-sm"
                     >
                       Loan Amount: {active.amount}
                     </motion.p>
@@ -188,7 +188,7 @@ export function LendersOffer() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <div className="flex gap-24">
+                    <div className="flex gap-24 text-xs">
                       <div>
                         <p className="font-bold">
                           Interest Rate: {active.interestRate}%
@@ -211,8 +211,8 @@ export function LendersOffer() {
                           <Button
                             className={
                               active.active
-                                ? 'ml-2 bg-green-400 hover:bg-green-500 h-8'
-                                : 'ml-2 bg-red-400 hover:bg-red-500'
+                                ? 'ml-2 bg-green-400 hover:bg-green-500 text-xs w-12 h-5'
+                                : 'ml-2 bg-red-400 hover:bg-red-500 text-xs w-12'
                             }
                           >
                             {active.active ? 'ACTIVE' : 'INACTIVE'}
@@ -230,13 +230,13 @@ export function LendersOffer() {
                         {active.user.firstName} {active.user.lastName}
                       </div>
                     </div>
-                    <p className="font-medium mt-3">
+                    <p className="font-medium mt-3 text-xs">
                       {active.additionalInformation}
                     </p>
                     <Button
                       disabled={isLoading1}
                       onClick={() => handleApply(active)}
-                      className="w-full mt-5 bg-blue-400 hover:bg-blue-400 text-lg"
+                      className="w-full mt-5 bg-blue-400 hover:bg-blue-400 text-xs"
                     >
                       {isLoading1 ? (
                         <Loader2 className="animate-spin" />
@@ -274,7 +274,7 @@ export function LendersOffer() {
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${offer.id}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
+                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-xs"
                 >
                   Loan Amount: {offer.amount}
                 </motion.p>
@@ -282,14 +282,14 @@ export function LendersOffer() {
             </div>
             <motion.button
               layoutId={`button-${offer.id}-${id}`}
-              className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0"
+              className="px-4 py-2 rounded-full font-bold bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0 text-xs"
             >
               See More
             </motion.button>
           </motion.div>
         ))}
       </ul>
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between mt-4 text-xs">
         <Button onClick={handlePreviousPage} disabled={pageNumber === 1}>
           Previous
         </Button>

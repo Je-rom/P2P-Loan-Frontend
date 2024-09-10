@@ -191,9 +191,10 @@ class LoanRequestService {
     trafficType: 'sent' | 'received',
     pageNumber: number,
     pageSize: number,
+    totalItems: number,
   ): Promise<AxiosResponse<LoanRequestResponse>> => {
     return await axiosConfig.get('/api/loan-request/me', {
-      params: { trafficType, pageNumber, pageSize },
+      params: { trafficType, pageNumber, pageSize, totalItems },
     });
   };
 
