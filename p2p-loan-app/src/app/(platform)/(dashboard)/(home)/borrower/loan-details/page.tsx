@@ -120,7 +120,7 @@ const LoanDetails = () => {
                           <Input
                             id="amount"
                             placeholder="Enter amount"
-                            className="col-span-3 h-6"
+                            className="col-span-3 h-10"
                           />
                         </div>
                       </div>

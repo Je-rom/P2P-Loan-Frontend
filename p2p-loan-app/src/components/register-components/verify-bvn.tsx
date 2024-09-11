@@ -72,7 +72,7 @@ const BVNVerification: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-base md:max-w-base lg:max-w-xl xl:max-w-4xl">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
@@ -80,14 +80,14 @@ const BVNVerification: React.FC = () => {
         </div>
         <div className="mt-10 flex flex-col items-center">
           <div className="w-full max-w-lg">
-            <h1 className="text-md flex gap-2 items-center">
+            <h1 className="text-sm flex gap-2 items-center">
               <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs">
                 {currentStep?.number}
               </span>
               {currentStep?.label}
             </h1>
-            <p className="text-md mt-2">Why we need your BVN</p>
-            <p className="text-base mt-2">
+            <p className="text-sm mt-2">Why we need your BVN</p>
+            <p className="text-xs mt-2">
               Your Bank Verification Number (BVN) helps us verify your identity
               and ensures the security of your account. It allows us to provide
               better service and protect your personal information.
@@ -102,7 +102,7 @@ const BVNVerification: React.FC = () => {
                     name="bvn"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-light">
+                        <FormLabel className="text-xs font-light">
                           Bank Verification Number [11-digits]
                         </FormLabel>
                         <FormControl>

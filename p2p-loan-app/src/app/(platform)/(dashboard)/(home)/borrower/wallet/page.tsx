@@ -89,7 +89,7 @@ const Wallet = () => {
         <h1 className="font-bold text-base">Your Wallet</h1>
         <div className="flex justify-start mt-5">
           <Card
-            className="w-full max-w-[400px] h-[160px] rounded-3xl relative"
+            className="w-full max-w-[380px] h-[140px] rounded-3xl relative"
             style={{
               backgroundImage: `url('/cardbg.svg')`,
               backgroundSize: 'cover',
@@ -114,7 +114,7 @@ const Wallet = () => {
             </CardHeader>
             <CardFooter className="flex flex-col items-start">
               <div className="flex items-center">
-                <h1 className="mr-1 text-sm md:text-sm">
+                <h1 className="mr-1 text-xs md:text-xs">
                   Account Number:{' '}
                   {accountNumber
                     ? `${accountNumber.slice(0, 8)}...`
@@ -128,7 +128,7 @@ const Wallet = () => {
                 </div>
               </div>
               <div className="flex items-center mt-1">
-                <h1 className="mr-6 text-sm md:text-sm">Available Balance</h1>
+                <h1 className="mr-6 text-xs md:text-xs">Available Balance</h1>
                 <button
                   onClick={toggleBalanceVisibility}
                   className="text-sm md:text-sm"

@@ -50,16 +50,16 @@ const BalanceCard: React.FC<{
   } = useWallet().useWalletBalanceQuery(walletId || '');
   return (
     <>
-      <Card className="w-full md:w-[200px] shadow-xl bg-orange-50">
+      <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-orange-50">
         <CardHeader>
           <div className="flex justify-between items-center">
             <ImageComponent src="balance.svg" alt="Total balance" />
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between mt-5">
+          <div className="flex justify-between">
             <div>
-              <h1 className="text-sm">Total Balance</h1>
+              <h1 className="text-xs">Total Balance</h1>
               <p className="font-bold text-sm">
                 {isBalanceLoading
                   ? 'Loading...'
@@ -82,12 +82,12 @@ const BalanceCard: React.FC<{
                 )}
               </p>
             </div>
-            {/* <Button
-              className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[80px] mt-3"
+            <Button
+              className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
               onClick={onSeeMoreClick}
             >
               See More
-            </Button> */}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -98,25 +98,24 @@ const BalanceCard: React.FC<{
 const ActiveLoanCard: React.FC<{
   onSeeMoreClick: () => void;
 }> = ({ onSeeMoreClick }) => (
-  <Card className="w-full md:w-[200px] shadow-xl bg-purple-50">
+  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-purple-50">
     <CardHeader>
       <div className="flex justify-between items-center">
         <ImageComponent src="active-loans.svg" alt="Active Loan" />
-        <EllipsisVertical color="#000000" />
       </div>
     </CardHeader>
     <CardContent>
-      <div className="flex justify-between mt-5">
+      <div className="flex justify-between">
         <div>
-          <h1 className="text-sm">Active Loan</h1>
+          <h1 className="text-xs">Active Loan</h1>
           <p className="font-bold text-sm">99</p>
         </div>
-        {/* <Button
-          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+        <Button
+          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
           onClick={onSeeMoreClick}
         >
           See More
-        </Button> */}
+        </Button>
       </div>
     </CardContent>
   </Card>
@@ -126,25 +125,24 @@ const LoanRequestCard: React.FC<{
   onSeeMoreClick: () => void;
   totalLoanRequests: number;
 }> = ({ onSeeMoreClick, totalLoanRequests }) => (
-  <Card className="w-full md:w-[200px] shadow-xl bg-green-50">
+  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-green-50">
     <CardHeader>
       <div className="flex justify-between items-center">
         <ImageComponent src="loan-req.svg" alt="Loan request" />
-        <EllipsisVertical color="#000000" />
       </div>
     </CardHeader>
     <CardContent>
-      <div className="flex justify-between mt-5">
+      <div className="flex justify-between">
         <div>
-          <h1 className="text-sm">Loan Request</h1>
+          <h1 className="text-xs">Loan Request</h1>
           <p className="font-bold text-sm">{totalLoanRequests}</p>
         </div>
-        {/* <Button
-          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+        <Button
+          className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[60px] h-[28px] mt-3 text-xs"
           onClick={onSeeMoreClick}
         >
           See More
-        </Button> */}
+        </Button>
       </div>
     </CardContent>
   </Card>
@@ -228,15 +226,15 @@ const BorrowerPage = () => {
       />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
-          <h1 className="font-bold text-base">Hi {fullName}</h1>
-          <p className="text-sm">Welcome to BorrowPointe</p>
+          <h1 className="font-bold text-sm">Hi {fullName}</h1>
+          <p className="text-xs">Welcome to BorrowPointe</p>
         </div>
         <Button
           onClick={() => router.push('/create-offer')}
-          className="bg-blue-500 hover:bg-blue-500 w-[110px] h-[35px] rounded-lg text-xs"
+          className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
         >
-          {/* <Plus color="#ffffff" /> */}
-          Create New Offer
+          <Plus color="#ffffff" />
+          New Offer
         </Button>
       </div>
       <div className="flex flex-wrap items-center justify-start gap-4 mt-6">
@@ -262,7 +260,7 @@ const BorrowerPage = () => {
       <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-4 flex flex-col md:flex-row justify-between items-start">
         <h1 className="font-bold text-base sm:text-base">Transactions</h1>
         <div className="flex flex-col md:flex-row items-center md:items-start mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
-          <div className="relative flex-grow w-full max-w-[250px]">
+          <div className="relative flex-grow w-full max-w-[200px]">
             <Input
               className="w-full rounded-xl text-xs"
               placeholder="Search history"

@@ -99,7 +99,7 @@ const BorrowerTable = () => {
               <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="text-xs">
             {currentItems.map((invoice) => (
               <TableRow key={invoice.id}>
                 <TableCell className="font-medium">{invoice.name}</TableCell>

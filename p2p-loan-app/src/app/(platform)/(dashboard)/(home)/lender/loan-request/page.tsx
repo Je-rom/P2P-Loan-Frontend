@@ -57,16 +57,15 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
       <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Avatar>
+            <Avatar className="w-6 h-6">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <span className="ml-4">{lenderName}</span>
+            <span className="ml-2 text-base">{lenderName}</span>
           </CardTitle>
-          <CardDescription>Loan request</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-1 text-xs">
             <p>
               <span className="font-bold">Loan Amount: </span>₦{loanAmount}
             </p>
@@ -99,10 +98,10 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
         </CardContent>
         {showButtons && (
           <CardFooter className="justify-end gap-8">
-            <Button className="w-[140px] bg-green-600 hover:bg-green-700">
+            <Button className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs">
               Accept
             </Button>
-            <Button className="w-[140px] bg-red-600 hover:bg-red-700">
+            <Button className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs">
               Reject
             </Button>
           </CardFooter>
@@ -118,39 +117,40 @@ const LendersBorrowersOffer: React.FC = () => {
   const { GetLoanRequest } = useLoanRequest();
   const [pageSize] = useState(5);
   const [pageNumber, setPageNumber] = useState(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
+
 
   const {
     data: loanRequests,
     error,
     isLoading,
-  } = GetLoanRequest(view, pageNumber, pageSize);
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
 
-  const totalItems = loanRequests?.result.totalItems || 0;
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalItem = loanRequests?.result.totalItems || 0;
+  const totalPages = Math.ceil(totalItem / pageSize);
 
   if (error) {
-    return <div>Error loading loan requests.</div>;
+    return <div className='text-sm'>Error loading loan requests.</div>;
   }
 
   return (
     <>
-      <h1 className="font-bold text-xl">Your Loan Requests</h1>
-      <div className="flex justify-between items-center mb-4">
+      <h1 className="font-bold text-base">Your Loan Requests</h1>
+      <div className="flex justify-between items-center mb-3 mt-5">
         <div className="flex space-x-4">
           <h1
-            className={`text-lg cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
             onClick={() => setView('received')}
           >
             Received
           </h1>
           <h1
-            className={`text-lg cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
             onClick={() => setView('sent')}
           >
             Sent
           </h1>
         </div>
-        <Filter />
       </div>
 
       {view === 'received' && !loanRequests?.result.items.length && (
@@ -158,13 +158,13 @@ const LendersBorrowersOffer: React.FC = () => {
           <Image
             src={'/no-results-found.png'}
             alt="No loan requests received"
-            width={350}
+            width={180}
             height={300}
           />
-          <p className="text-xl font-semibold text-gray-700">
+          <p className="text-sm font-semibold text-gray-700">
             You haven't received any loan requests yet
           </p>
-          <p className="text-lg text-gray-500">It's coming 😊.</p>
+          <p className="text-sm text-gray-500">It's coming 😊.</p>
         </div>
       )}
 
@@ -173,10 +173,10 @@ const LendersBorrowersOffer: React.FC = () => {
           <Image
             src={'/no-results-found.png'}
             alt="No loan requests sent"
-            width={350}
+            width={180}
             height={300}
           />
-          <p className="text-xl font-semibold text-gray-700">
+          <p className="text-sm font-semibold text-gray-700">
             You haven't sent any loan requests yet
           </p>
         </div>
@@ -187,16 +187,16 @@ const LendersBorrowersOffer: React.FC = () => {
           <Image
             src={'/no-results-found.png'}
             alt="No loan requests sent"
-            width={350}
+            width={180}
             height={300}
           />
-          <p className="text-xl font-semibold text-gray-700">
+          <p className="text-sm font-semibold text-gray-700">
             Loading your loan requests..
           </p>
         </div>
       )}
 
-      <div className="mt-10 space-y-4">
+      <div className="mt-8 space-y-4">
         {loanRequests?.result.items.slice(0, pageSize).map((offer, index) => {
           const displayName =
             view === 'received'
@@ -225,11 +225,11 @@ const LendersBorrowersOffer: React.FC = () => {
           <Button
             disabled={pageNumber === 1}
             onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            className="h-8 bg-blue-600 hover:bg-blue-600"
+            className="h-8 bg-blue-600 hover:bg-blue-600 text-xs"
           >
             Previous
           </Button>
-          <span className="mx-4">
+          <span className="mx-4 text-xs">
             Page {pageNumber} of {totalPages}
           </span>
           <Button
@@ -237,7 +237,7 @@ const LendersBorrowersOffer: React.FC = () => {
             onClick={() =>
               setPageNumber((prev) => Math.min(prev + 1, totalPages))
             }
-            className="h-8 bg-blue-600 hover:bg-blue-600"
+            className="h-8 bg-blue-600 hover:bg-blue-600 text-xs"
           >
             Next
           </Button>

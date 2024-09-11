@@ -18,20 +18,16 @@ const LoanDetails = () => {
     <>
       <button onClick={() => router.back()}>
         <div className="flex items-center">
-          <MoveLeft />
-          <h1 className="ml-4 font-bold">Back</h1>
+          <MoveLeft className="w-3" />
+          <h1 className="ml-1 font-bold text-xs">Back</h1>
         </div>
       </button>
       <div className="mt-10">
-        <h1 className="text-2xl">Loan Details</h1>
+        <h1 className="text-xs">Loan Details</h1>
         <div className="flex justify-center sm:justify-start mb-4">
-          <Card className="w-full max-w-[650px] shadow-lg bg-gray-100 mx-4 sm:mx-0 mt-2">
-            <CardHeader>
-              <CardTitle className="flex items-center"></CardTitle>
-              <CardDescription> </CardDescription>
-            </CardHeader>
+          <Card className="w-full shadow-lg bg-blue-100 mt-2 text-xs">
             <CardContent>
-              <div>
+              <div className="mt-4 text-xs">
                 <p>
                   <span className="font-bold">Loan Amount: </span>$
                 </p>
@@ -51,14 +47,21 @@ const LoanDetails = () => {
                   <span className="font-bold">Grace Period Days:</span>
                 </p>
                 <p>
-                  <span className="font-bold">Additional Information:</span>
+                  <span>
+                    Additional Information: CommonJS is a module system used in
+                    JavaScript to structure and organize code. It allows
+                    developers to break their code into smaller, reusable
+                    modules, making it easier to manage and maintain, especially
+                    in large projects. A module in CommonJS is simply a
+                    JavaScript file.
+                  </span>
                 </p>
               </div>
             </CardContent>
           </Card>
         </div>
         <div className="mt-10">
-          <h1 className="text-2xl">Loan Repayments</h1>
+          <h1 className="text-base">Loan Repayments</h1>
           <BorrowerRepaymentTable />
         </div>
       </div>

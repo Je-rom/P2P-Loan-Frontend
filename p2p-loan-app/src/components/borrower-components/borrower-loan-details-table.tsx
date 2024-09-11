@@ -119,7 +119,7 @@ const BorrowerLoanDetailsTable = () => {
     <>
       <Table className="min-w-full bg-white shadow-md rounded-lg mt-4 text-xs">
         <TableHeader className="bg-gray-200 text-gray-700">
-          <TableRow className="w-[100px] ">
+          <TableRow className="w-[100px]">
             <TableHead className="py-2 px-2 text-left">Lender Name</TableHead>
             <TableHead className="py-2 px-2 text-left">
               Loan Amount

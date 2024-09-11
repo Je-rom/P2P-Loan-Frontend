@@ -55,8 +55,8 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
 }) => {
   return (
     <div className="flex justify-center sm:justify-start mb-4">
-      <Card className="w-full max-w-[1250px] shadow-lg bg-blue-50 mx-4 sm:mx-0 h-[250px]">
-        <CardHeader className='p-2 mt-1'>
+      <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
+        <CardHeader>
           <CardTitle className="flex items-center">
             <Avatar className="w-6 h-6">
               <AvatarImage src="https://github.com/shadcn.png" />
@@ -99,10 +99,10 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
         </CardContent>
         {showButtons && (
           <CardFooter className="justify-end gap-8">
-            <Button className="w-[65px] h-[35px] bg-green-600 hover:bg-green-700 text-xs">
+            <Button className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs">
               Accept
             </Button>
-            <Button className="w-[65px] h-[35px] bg-red-600 hover:bg-red-700 text-xs">
+            <Button className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs">
               Reject
             </Button>
           </CardFooter>
@@ -131,22 +131,22 @@ const BorrowersLenderOffer: React.FC = () => {
   const totalPages = Math.ceil(totalItem / pageSize);
 
   if (error) {
-    return <div>Error loading loan requests.</div>;
+    return <div className="text-sm">Error loading loan requests.</div>;
   }
 
   return (
     <>
       <h1 className="font-bold text-base">Your Loan Requests</h1>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-3 mt-5">
         <div className="flex space-x-4">
           <h1
-            className={`text-sm cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
             onClick={() => setView('received')}
           >
             Received
           </h1>
           <h1
-            className={`text-sm cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
             onClick={() => setView('sent')}
           >
             Sent
@@ -212,11 +212,11 @@ const BorrowersLenderOffer: React.FC = () => {
           <Button
             disabled={pageNumber === 1}
             onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            className="h-4 bg-blue-600 hover:bg-blue-600"
+            className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
           >
             Previous
           </Button>
-          <span className="mx-4">
+          <span className="mx-4 text-xs">
             Page {pageNumber} of {totalPages}
           </span>
           <Button
@@ -224,7 +224,7 @@ const BorrowersLenderOffer: React.FC = () => {
             onClick={() =>
               setPageNumber((prev) => Math.min(prev + 1, totalPages))
             }
-            className="h-4 bg-blue-600 hover:bg-blue-600"
+            className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
           >
             Next
           </Button>
