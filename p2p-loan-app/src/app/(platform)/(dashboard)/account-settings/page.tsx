@@ -7,7 +7,8 @@ import { AiOutlinePoweroff } from 'react-icons/ai';
 import { Switch } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import Button from '@mui/material/Button';
-
+import ChangePinDialog from '@/components/shared/change-pin-dialog';
+import ChangePasswordDialog from '@/components/shared/change-password-dialog';
 const ProfileSettings = () => {
   const [personalInfo, setPersonalInfo] = useState({
     firstName: '',
@@ -35,6 +36,9 @@ const ProfileSettings = () => {
     smsNotification: false,
   });
 
+  const [isChangePinDialogOpen, setIsChangePinDialogOpen] = useState(false);
+  const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
+    useState(false);
   useEffect(() => {
     const fetchSettingData = async () => {
       try {
@@ -62,12 +66,13 @@ const ProfileSettings = () => {
   };
 
   const handleChangePin = () => {
-    // Logic for changing pin (e.g., open a modal to change)
+    setIsChangePinDialogOpen(true);
   };
 
   const handleChangePassword = () => {
-    // Logic for changing password (e.g., open a modal to change)
+    setIsChangePasswordDialogOpen(true);
   };
+
   const toggleEmailNotification = () => {
     setNotifications((prev) => ({
       ...prev,
@@ -177,20 +182,24 @@ const ProfileSettings = () => {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Security</h2>
           <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Pin</span>
-            <IoChevronForward
+            <span className="cursor-pointer" onClick={handleChangePin}>
+              Change Pin
+            </span>
+            {/* <IoChevronForward
               size={20}
               className="text-blue-500"
               onClick={handleChangePin}
-            />
+            /> */}
           </div>
           <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Password</span>
-            <IoChevronForward
+            <span className="cursor-pointer" onClick={handleChangePassword}>
+              Change Password
+            </span>
+            {/* <IoChevronForward
               size={20}
               className="text-blue-500"
               onClick={handleChangePassword}
-            />
+            /> */}
           </div>
         </div>
 
@@ -216,6 +225,14 @@ const ProfileSettings = () => {
           </div>
         </div>
       </div>
+      <ChangePinDialog
+        isDialogOpen={isChangePinDialogOpen}
+        setIsDialogOpen={setIsChangePinDialogOpen}
+      />
+      <ChangePasswordDialog
+        isDialogOpen={isChangePasswordDialogOpen}
+        setIsDialogOpen={setIsChangePasswordDialogOpen}
+      />
     </div>
   );
 };

@@ -1,5 +1,9 @@
 'use client';
 import AuthService, {
+  changePasswordResponse,
+  changePasswordRequest,
+  ChangePinRequest,
+  ChangePinResponse,
   CreatePinRequest,
   CreatePinResponse,
   EmailVerificationRequest,
@@ -154,6 +158,39 @@ const useAuth = () => {
     },
   });
 
+  const changePinMutation = useMutation({
+    mutationFn: async (pin: ChangePinRequest) => {
+      const response = await AuthService.changePin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to change pin.') {
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: ChangePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+  const changePasswordMutation = useMutation({
+    mutationFn: async (password: changePasswordRequest) => {
+      const response = await AuthService.changePassword(password);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to change password.') {
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: changePasswordResponse) => {
+      const { message } = data;
+      console.log('Password', message);
+    },
+  });
+
   const logOut = () => {
     clearAuth();
     localStorage.clear();
@@ -168,6 +205,8 @@ const useAuth = () => {
     resetPasswordMutation,
     verifyEmailPasswordMutation,
     createPinMutation,
+    changePinMutation,
+    changePasswordMutation,
     logOut,
     user,
     token,
