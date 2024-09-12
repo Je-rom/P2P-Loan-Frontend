@@ -83,7 +83,7 @@ const BalanceCard: React.FC<{
               </p>
             </div>
             <Button
-              className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
+              className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
               onClick={onSeeMoreClick}
             >
               See More
@@ -111,7 +111,7 @@ const ActiveLoanCard: React.FC<{
           <p className="font-bold text-sm">99</p>
         </div>
         <Button
-          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
+          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
           onClick={onSeeMoreClick}
         >
           See More
@@ -138,7 +138,7 @@ const LoanRequestCard: React.FC<{
           <p className="font-bold text-sm">{totalLoanRequests}</p>
         </div>
         <Button
-          className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[60px] h-[28px] mt-3 text-xs"
+          className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[65px] h-[28px] mt-3 text-xs"
           onClick={onSeeMoreClick}
         >
           See More

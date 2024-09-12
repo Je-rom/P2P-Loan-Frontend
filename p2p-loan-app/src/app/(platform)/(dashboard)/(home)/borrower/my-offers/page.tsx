@@ -30,16 +30,16 @@ const MyOffers = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center text-xs">
         <h1>Please wait, we are getting your loan offers</h1>
-        <Loader2 className="animate-spin text-blue-500" size={58} />
+        <Loader2 className="animate-spin text-blue-500" size={48} />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center text-red-500">
+      <div className="flex justify-center text-red-500 text-xs">
         <p className='text-sm'>Failed to load loan offers</p>
       </div>
     );
@@ -76,7 +76,7 @@ const MyOffers = () => {
   return (
     <>
       <div className="">
-        <h1 className="font-bold text-base">Your Loan Offers</h1>
+        <h1 className="font-bold text-sm">Your Loan Offers</h1>
       </div>
       <div className="w-full overflow-x-auto mt-5">
         <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden text-xs">
@@ -99,7 +99,7 @@ const MyOffers = () => {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="border">
+          <TableBody className="border text-xs">
             {data.result.items.map((offer) => (
               <TableRow key={offer.id}>
                 <TableCell>{offer.gracePeriodDays}</TableCell>

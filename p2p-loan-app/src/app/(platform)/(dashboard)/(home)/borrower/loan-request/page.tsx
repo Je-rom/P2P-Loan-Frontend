@@ -120,12 +120,11 @@ const BorrowersLenderOffer: React.FC = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(0);
 
-  const { data: loanRequests, error } = GetLoanRequest(
-    view,
-    pageNumber,
-    pageSize,
-    totalItems,
-  );
+  const {
+    data: loanRequests,
+    error,
+    isLoading,
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
 
   const totalItem = loanRequests?.result.totalItems || 0;
   const totalPages = Math.ceil(totalItem / pageSize);
@@ -154,81 +153,91 @@ const BorrowersLenderOffer: React.FC = () => {
         </div>
       </div>
 
-      {view === 'received' && !loanRequests?.result.items.length && (
-        <div className="flex flex-col items-center text-center space-y-4">
-          <Image
-            src={'/no-results-found.png'}
-            alt="No loan requests received"
-            width={180}
-            height={300}
-          />
-          <p className="text-sm font-semibold text-gray-700">
-            You haven't received any loan requests yet
-          </p>
-          <p className="text-sm text-gray-500">It's coming 😊.</p>
+      {isLoading ? (
+        <div className="flex justify-center items-center my-8">
+          <p className="text-sm font-semibold">Loading loan requests...</p>
         </div>
-      )}
+      ) : (
+        <>
+          {view === 'received' && !loanRequests?.result.items.length && (
+            <div className="flex flex-col items-center text-center space-y-4">
+              <Image
+                src={'/no-results-found.png'}
+                alt="No loan requests received"
+                width={180}
+                height={300}
+              />
+              <p className="text-sm font-semibold text-gray-700">
+                You haven't received any loan requests yet
+              </p>
+              <p className="text-sm text-gray-500">It's coming 😊.</p>
+            </div>
+          )}
 
-      {view === 'sent' && !loanRequests?.result.items.length && (
-        <div className="flex flex-col items-center text-center space-y-4">
-          <Image
-            src={'/no-results-found.png'}
-            alt="No loan requests sent"
-            width={180}
-            height={300}
-          />
-          <p className="text-sm font-semibold text-gray-700">
-            You haven't sent any loan requests yet
-          </p>
-        </div>
-      )}
+          {view === 'sent' && !loanRequests?.result.items.length && (
+            <div className="flex flex-col items-center text-center space-y-4">
+              <Image
+                src={'/no-results-found.png'}
+                alt="No loan requests sent"
+                width={180}
+                height={300}
+              />
+              <p className="text-sm font-semibold text-gray-700">
+                You haven't sent any loan requests yet
+              </p>
+            </div>
+          )}
 
-      <div className="mt-8 space-y-4">
-        {loanRequests?.result.items.slice(0, pageSize).map((offer, index) => {
-          const displayName =
-            view === 'received'
-              ? `${offer.user.firstName} ${offer.user.lastName}`
-              : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
+          <div className="mt-8 space-y-4">
+            {loanRequests?.result.items
+              .slice(0, pageSize)
+              .map((offer, index) => {
+                const displayName =
+                  view === 'received'
+                    ? `${offer.user.firstName} ${offer.user.lastName}`
+                    : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
 
-          return (
-            <LenderOfferCard
-              key={index}
-              lenderName={displayName}
-              loanAmount={offer.loanOffer.amount}
-              repaymentOptions={offer.loanOffer.repaymentFrequency}
-              interestRate={offer.loanOffer.interestRate}
-              showButtons={view === 'received'}
-              loanDuration={offer.loanOffer.loanDurationDays}
-              gracePeriod={offer.loanOffer.gracePeriodDays}
-              accruingInterestRate={offer.loanOffer.accruingInterestRate}
-              status={offer.status}
-            />
-          );
-        })}
-      </div>
+                return (
+                  <LenderOfferCard
+                    key={index}
+                    lenderName={displayName}
+                    loanAmount={offer.loanOffer.amount}
+                    repaymentOptions={offer.loanOffer.repaymentFrequency}
+                    interestRate={offer.loanOffer.interestRate}
+                    showButtons={view === 'received'}
+                    loanDuration={offer.loanOffer.loanDurationDays}
+                    gracePeriod={offer.loanOffer.gracePeriodDays}
+                    accruingInterestRate={offer.loanOffer.accruingInterestRate}
+                    status={offer.status}
+                  />
+                );
+              })}
+          </div>
 
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-4">
-          <Button
-            disabled={pageNumber === 1}
-            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
-          >
-            Previous
-          </Button>
-          <span className="mx-4 text-xs">
-            Page {pageNumber} of {totalPages}
-          </span>
-          <Button
-            disabled={pageNumber === totalPages}
-            onClick={() =>
-              setPageNumber((prev) => Math.min(prev + 1, totalPages))
-            }
-            className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
-          >
-            Next
-          </Button>
-        </div>
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-4">
+              <Button
+                disabled={pageNumber === 1}
+                onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+                className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
+              >
+                Previous
+              </Button>
+              <span className="mx-4 text-xs">
+                Page {pageNumber} of {totalPages}
+              </span>
+              <Button
+                disabled={pageNumber === totalPages}
+                onClick={() =>
+                  setPageNumber((prev) => Math.min(prev + 1, totalPages))
+                }
+                className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </>
   );

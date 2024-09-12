@@ -11,11 +11,11 @@ const LandingPage = () => {
       <section className="bg-transparent">
         <div className="pt-10 pb-0 md:pt-20 bg-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
-            <div className="w-full md:w-[718px] pr-4 pt-10 md:pt-20 pl-3 md:pl-20 text-center md:text-left">
-              <h1 className="font-bold text-4xl md:text-7xl">
+            <div className="w-full md:w-[718px] pr-4 pt- md:pt-20 pl-3 md:pl-20 text-center md:text-left">
+              <h1 className="font-bold text-2xl md:text-5xl">
                 Welcome to BorrowPointe
               </h1>
-              <p className="flex tracking-wide justify-between items-center text-gray-600 mt-4 md:mt-6 mb-8 text-lg md:text-base">
+              <p className="flex tracking-wide justify-between items-center text-gray-600 mt-4 md:mt-6 mb-8 text-xs md:text-sm">
                 Need a loan? Skip the banks and connect directly with lenders
                 through our innovative peer-to-peer lending platform. Whether
                 you're consolidating debt, funding a project, or covering
@@ -23,9 +23,9 @@ const LandingPage = () => {
                 personalized than ever.
               </p>
 
-              <div className="hidden md:block md:pt-10">
+              <div className="hidden md:block md:pt-4">
                 <Link href="/register">
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full mb-2">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full mb-2 text-sm">
                     Get Started
                   </button>
                 </Link>
@@ -36,7 +36,7 @@ const LandingPage = () => {
               <Image
                 src={'/hand-image.svg'}
                 alt="image of a hand holding a phone"
-                width={400}
+                width={300}
                 height={500}
               />
             </div>
@@ -46,11 +46,11 @@ const LandingPage = () => {
 
       <div className="flex flex-col items-center justify-center bg-white p-4">
         <div className="text-center mt-14">
-          <h1 className="text-4xl font-semibold md:text-5xl sm:text-2xl">
+          <h1 className="text-4xl font-semibold md:text-3xl sm:text-2xl">
             Empower Your Financial Future
           </h1>
           <WordRotate
-            className="text-2xl text-gray-600 dark:text-white md:text-xl sm:text-lg"
+            className="text-xl text-gray-600 dark:text-white md:text-lg sm:text-base"
             words={[
               'Connecting lenders and borrowers directly',
               'Flexible terms tailored to your needs',
@@ -73,7 +73,7 @@ const LandingPage = () => {
         />
         <div className="text-center sm:text-left mt-6 sm:mt-0 max-w-md">
           <h1 className="font-bold text-xl sm:text-2xl">About Us</h1>
-          <p className="mt-4 sm:mt-6 text-sm sm:text-base">
+          <p className="mt-4 sm:mt-6 text-sm sm:text-sm">
             At Borrow Pointe, we empower individuals with quick and accessible
             micro-loans to meet their immediate financial needs. Our platform
             connects borrowers and lenders directly, making the loan process
@@ -84,14 +84,14 @@ const LandingPage = () => {
       </div>
 
       <div className="bg-white p-8 mt-5">
-        <h1 className="font-bold text-3xl justify-center items-center flex">
+        <h1 className="font-bold text-2xl justify-center items-center flex">
           What our users say
         </h1>
         <CardStack />
       </div>
 
-      <footer className="bg-white text-black text-center p-2">
-        <p className="text-sm">
+      <footer className="bg-white text-black text-center p-3">
+        <p className="text-xs">
           Copyright &copy; {new Date().getFullYear()} BorrowPointe. All rights
           reserved.
         </p>

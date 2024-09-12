@@ -9,13 +9,17 @@ const Navbar = () => {
       <div className=" space-x-4">
         <Button
           asChild
-          className="py-3 border border-blue-500"
+          className="border border-blue-500"
           variant={'outline'}
         >
-          <Link href="/login">Login</Link>
+          <Link className="text-xs" href="/login">
+            Login
+          </Link>
         </Button>
         <Button asChild className="bg-blue-500 hover:bg-blue-500 text-white">
-          <Link href="/register">Get Started</Link>
+          <Link className="text-xs" href="/register">
+            Get Started
+          </Link>
         </Button>
       </div>
     </nav>

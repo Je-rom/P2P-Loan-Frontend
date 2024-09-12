@@ -162,7 +162,7 @@ const Sidebar = () => {
             onClick={() => setIsOpen(true)}
           >
             <LogOut className={cn('h-6 w-4 mr-3 text-xl')} />
-            <h1 className="text-base">Sign Out</h1>
+            <h1 className="text-sm">Sign Out</h1>
           </Button>
           <LogoutDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
         </div>

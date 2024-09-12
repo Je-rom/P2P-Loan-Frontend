@@ -121,7 +121,7 @@ export function WithdrawDialog({
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="max-w-[95%] sm:max-w-[400px] h-auto rounded-2xl px-2 py-4 mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xs sm:text-xs">
+          <DialogTitle className="text-sm sm:text-sm">
             Withdraw funds from your wallet
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-xs">
@@ -143,7 +143,7 @@ export function WithdrawDialog({
                   setSelectedBank(value);
                 }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-xs">
                   <SelectValue
                     placeholder={
                       isBanksLoading ? 'Loading...' : 'Select a bank'
@@ -163,7 +163,11 @@ export function WithdrawDialog({
                       </SelectItem>
                     )}
                     {banksData?.result.responseBody.map((bank) => (
-                      <SelectItem key={bank.code} value={bank.code}>
+                      <SelectItem
+                        key={bank.code}
+                        value={bank.code}
+                        className="text-xs"
+                      >
                         {bank.name}
                       </SelectItem>
                     ))}

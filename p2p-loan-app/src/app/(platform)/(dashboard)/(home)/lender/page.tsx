@@ -80,7 +80,7 @@ const BalanceCard: React.FC<{
             </p>
           </div>
           <Button
-            className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
+            className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
             onClick={onSeeMoreClick}
           >
             See More
@@ -107,7 +107,7 @@ const ActiveLoanCard: React.FC<{
           <p className="font-bold text-sm">66</p>
         </div>
         <Button
-          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[60px] h-[28px] text-xs mt-3"
+          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
           onClick={onSeeMoreClick}
         >
           See More
@@ -201,7 +201,10 @@ const LenderPage = () => {
         <h1 className="font-bold text-xl sm:text-base">Transactions</h1>
         <div className="flex flex-col md:flex-row items-center md:items-start mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
           <div className="relative flex-grow w-full max-w-[200px]">
-            <Input className="w-full rounded-xl text-xs" placeholder="Search history" />
+            <Input
+              className="w-full rounded-xl text-xs"
+              placeholder="Search history"
+            />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3" />
           </div>
           <div className="relative flex-grow w-full max-w-[250px]">

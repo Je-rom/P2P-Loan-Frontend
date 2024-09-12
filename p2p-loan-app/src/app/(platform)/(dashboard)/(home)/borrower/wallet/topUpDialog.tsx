@@ -57,9 +57,9 @@ export function TopUpDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="max-w-[95%] sm:max-w-[500px] h-auto rounded-2xl px-4 py-6 mx-auto">
+      <DialogContent className="max-w-[95%] sm:max-w-[400px] h-auto rounded-2xl px-4 py-1 mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xs sm:text-xs">
+          <DialogTitle className="text-xs sm:text-xs mt-2">
             Top up your wallet
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-xs">
