@@ -32,8 +32,8 @@ const VerifyEmail: React.FC = () => {
     walletProviderId: formData.linkWallet.walletProvider,
     email: formData.basicInfo.email,
     password: formData.basicInfo.password,
-    userType: formData.basicInfo.user_type,
-    dateOfBirth: formData.basicInfo.dateOfBirth,
+    userType: formData.basicInfo.userType,
+    BvnDateOfBirth: formData.basicInfo.BvnDateOfBirth,
   };
 
   const isLoading = signUpMutation.isPending;
@@ -42,11 +42,16 @@ const VerifyEmail: React.FC = () => {
     setIsLoading(true);
     try {
       const mutationResult = await signUpMutation.mutateAsync(registrationData);
-      if (mutationResult.status === 'success') {
+      if (mutationResult.status === 'Success') {
+        localStorage.removeItem('step');
         router.push('/login');
       }
     } catch (error) {
       console.log(error);
+      localStorage.removeItem('step');
+      setTimeout(() => {
+        window.location.reload();
+      }, 90000);
     } finally {
       setIsLoading(false);
     }
@@ -54,40 +59,31 @@ const VerifyEmail: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-[800px] h-[600px]">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl h-[450px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
         <div className="flex flex-col items-center justify-center mt-8">
-          <Image src={'/email-icon.svg'} alt="email" width={70} height={100} />
-          <h1 className="font-bold text-lg">Check Your Email</h1>
-          <p>Please open mail app to verify</p>
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-[300px] rounded-xl bg-blue-400 hover:bg-4lue-500 mt-6"
-          >
-            {loading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              'Click here to send email'
-            )}
-          </Button>
-          <h1 className="mt-4 flex gap-2">
+          <Image src={'/email-icon.svg'} alt="email" width={60} height={100} />
+          <h1 className="font-bold text-base">Check Your Email</h1>
+          <p className="text-center mt-2 text-sm">
+            Please open your mail app to verify your account
+          </p>
+          {/* <h1 className="mt-4 flex">
             Didn't receive any mail?
             <button>
               <span className="text-blue-400">Click to resend</span>
             </button>
-          </h1>
+          </h1> */}
           <div className="flex items-center mt-4 gap-2">
             <Button
               onClick={handleDone}
               disabled={isLoading}
-              className="bg-blue-400 hover:bg-blue-400"
+              className="bg-blue-600 hover:bg-blue-800 px-4 h-8 text-sm"
             >
-              Done
+              {isLoading ? <Loader2 className="animate-spin" /> : 'DONE'}
             </Button>
           </div>
         </div>

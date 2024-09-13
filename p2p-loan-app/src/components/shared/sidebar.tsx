@@ -6,20 +6,15 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import LoanRequest from '../../../public/loan-request.svg';
-import Loans from '../../../public/loans.svg';
 import myOffer from '../../../public/loans.svg';
 import loanOffer from '../../../public/lender-offer.svg';
 import LayoutDashboard from '../../../public/dashboard.svg';
 import Settings from '../../../public/setting-2.svg';
+import Wallet from '../../../public/wallet.png';
+import Loan from '../../../public/loan.png';
 import Image from 'next/image';
 import { LogoutDialog } from './logoutdialog';
 import NavbarLogo from './navbar-logo';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion';
 
 interface Route {
   title: string;
@@ -53,17 +48,18 @@ const Sidebar = () => {
     },
     {
       title: 'Loans',
-      icon: Loans,
-      items: [
-        { title: 'Disbursed Loans', href: getHref('loan/disbursed-loan') },
-        { title: 'Active Loans', href: getHref('loan/active-loan') },
-        { title: 'Overdue Loans', href: getHref('loan/overdue-loan') },
-      ],
+      icon: Loan,
+      href: getHref('loan'),
     },
     {
       title: 'My Offers',
       icon: myOffer,
       href: getHref('my-offers'),
+    },
+    {
+      title: 'My Wallet',
+      icon: Wallet,
+      href: getHref('wallet'),
     },
   ];
 
@@ -111,117 +107,64 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-3 py-10 flex-1 bg-blue-400">
-        <div className="flex items-center justify-between mb-6 lg:mb-14">
-          <div className="ml-5">
+      <div className="px-2 py-3 flex-1 bg-blue-400">
+        <div className="flex items-center justify-between mb-4">
+          <div className="ml-5 mt-3">
             <NavbarLogo />
           </div>
         </div>
-        <div className="flex flex-col justify-between h-[75dvh] overflow-auto scrollbar-hide">
-          <div className="md:mt-8">
+        <div className="flex flex-col justify-between">
+          <div className="md:mt-9">
             {loading ? (
               <div className="space-y-2">
                 {[...Array(6)].map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="w-[250px] py-8 rounded-xl mt-2"
+                    className="w-[190px] py-4 rounded-xl mt-2"
                   />
                 ))}
               </div>
             ) : (
               routes.map((route, index) => {
-                if (route.items) {
-                  return (
-                    <Accordion key={index} type="single" collapsible>
-                      <AccordionItem value="loans">
-                        <AccordionTrigger>
-                          <div className="flex ml-4">
-                            <Image
-                              src={route.icon}
-                              width={30}
-                              height={20}
-                              alt="icon"
-                              className="mr-4"
-                            />
-                            <span className="text-gray-800 text-xl group-hover:text-blue-400">
-                              {route.title}
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="">
-                            {route.items.map((item, subIndex) => (
-                              <Link
-                                key={subIndex}
-                                href={item.href || '#'}
-                                passHref
-                              >
-                                <Button
-                                  className={cn(
-                                    'w-[250px] py-8 rounded-xl mt-2',
-                                    activeLink === item.href
-                                      ? 'bg-white hover:bg-white'
-                                      : 'bg-blue-200 hover:bg-white',
-                                  )}
-                                  onClick={() =>
-                                    setActiveLink(item.href || null)
-                                  }
-                                >
-                                  <span className="text-gray-800 text-lg group-hover:text-blue-400">
-                                    {item.title}
-                                  </span>
-                                </Button>
-                              </Link>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  );
-                } else {
-                  return (
-                    <Link key={index} href={route.href || '#'} passHref>
-                      <Button
-                        className={cn(
-                          'w-[250px] py-8 rounded-xl mt-2',
-                          activeLink === route.href
-                            ? 'bg-white hover:bg-white'
-                            : 'bg-blue-200 hover:bg-white',
-                        )}
-                        onClick={() => setActiveLink(route.href || null)}
-                      >
-                        <div className="flex items-center w-full">
-                          <Image
-                            src={route.icon}
-                            width={25}
-                            height={20}
-                            alt="icon"
-                            className="mr-4"
-                          />
-                          <span className="text-gray-800 text-xl group-hover:text-blue-400">
-                            {route.title}
-                          </span>
-                        </div>
-                      </Button>
-                    </Link>
-                  );
-                }
+                return (
+                  <Link key={index} href={route.href || '#'} passHref>
+                    <Button
+                      className={cn(
+                        'w-[180px] py-4 rounded-xl mt-2',
+                        activeLink === route.href
+                          ? 'bg-white hover:bg-white'
+                          : 'bg-blue-200 hover:bg-white',
+                      )}
+                      onClick={() => setActiveLink(route.href || null)}
+                    >
+                      <div className="flex items-center w-full">
+                        <Image
+                          src={route.icon}
+                          width={15}
+                          height={20}
+                          alt="icon"
+                          className="mr-2"
+                        />
+                        <span className="text-gray-800 text-sm group-hover:text-blue-400">
+                          {route.title}
+                        </span>
+                      </div>
+                    </Button>
+                  </Link>
+                );
               })
             )}
           </div>
-          <div className="space-y-2">
-            <Button
-              className="text-sm flex p-5 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
-              onClick={() => setIsOpen(true)}
-            >
-              <LogOut className={cn('h-5 w-10 mr-3 text-xl')} />
-              <h1 className="text-lg">Sign Out</h1>
-            </Button>
-            <LogoutDialog
-              open={isOpen}
-              onOpenChange={() => setIsOpen(!isOpen)}
-            />
-          </div>
+        </div>
+        <div className="mt-10">
+          <Button
+            className="text-sm flex p-5 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
+            onClick={() => setIsOpen(true)}
+          >
+            <LogOut className={cn('h-6 w-4 mr-3 text-xl')} />
+            <h1 className="text-sm">Sign Out</h1>
+          </Button>
+          <LogoutDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
         </div>
       </div>
     </div>

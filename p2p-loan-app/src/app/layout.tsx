@@ -23,7 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={ubuntu.className}>
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            className:
+              'w-96 h-16 text-xs bg-blue-900 text-white rounded-xl text-center flex justify-center items-center',
+          }}
+          position="top-center"
+        />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

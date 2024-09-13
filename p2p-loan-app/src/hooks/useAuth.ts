@@ -1,5 +1,17 @@
 'use client';
-import AuthService, { RegisterRequest } from '@/services/authService';
+import AuthService, {
+  CreatePinRequest,
+  CreatePinResponse,
+  EmailVerificationRequest,
+  EmailVerificationResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+} from '@/services/authService';
 import { useAuthState } from '@/store/authStore';
 import axiosResponseMessage from '@/lib/axiosResponseMessage';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -20,13 +32,8 @@ const useAuth = () => {
         return reponse?.data;
       },
       onError: (error: AxiosError<{ message?: string }>) => {
-        if (
-          error.response?.data?.message ===
-          'User already exists, the email or phone number is already in use'
-        ) {
-          toast.error(
-            'User already exists, the email or phone number is already in use',
-          );
+        if (error.response?.data?.message === 'User already exists') {
+          toast.error('User already exists');
         } else {
           toast.error('Invalid Registration credentials');
         }
@@ -42,42 +49,129 @@ const useAuth = () => {
     });
   };
 
+  const loginMutation = useMutation({
+    mutationFn: async (user: LoginRequest) => {
+      console.log('Sending login request', user);
+      const response = await AuthService.login(user);
+      console.log('Received login response', response);
+      return response?.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      const errorMessage = error.message;
+      const responseMessage = error.response?.data?.message;
+
+      if (errorMessage === 'Network Error') {
+        toast.error('Network Error');
+      } else if (
+        responseMessage === 'Email yet to be verified, Please verify your email'
+      ) {
+        toast.error('Email yet to be verified, Please verify your email');
+      } else if (responseMessage) {
+        toast.error(responseMessage);
+      } else {
+        toast.error('Invalid Login details, check your email and password');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: LoginResponse) => {
+      const { status, result: responseData } = data;
+      toast.success('Login successful');
+      console.log(responseData);
+      console.log('Login successful, response data:', responseData);
+      setUser(responseData.user);
+      setToken(responseData.token);
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (userEmail: ForgotPasswordRequest) => {
+      const reponse = await AuthService.forgotPassword(userEmail);
+      return reponse.data;
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.message);
+      console.log(axiosResponseMessage(error));
+    },
+    onSuccess: (data: ForgotPasswordResponse) => {
+      const { status, message } = data;
+      console.log('Forgot password successful:', message);
+      toast.success('Token sent, please check your email');
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (user: ResetPasswordRequest) => {
+      const response = await AuthService.resetPassword(user);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.response?.data.message);
+      console.log(axiosResponseMessage(error));
+    },
+    onSuccess: (data: ResetPasswordResponse) => {
+      const { message } = data;
+      toast.success('Password reset successful, please login');
+    },
+  });
+
+  const verifyEmailPasswordMutation = useMutation({
+    mutationFn: async (user: EmailVerificationRequest) => {
+      const response = await AuthService.verifyEmail(user);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Invalid verification token.') {
+        toast.error('Invalid verification token.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: EmailVerificationResponse) => {
+      const { message } = data;
+      console.log('email', message);
+      toast.success('Email verification successful. You can now log in');
+    },
+  });
+
+  const createPinMutation = useMutation({
+    mutationFn: async (pin: CreatePinRequest) => {
+      const response = await AuthService.createPin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to create pin.') {
+        toast.error('Failed to create pin.');
+      } else if (error.response?.data?.message === 'You already have a pin') {
+        toast.error('You already have a pin.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: CreatePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+
+  const logOut = () => {
+    clearAuth();
+    localStorage.clear();
+    //to prevent the browser from keeping the protected route in history.
+    router.replace('/login');
+  };
+
   return {
     SignUpMutation,
+    loginMutation,
+    forgotPasswordMutation,
+    resetPasswordMutation,
+    verifyEmailPasswordMutation,
+    createPinMutation,
+    logOut,
     user,
     token,
   };
 };
 
 export default useAuth;
-//   const loginMutation = useMutation({
-//     mutationFn: async (user: LoginRequest) => {
-//       console.log('Sending login request', user);
-//       const response = await AuthService.login(user);
-//       console.log('Received login response', response);
-//       return response?.data;
-//     },
-//     onError: (error: AxiosError) => {
-//       console.log('Login error:', error);
-//       console.log(axiosResponseMessage(error));
-//     },
-//     onSuccess: (data: LoginResponse) => {
-//       const { status, data: responseData } = data;
-//       toast.success('Login successful');
-//       console.log(responseData);
-//       console.log('Login successful, response data:', responseData);
-//       const user = {
-//         userId: responseData.userId,
-//         username: responseData.username,
-//         phoneNumber: responseData.phoneNumber,
-//         email: responseData.email,
-//         account_type: responseData.account_type,
-//         profileImage: responseData.profileImage,
-//         status: responseData.status,
-//         createdAt: responseData.createdAt,
-//         token: responseData.token,
-//       };
-//       setUser(user);
-//       setToken(responseData.token);
-//     },
-//   });

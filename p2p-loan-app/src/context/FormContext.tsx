@@ -7,9 +7,11 @@ interface FormData {
     middleName?: string;
     lastName: string;
     email: string;
-    dateOfBirth: string;
+    BvnDateOfBirth: string;
+    phoneNumber: string;
     password: string;
-    user_type: string;
+    userType: string;
+    NIN: string;
   };
   emailVerification: {
     isEmailSent: boolean;
@@ -18,7 +20,7 @@ interface FormData {
     bvn: string;
   };
   linkWallet: {
-    walletProvider: string;
+    walletProvider: string | undefined;
   };
 }
 
@@ -37,9 +39,11 @@ const initialFormData: FormData = {
     firstName: '',
     lastName: '',
     email: '',
-    dateOfBirth: '',
+    BvnDateOfBirth: '',
+    phoneNumber: '',
     password: '',
-    user_type:'',
+    userType: '',
+    NIN:'',
   },
   emailVerification: {
     isEmailSent: false,
