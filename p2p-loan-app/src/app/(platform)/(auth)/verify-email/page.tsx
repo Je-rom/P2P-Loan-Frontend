@@ -77,10 +77,10 @@ const VerifyEmailPage = () => {
             backgroundPosition: 'center',
           }}
         >
-          <div className="bg-white p-6 rounded-xl w-[800px] h-[450px] flex flex-col items-center justify-center">
+          <div className="bg-white p-6 rounded-xl w-[700px] h-[400px] flex flex-col items-center justify-center">
             <div className="w-full max-w-md text-center">
-              <h1 className="font-bold text-2xl mt-4">Verify Your Account</h1>
-              <p className="mt-2">
+              <h1 className="font-bold text-base mt-4">Verify Your Account</h1>
+              <p className="mt-2 text-xs">
                 Your email address has been successfully updated. Please verify
                 your new email to secure your account
               </p>
@@ -96,7 +96,7 @@ const VerifyEmailPage = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-light">
+                        <FormLabel className="text-xs font-light">
                           Email
                         </FormLabel>
                         <FormControl>

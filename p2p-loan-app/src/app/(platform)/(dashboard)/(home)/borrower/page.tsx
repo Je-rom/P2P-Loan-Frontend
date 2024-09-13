@@ -15,6 +15,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'sonner';
 import useProfile from '@/hooks/useProfile';
 import CreatePinDialog from '@/components/shared/create-pin-dialog';
+import useLoanRequest from '@/hooks/useLoanRequest';
 
 interface ImageComponentProps {
   src: string;
@@ -25,7 +26,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt }) => (
   <Image
     src={src}
     alt={alt}
-    width={50}
+    width={30}
     height={50}
     className="bg-pink-200 rounded-full"
   />
@@ -49,17 +50,17 @@ const BalanceCard: React.FC<{
   } = useWallet().useWalletBalanceQuery(walletId || '');
   return (
     <>
-      <Card className="w-full md:w-[350px] shadow-xl">
+      <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-orange-50">
         <CardHeader>
           <div className="flex justify-between items-center">
             <ImageComponent src="balance.svg" alt="Total balance" />
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between mt-5">
+          <div className="flex justify-between">
             <div>
-              <h1>Total Balance</h1>
-              <p className="font-bold text-lg">
+              <h1 className="text-xs">Total Balance</h1>
+              <p className="font-bold text-sm">
                 {isBalanceLoading
                   ? 'Loading...'
                   : isBalanceError
@@ -70,15 +71,19 @@ const BalanceCard: React.FC<{
                 {walletId && !isBalanceLoading && (
                   <button
                     onClick={toggleBalanceVisibility}
-                    className="text-lg md:text-xl ml-1"
+                    className="text-lg md:text-xl ml-4"
                   >
-                    {isBalanceVisible ? <FaEye /> : <FaEyeSlash />}
+                    {isBalanceVisible ? (
+                      <FaEye className="w-3" />
+                    ) : (
+                      <FaEyeSlash className="w-3" />
+                    )}
                   </button>
                 )}
               </p>
             </div>
             <Button
-              className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[80px] mt-3"
+              className="bg-orange-200 hover:bg-orange-200 text-orange-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
               onClick={onSeeMoreClick}
             >
               See More
@@ -93,21 +98,20 @@ const BalanceCard: React.FC<{
 const ActiveLoanCard: React.FC<{
   onSeeMoreClick: () => void;
 }> = ({ onSeeMoreClick }) => (
-  <Card className="w-full md:w-[315px] shadow-xl">
+  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-purple-50">
     <CardHeader>
       <div className="flex justify-between items-center">
         <ImageComponent src="active-loans.svg" alt="Active Loan" />
-        <EllipsisVertical color="#000000" />
       </div>
     </CardHeader>
     <CardContent>
-      <div className="flex justify-between mt-5">
+      <div className="flex justify-between">
         <div>
-          <h1>Active Loan</h1>
-          <p className="font-bold text-xl">99</p>
+          <h1 className="text-xs">Active Loan</h1>
+          <p className="font-bold text-sm">99</p>
         </div>
         <Button
-          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
           onClick={onSeeMoreClick}
         >
           See More
@@ -119,28 +123,26 @@ const ActiveLoanCard: React.FC<{
 
 const LoanRequestCard: React.FC<{
   onSeeMoreClick: () => void;
-}> = ({ onSeeMoreClick }) => (
-  <Card className="w-full md:w-[315px] shadow-xl">
+  totalLoanRequests: number;
+  isLoading: boolean;
+}> = ({ onSeeMoreClick, totalLoanRequests, isLoading }) => (
+  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-green-50">
     <CardHeader>
       <div className="flex justify-between items-center">
-        <Image
-          src="loan-req.svg"
-          alt="Loan request"
-          width={50}
-          height={50}
-          className="bg-pink-200 rounded-full"
-        />
-        <EllipsisVertical color="#000000" />
+        <ImageComponent src="loan-req.svg" alt="Loan request" />
       </div>
     </CardHeader>
     <CardContent>
-      <div className="flex justify-between mt-5">
+      <div className="flex justify-between">
         <div>
-          <h1>Loan Request</h1>
-          <p className="font-bold text-xl">8</p>
+          <h1 className="text-xs">Loan Request</h1>
+          <p className="font-bold text-sm">
+            {' '}
+            {isLoading ? 'Loading...' : totalLoanRequests}
+          </p>
         </div>
         <Button
-          className="bg-green-100 hover:bg-green-100 text-green-700 rounded-full w-[100px] mt-3"
+          className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[65px] h-[28px] mt-3 text-xs"
           onClick={onSeeMoreClick}
         >
           See More
@@ -159,6 +161,11 @@ const BorrowerPage = () => {
   const router = useRouter();
   const { GetCurrentUser } = useProfile();
   const { data: userProfile, isLoading: isProfileLoading } = GetCurrentUser();
+  const { GetLoanRequest } = useLoanRequest();
+  const [pageSize] = useState(5);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [view, setView] = useState<'received' | 'sent'>('received');
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -202,6 +209,18 @@ const BorrowerPage = () => {
     }
   }, [userProfile, isProfileLoading]);
 
+  //get total number of loan requests
+  const {
+    data: loanRequests,
+    error,
+    isLoading: isLoanRequestsLoading,
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
+
+  useEffect(() => {
+    if (loanRequests) {
+      setTotalItems(loanRequests.result.totalItems);
+    }
+  }, [loanRequests]);
   return (
     <>
       <CreatePinDialog
@@ -210,15 +229,15 @@ const BorrowerPage = () => {
       />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
-          <h1 className="font-bold text-xl">Hi {fullName}</h1>
-          <p>Welcome to BorrowPointe</p>
+          <h1 className="font-bold text-sm">Hi {fullName}</h1>
+          <p className="text-xs">Welcome to BorrowPointe</p>
         </div>
         <Button
           onClick={() => router.push('/create-offer')}
-          className="bg-blue-500 hover:bg-blue-500 w-[200px] h-[50px] rounded-xl"
+          className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
         >
-          <Plus color="#ffffff" />
-          Create New Offer
+          {/* <Plus color="#ffffff" /> */}
+          New Offer
         </Button>
       </div>
       <div className="flex flex-wrap items-center justify-start gap-4 mt-6">
@@ -231,21 +250,26 @@ const BorrowerPage = () => {
         <ActiveLoanCard onSeeMoreClick={() => router.push('/borrower/loan')} />
         <LoanRequestCard
           onSeeMoreClick={() => router.push('/borrower/loan-request')}
+          totalLoanRequests={totalItems}
+          isLoading={isLoanRequestsLoading}
         />
       </div>
       <div className="p-6 mt-14 rounded-2xl border border-gray-200">
         <div className="flex justify-between items-center">
-          <h1 className="font-bold text-xl">Repayments</h1>
+          <h1 className="font-bold text-base">Repayments</h1>
           <Filter />
         </div>
         <BorrowerRepaymentTable />
       </div>
       <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-4 flex flex-col md:flex-row justify-between items-start">
-        <h1 className="font-bold text-xl sm:text-2xl">Transactions</h1>
+        <h1 className="font-bold text-base sm:text-base">Transactions</h1>
         <div className="flex flex-col md:flex-row items-center md:items-start mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
-          <div className="relative flex-grow w-full max-w-[250px]">
-            <Input className="w-full rounded-xl" placeholder="Search history" />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <div className="relative flex-grow w-full max-w-[200px]">
+            <Input
+              className="w-full rounded-xl text-xs"
+              placeholder="Search history"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3" />
           </div>
           <div className="relative flex-grow w-full max-w-[250px]">
             <DatePickerWithRange />

@@ -59,8 +59,8 @@ const Wallet = () => {
   if (getWalletQuery.isLoading || isBalanceLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src="/Opener Loading.gif" alt="load" width={300} height={30} />
-        <h1 className="font-bold text-xl">
+        <Image src="/Opener Loading.gif" alt="load" width={200} height={30} />
+        <h1 className="font-bold text-base">
           We are getting your wallet details...
         </h1>
       </div>
@@ -70,8 +70,8 @@ const Wallet = () => {
   if (getWalletQuery.isError || isBalanceError) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src="/Failed Mail.gif" alt="load" width={300} height={30} />;
-        <h1 className="font-bold text-xl">
+        <Image src="/Failed Mail.gif" alt="load" width={200} height={30} />;
+        <h1 className="font-bold text-base">
           Sorry we couldn't get your wallet details...
         </h1>
       </div>
@@ -86,10 +86,10 @@ const Wallet = () => {
         </div>
       )}
       <div className="px-2 md:px-2">
-        <h1 className="font-bold text-xl">Your Wallet</h1>
+        <h1 className="font-bold text-base">Your Wallet</h1>
         <div className="flex justify-start mt-5">
           <Card
-            className="w-full max-w-[600px] h-[220px] rounded-3xl relative"
+            className="w-full max-w-[380px] h-[140px] rounded-3xl relative"
             style={{
               backgroundImage: `url('/cardbg.svg')`,
               backgroundSize: 'cover',
@@ -102,19 +102,19 @@ const Wallet = () => {
                   <Image
                     src="/monnifyY.png"
                     alt="monnify logo"
-                    width={45}
+                    width={25}
                     height={60}
                     className=""
                   />
-                  <span className="text-base md:text-lg lg:text-xl">
+                  <span className="text-sm md:text-sm lg:text-sm">
                     Your Account
                   </span>
                 </div>
               </div>
             </CardHeader>
-            <CardFooter className="flex flex-col items-start px-4 md:px-6">
+            <CardFooter className="flex flex-col items-start">
               <div className="flex items-center">
-                <h1 className="mr-1 font-semibold text-sm md:text-base">
+                <h1 className="mr-1 text-xs md:text-xs">
                   Account Number:{' '}
                   {accountNumber
                     ? `${accountNumber.slice(0, 8)}...`
@@ -124,21 +124,19 @@ const Wallet = () => {
                   className="flex ml-2 items-center pr-3 cursor-pointer"
                   onClick={() => copyToClipboard(accountNumber)}
                 >
-                  <Copy className="w-5" />
+                  <Copy className="w-4" />
                 </div>
               </div>
-              <div className="flex items-center mt-5">
-                <h1 className="mr-6 font-semibold text-sm md:text-base">
-                  Available Balance
-                </h1>
+              <div className="flex items-center mt-1">
+                <h1 className="mr-6 text-xs md:text-xs">Available Balance</h1>
                 <button
                   onClick={toggleBalanceVisibility}
-                  className="text-lg md:text-xl"
+                  className="text-sm md:text-sm"
                 >
                   {isBalanceVisible ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
-              <p className="font-bold text-xl md:text-2xl mt-2">
+              <p className="font-bold text-sm md:text-base mt-2">
                 {isBalanceVisible
                   ? `₦ ${balanceData?.result.availableBalance.toFixed(2)}`
                   : '******'}
@@ -148,17 +146,17 @@ const Wallet = () => {
         </div>
         <div className="mt-5 flex gap-4">
           <Button
-            className="bg-blue-400 hover:bg-blue-400"
+            className="bg-blue-400 hover:bg-blue-400 w-[80px] h-[30px]"
             onClick={() => setIsWithdrawOpen(true)}
           >
             <Image
               src={'/withdraw.svg'}
               alt="withdraw"
-              width={16}
+              width={10}
               height={16}
               className="mr-2"
             />
-            <span>Withdraw</span>
+            <span className="text-xs">Withdraw</span>
           </Button>
           <WithdrawDialog
             open={isWithdrawOpen}
@@ -166,17 +164,17 @@ const Wallet = () => {
           />
 
           <Button
-            className="bg-blue-400 hover:bg-blue-400"
+            className="bg-blue-400 hover:bg-blue-400 w-[80px] h-[30px]"
             onClick={() => setIsTopUpOpen(true)}
           >
             <Image
               src={'/plus.svg'}
               alt="top up"
-              width={16}
+              width={10}
               height={16}
               className="mr-2"
             />
-            <span>Top Up</span>
+            <span className='text-xs'>Top Up</span>
           </Button>
           <TopUpDialog
             open={isTopUpOpen}

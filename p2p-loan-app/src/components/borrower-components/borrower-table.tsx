@@ -90,7 +90,7 @@ const BorrowerTable = () => {
   return (
     <>
       <div className="mt-5 bg-gray-100 bg-opacity-100">
-        <Table>
+        <Table className="text-xs">
           <TableHeader className="bg-white text-center">
             <TableRow className="">
               <TableHead className="">Name</TableHead>
@@ -99,7 +99,7 @@ const BorrowerTable = () => {
               <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="text-xs">
             {currentItems.map((invoice) => (
               <TableRow key={invoice.id}>
                 <TableCell className="font-medium">{invoice.name}</TableCell>
@@ -119,6 +119,7 @@ const BorrowerTable = () => {
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
+                className="text-xs"
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => (
@@ -134,6 +135,7 @@ const BorrowerTable = () => {
             <PaginationItem>
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
+                className="text-xs"
               />
             </PaginationItem>
           </PaginationContent>

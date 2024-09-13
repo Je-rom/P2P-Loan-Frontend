@@ -17,25 +17,27 @@ const ActiveLoan = () => {
         <Image
           src={'/active-loans.svg'}
           alt="active-loans"
-          width={50}
+          width={25}
           height={20}
         />
       ),
-      amount: 529.0,
-      text: 'Active Loans',
+      amount: <span style={{ fontSize: '15px' }}>529.0</span>,
+      text: <span style={{ fontSize: '15px' }}>Active Loans</span>,
     },
   ];
-  // useEffect(() => {
-  //   const firstName = localStorage.getItem('firstName');
-  //   const lastName = localStorage.getItem('lastName');
-  //   if (firstName && lastName) {
-  //     setFullName(`${firstName} ${lastName}`);
-  //   }
-  // }, []);
   return (
     <div>
-      <h1 className="text-2xl">Your Loans</h1>
-      <div className="flex flex-wrap gap-4 p-4">
+      <h1 className="text-base font-bold">Your Loans</h1>
+      <div className="mt-4 text-xs">
+        <p>
+          The table below displays the details of the loans you've issued,
+          including the loan amount, interest rates, repayment frequency, and
+          more. For comprehensive information on each loan, including repayment
+          schedules and borrower history, click on 'View details' in the action
+          menu.
+        </p>
+      </div>
+      {/* <div className="flex flex-wrap gap-4 p-4">
         {cards.map((card, index) => (
           <Card key={index} className="w-full md:w-[350px] shadow-xl">
             <CardHeader></CardHeader>
@@ -50,7 +52,7 @@ const ActiveLoan = () => {
             </CardContent>
           </Card>
         ))}
-      </div>
+      </div> */}
       <LenderLoanDetailsTable />
     </div>
   );

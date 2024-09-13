@@ -2,26 +2,51 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  //extract token and user from cookies
+  // Extract token and user from cookies
   const token = request.cookies.get('token')?.value;
   const userCookie = request.cookies.get('user')?.value;
 
   if (!token || !userCookie) {
-    //if no token or user is found, redirect to the login page
-    return NextResponse.redirect(new URL('/login', request.url));
+    // Set headers to prevent caching
+    const response = NextResponse.redirect(new URL('/login', request.url));
+    response.headers.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate',
+    );
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    response.headers.set('Surrogate-Control', 'no-store');
+
+    return response;
   }
 
-  //parse the user data from the cookie (since it's JSON stringified)
+  // Parse the user data from the cookie (since it's JSON stringified)
   try {
     const user = JSON.parse(userCookie);
-    // console.log('User:', user);
   } catch (error) {
-    // console.error('Error parsing user cookie', error);
-    return NextResponse.redirect(new URL('/login', request.url));
+    const response = NextResponse.redirect(new URL('/login', request.url));
+    response.headers.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate',
+    );
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    response.headers.set('Surrogate-Control', 'no-store');
+
+    return response;
   }
 
-  //if everything checks out, allow the request to proceed
-  return NextResponse.next();
+  // Set cache control headers to prevent the dashboard from being cached
+  const response = NextResponse.next();
+  response.headers.set(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate',
+  );
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
+  response.headers.set('Surrogate-Control', 'no-store');
+
+  return response;
 }
 
 export const config = {

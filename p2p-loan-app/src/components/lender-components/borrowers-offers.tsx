@@ -7,11 +7,11 @@ import useLoanOffer from '@/hooks/useLoanOffer';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import AutocompleteHint from '@/components/ui/filter';
 import useWallet from '@/hooks/useWallet';
 import useLoanRequest from '@/hooks/useLoanRequest';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import dayjs from 'dayjs';
 
 export function BorrowerOffer() {
   const { GetLoanOffers } = useLoanOffer();
@@ -87,10 +87,10 @@ export function BorrowerOffer() {
         <Image
           src={'/loadingLoanOffer.gif'}
           alt="loading"
-          width={250}
+          width={200}
           height={10}
         />
-        <h1 className="font-bold text-2xl">Loading lender's offers...</h1>
+        <h1 className="font-bold text-sm">Loading lender's offers...</h1>
       </div>
     );
   }
@@ -98,8 +98,8 @@ export function BorrowerOffer() {
   if (error) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src={'/failed.gif'} alt="loading" width={100} height={10} />
-        <h1 className="font-bold text-2xl">Failed to get lenders offers...</h1>
+        <Image src={'/failed.gif'} alt="loading" width={60} height={10} />
+        <h1 className="font-bold text-sm">Failed to get lenders offers...</h1>
       </div>
     );
   }
@@ -167,7 +167,7 @@ export function BorrowerOffer() {
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.id}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400 font-bold text-2xl"
+                      className="text-neutral-600 dark:text-neutral-400 font-bold text-sm"
                     >
                       Loan Amount: {active.amount}
                     </motion.p>
@@ -188,31 +188,52 @@ export function BorrowerOffer() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <div className="flex gap-24">
+                    <div className="flex gap-24 text-xs">
                       <div>
-                        <p className="font-bold">
-                          Interest Rate: {active.interestRate}%
-                        </p>
-                        <p className="font-bold">
-                          Loan Duration: {active.loanDurationDays} days
-                        </p>
-                        <p className="font-bold">
-                          Repayment Frequency: {active.repaymentFrequency}
-                        </p>
-                        <p className="font-bold">
-                          Grace Period: {active.gracePeriodDays} days
-                        </p>
-                        <p className="font-bold">
-                          Accruing Interest Rate: {active.accruingInterestRate}{' '}
+                        <p>
+                          Interest Rate:
+                          <span className="font-bold ml-2">
+                            {active.interestRate}
+                          </span>
                           %
                         </p>
-                        <h1 className="font-bold mt-1">
+                        <p>
+                          Loan Duration:
+                          <span className="font-bold ml-2">
+                            {active.loanDurationDays} days
+                          </span>
+                        </p>
+                        <p>
+                          Repayment Frequency:
+                          <span className="font-bold ml-2">
+                            {active.repaymentFrequency}
+                          </span>
+                        </p>
+                        <p>
+                          Grace Period:
+                          <span className="font-bold ml-2">
+                            {active.gracePeriodDays} days
+                          </span>
+                        </p>
+                        <p>
+                          Accruing Interest Rate:
+                          <span className="font-bold ml-2">
+                            {active.accruingInterestRate} %
+                          </span>
+                        </p>
+                        <p>
+                          Date created:
+                          <span className="font-bold ml-2">
+                            {dayjs(active.createdAt).format('MMMM D, YYYY')}
+                          </span>
+                        </p>
+                        <h1 className="mt-1">
                           Offer status:
                           <Button
                             className={
                               active.active
-                                ? 'ml-2 bg-green-400 hover:bg-green-500 h-8'
-                                : 'ml-2 bg-red-400 hover:bg-red-500'
+                                ? 'ml-2 bg-green-400 hover:bg-green-500 text-xs w-12 h-5'
+                                : 'ml-2 bg-red-400 hover:bg-red-500 text-xs w-12'
                             }
                           >
                             {active.active ? 'ACTIVE' : 'INACTIVE'}
@@ -220,23 +241,24 @@ export function BorrowerOffer() {
                         </h1>
                       </div>
                       <div
+                        className="text-xs"
                         onClick={() => router.push('/profile')}
                         style={{ cursor: 'pointer' }}
                       >
-                        <Avatar>
+                        <Avatar className="w-6 h-6">
                           <AvatarImage src="https://github.com/shadcn.png" />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         {active.user.firstName} {active.user.lastName}
                       </div>
                     </div>
-                    <p className="font-medium mt-3">
+                    <p className="font-medium mt-3 text-xs">
                       {active.additionalInformation}
                     </p>
                     <Button
                       disabled={isLoading1}
                       onClick={() => handleApply(active)}
-                      className="w-full mt-5 bg-blue-400 hover:bg-blue-400 text-lg"
+                      className="bg-blue-400 hover:bg-blue-400 text-sm w-[100px] h-[35px]"
                     >
                       {isLoading1 ? (
                         <Loader2 className="animate-spin" />
@@ -268,13 +290,13 @@ export function BorrowerOffer() {
               <div className="">
                 <motion.h3
                   layoutId={`title-${offer.id}-${id}`}
-                  className="text-neutral-800 dark:text-neutral-200 text-center md:text-left font-bold"
+                  className="text-neutral-800 dark:text-neutral-200 text-center md:text-left font-bold text-xs"
                 >
                   {offer.user.firstName} {offer.user.lastName}
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${offer.id}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
+                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-xs"
                 >
                   Loan Amount: {offer.amount}
                 </motion.p>
@@ -282,18 +304,23 @@ export function BorrowerOffer() {
             </div>
             <motion.button
               layoutId={`button-${offer.id}-${id}`}
-              className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0"
+              className="px-2 py-2 rounded-full bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0 text-xs"
             >
               See More
             </motion.button>
           </motion.div>
         ))}
       </ul>
-      <div className="flex justify-between mt-4">
-        <Button onClick={handlePreviousPage} disabled={pageNumber === 1}>
+      <div className="flex justify-between mt-4 text-xs">
+        <Button
+          className="text-xs w-14 h-7 bg-blue-500"
+          onClick={handlePreviousPage}
+          disabled={pageNumber === 1}
+        >
           Previous
         </Button>
         <Button
+          className="text-xs w-14 h-7 bg-blue-500"
           onClick={handleNextPage}
           disabled={pageNumber * pageSize >= data?.result.totalItems!}
         >

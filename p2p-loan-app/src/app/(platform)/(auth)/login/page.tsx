@@ -79,10 +79,10 @@ const LoginPage = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-4xl h-[550px] mx-auto">
+      <div className="bg-white p-6 rounded-xl w-[700px] h-[450px] mx-auto">
         <div className="flex flex-col justify-center items-center h-full">
-          <h1 className="font-bold text-xl">Welcome Back</h1>
-          <p>We’re so excited to see you again</p>
+          <h1 className="font-bold text-base">Welcome Back</h1>
+          <p className="text-xs">We’re so excited to see you again</p>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -133,10 +133,7 @@ const LoginPage = () => {
                 />
               </div>
               <p className="mt-1 text-right">
-                <Link
-                  href="/forgot-password"
-                  className="text-blue-600 text-base"
-                >
+                <Link href="/forgot-password" className="text-blue-600 text-xs">
                   Forgot Password?
                 </Link>
               </p>
@@ -149,11 +146,11 @@ const LoginPage = () => {
                   {isLoading ? <Loader2 className="animate-spin" /> : 'LOGIN'}
                 </Button>
               </div>
-              <p className="mt-3 text-center leading-9 tracking-wide">
+              <p className="mt-3 text-center leading-9 tracking-wide text-sm">
                 Don't have an account?
                 <Link
                   href="/register"
-                  className="ml-1 text-base underline text-blue-600"
+                  className="ml-1 text-sm underline text-blue-600"
                 >
                   Sign Up
                 </Link>

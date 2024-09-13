@@ -59,7 +59,7 @@ const BorrowerRepaymentTable = () => {
   return (
     <>
       <div className="overflow-auto max-h-[400px] mt-5 scrollbar-hide">
-        <Table className="w-full">
+        <Table className="w-full text-xs">
           <TableHeader className="bg-gray-100">
             <TableRow>
               <TableHead className="w-[450px]">Name</TableHead>
@@ -68,7 +68,7 @@ const BorrowerRepaymentTable = () => {
               <TableHead className="text-right">Balance</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className='text-xs'>
             {tableDetails.map((detail, index) => (
               <TableRow key={index}>
                 <TableCell>{detail.name}</TableCell>

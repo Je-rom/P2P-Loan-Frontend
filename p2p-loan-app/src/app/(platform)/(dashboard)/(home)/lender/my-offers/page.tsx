@@ -30,17 +30,17 @@ const MyOffers = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center text-xs">
         <h1>Please wait, we are getting your loan offers</h1>
-        <Loader2 className="animate-spin text-blue-500" size={68} />
+        <Loader2 className="animate-spin text-blue-500" size={48} />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center text-red-500">
-        <p>Failed to load loan offers: {error.message}</p>
+      <div className="flex justify-center text-red-500 text-xs">
+        <p className="text-xs">Failed to load loan offers</p>
       </div>
     );
   }
@@ -51,13 +51,13 @@ const MyOffers = () => {
         <Image
           src={'/no-results-found.png'}
           alt="No loan offers found"
-          width={350}
+          width={200}
           height={300}
         />
-        <p className="text-xl font-semibold text-gray-700">
+        <p className="text-sm font-semibold text-gray-700">
           No loan offers found
         </p>
-        <p className="text-lg text-gray-500">
+        <p className="text-sm text-gray-500">
           Go to your dashboard to start creating offers and manage your loans.
         </p>
       </div>
@@ -75,11 +75,11 @@ const MyOffers = () => {
 
   return (
     <>
-      <div className="mb-10 font-bold text-xl">
+      <div className="mb-10 font-bold text-sm">
         <h1>Your Loan Offers</h1>
       </div>
       <div className="w-full overflow-x-auto">
-        <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden">
+        <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden text-xs">
           <TableHeader className="bg-white border">
             <TableRow className="bg-blue-100">
               <TableHead className="font-bold text-black-900">Name</TableHead>
@@ -101,7 +101,7 @@ const MyOffers = () => {
               <TableHead className="font-bold text-black-900">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="text-lg border">
+          <TableBody className="text-xs border">
             {data.result.items.map((offer) => (
               <TableRow key={offer.id}>
                 <TableCell>{offer.user.firstName}</TableCell>
@@ -117,7 +117,7 @@ const MyOffers = () => {
           <TableFooter></TableFooter>
         </Table>
       </div>
-      <div className="mt-20 text-end">
+      <div className="mt-20 text-end text-xs">
         <p>Total Offers: {data?.result.totalItems}</p>
       </div>
     </>

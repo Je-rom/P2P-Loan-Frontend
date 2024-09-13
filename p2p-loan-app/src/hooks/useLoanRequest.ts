@@ -1,6 +1,10 @@
 'use client';
 import axiosResponseMessage from '@/lib/axiosResponseMessage';
-import { useMutation, UseQueryOptions } from '@tanstack/react-query';
+import {
+  useMutation,
+  UseMutationResult,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -39,6 +43,7 @@ const useLoanRequest = () => {
     trafficType: 'sent' | 'received',
     pageNumber: number,
     pageSize: number = 5,
+    totalItems: number,
   ): UseQueryResult<LoanRequestResponse, AxiosError<{ message: string }>> => {
     return useQuery<LoanRequestResponse, AxiosError<{ message: string }>>({
       queryKey: ['loanRequest', trafficType],
@@ -47,6 +52,7 @@ const useLoanRequest = () => {
           trafficType,
           pageNumber,
           pageSize,
+          totalItems,
         );
         return response.data;
       },
@@ -62,101 +68,51 @@ const useLoanRequest = () => {
     } as UseQueryOptions<LoanRequestResponse, AxiosError<{ message: string }>>);
   };
 
-  // const AcceptLoanRequest = (
-  //   loanReqeustId: string,
-  // ): UseQueryResult<
-  //   AcceptLoanRequestResponse,
-  //   AxiosError<{ message: string }>
-  // > => {
-  //   return useQuery<AcceptLoanRequestResponse, AxiosError<{ message: string }>>(
-  //     {
-  //       queryKey: ['acceptRequest', loanReqeustId],
-  //       queryFn: async (): Promise<AcceptLoanRequestResponse> => {
-  //         const response =
-  //           await LoanRequestService.acceptLoanRequest(loanReqeustId);
-  //         return response.data;
-  //       },
-  //       onError: (error: AxiosError<{ message: string }>) => {
-  //         toast.error(
-  //           `Error: ${error.response?.data.message || error.message}`,
-  //         );
-  //         console.error('Failed to accept loan request:', error.message);
-  //       },
-  // onSuccess: (data: AcceptLoanRequestResponse) => {
-  //   const { message, result } = data;
-  //   console.log('Accepted loan request successfully:', result);
-  //   toast.success(message);
-  // },
-  //     } as UseQueryOptions<
-  //       AcceptLoanRequestResponse,
-  //       AxiosError<{ message: string }>
-  //     >,
-  //   );
-  // };
-
-  const useAcceptLoanRequest = (loanReqeustId: string) => {
-    return useQuery<AcceptLoanRequestResponse, AxiosError<{ message: string }>>(
-      {
-        queryKey: ['acceptRequest', loanReqeustId],
-        queryFn: async (): Promise<AcceptLoanRequestResponse> => {
-          const response =
-            await LoanRequestService.acceptLoanRequest(loanReqeustId);
-          return response.data;
-        },
-        onError: (error: AxiosError<{ message: string }>) => {
-          toast.error(
-            `Error: ${error.response?.data.message || error.message}`,
-          );
-          console.error('Failed to accept loan request:', error.message);
-        },
-        onSuccess: (data: AcceptLoanRequestResponse) => {
-          const { message, result } = data;
-          console.log('Accepted loan request successfully:', result);
-          toast.success(message);
-        },
-      } as UseQueryOptions<
-        AcceptLoanRequestResponse,
-        AxiosError<{ message: string }>
-      >,
-    );
-  };
-
-  const DeclineLoanRequest = (
-    loanReqeustId: number,
-  ): UseQueryResult<
-    DeclineLoanRequestResponse,
-    AxiosError<{ message: string }>
-  > => {
-    return useQuery<
-      DeclineLoanRequestResponse,
-      AxiosError<{ message: string }>
-    >({
-      queryKey: ['declineRequest', loanReqeustId],
-      queryFn: async (): Promise<DeclineLoanRequestResponse> => {
+  const AcceptLoanRequestMutation = () => {
+    return useMutation({
+      mutationFn: async (loanRequestId: string) => {
         const response =
-          await LoanRequestService.declineLoanRequest(loanReqeustId);
-        return response.data;
+          await LoanRequestService.acceptLoanRequest(loanRequestId);
+        return response;
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toast.error(`Error: ${error.response?.data.message || error.message}`);
-        console.error('Failed to decline loan request:', error.message);
+        toast.error(error.response?.data.message);
+        console.log('failed to accept', error.message);
+      },
+      onSuccess: (data: AcceptLoanRequestResponse) => {
+        const { status, message, result } = data;
+        console.log('loan offer created', message, status);
+        console.log(result);
+        toast.success('Loan offer created successfully');
+      },
+    });
+  };
+
+  const DeclineLoanRequestMutation = () => {
+    return useMutation({
+      mutationFn: async (loanRequestId: string) => {
+        const response =
+          await LoanRequestService.declineLoanRequest(loanRequestId);
+        return response;
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toast.error(error.response?.data.message);
+        console.log('failed to decline', error.message);
       },
       onSuccess: (data: DeclineLoanRequestResponse) => {
-        const { message, result } = data;
-        console.log('Declined loan request successfully:', result);
-        toast.success(message);
+        const { status, message, result } = data;
+        console.log('loan offer declined', message, status);
+        console.log(result);
+        toast.success('Loan offer declined successfully');
       },
-    } as UseQueryOptions<
-      DeclineLoanRequestResponse,
-      AxiosError<{ message: string }>
-    >);
+    });
   };
 
   return {
     CreateLoanRequestMutation,
     GetLoanRequest,
-    useAcceptLoanRequest,
-    DeclineLoanRequest,
+    AcceptLoanRequestMutation,
+    DeclineLoanRequestMutation,
   };
 };
 

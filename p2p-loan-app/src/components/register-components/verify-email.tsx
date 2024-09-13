@@ -59,16 +59,16 @@ const VerifyEmail: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl h-[500px]">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl h-[450px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
         <div className="flex flex-col items-center justify-center mt-8">
-          <Image src={'/email-icon.svg'} alt="email" width={90} height={100} />
-          <h1 className="font-bold text-lg">Check Your Email</h1>
-          <p className="text-center mt-2">
+          <Image src={'/email-icon.svg'} alt="email" width={60} height={100} />
+          <h1 className="font-bold text-base">Check Your Email</h1>
+          <p className="text-center mt-2 text-sm">
             Please open your mail app to verify your account
           </p>
           {/* <h1 className="mt-4 flex">
@@ -81,7 +81,7 @@ const VerifyEmail: React.FC = () => {
             <Button
               onClick={handleDone}
               disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-800 w-full"
+              className="bg-blue-600 hover:bg-blue-800 px-4 h-8 text-sm"
             >
               {isLoading ? <Loader2 className="animate-spin" /> : 'DONE'}
             </Button>

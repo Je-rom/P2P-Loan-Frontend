@@ -74,7 +74,7 @@ export function WithdrawDialog({
   }, [getWalletQuery.isSuccess, getWalletQuery.data]);
 
   useEffect(() => {
-    if (selectedBank && accountNumber?.length === 10) {
+    if (selectedBank && accountNumber?.toString().length === 10) {
       verifyAccountDetails();
     }
   }, [selectedBank, accountNumber]);
@@ -119,19 +119,19 @@ export function WithdrawDialog({
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="max-w-[95%] sm:max-w-[500px] h-auto rounded-2xl px-4 py-6 mx-auto">
+      <DialogContent className="max-w-[95%] sm:max-w-[400px] h-auto rounded-2xl px-2 py-4 mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">
+          <DialogTitle className="text-sm sm:text-sm">
             Withdraw funds from your wallet
           </DialogTitle>
-          <DialogDescription className="text-sm sm:text-base">
+          <DialogDescription className="text-xs sm:text-xs">
             Effortlessly withdraw funds from your wallet to your preferred
             account.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
-            <Label className="text-start text-sm sm:text-base">
+            <Label className="text-start text-xs sm:text-xs">
               Choose a bank
             </Label>
             <div className="relative sm:col-span-3 w-full">
@@ -143,7 +143,7 @@ export function WithdrawDialog({
                   setSelectedBank(value);
                 }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-xs">
                   <SelectValue
                     placeholder={
                       isBanksLoading ? 'Loading...' : 'Select a bank'
@@ -153,17 +153,21 @@ export function WithdrawDialog({
                 <SelectContent>
                   <SelectGroup>
                     {isBanksLoading && (
-                      <SelectItem disabled value="loading">
+                      <SelectItem className="text-xs" disabled value="loading">
                         Loading banks...
                       </SelectItem>
                     )}
                     {isBanksError && (
-                      <SelectItem disabled value="error">
+                      <SelectItem className="text-xs" disabled value="error">
                         Failed to load banks
                       </SelectItem>
                     )}
                     {banksData?.result.responseBody.map((bank) => (
-                      <SelectItem key={bank.code} value={bank.code}>
+                      <SelectItem
+                        key={bank.code}
+                        value={bank.code}
+                        className="text-xs"
+                      >
                         {bank.name}
                       </SelectItem>
                     ))}
@@ -173,47 +177,46 @@ export function WithdrawDialog({
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 mt-2">
-            <Label className="text-start text-sm sm:text-base">
+            <Label className="text-start text-xs sm:text-xs">
               Account Number
             </Label>
             <div className="relative sm:col-span-3 w-full">
               <Input
-                className="border-black pr-10 w-full text-sm sm:text-base"
+                className="border-black pr-10 w-full text-xs sm:text-xs"
                 placeholder="Enter account number"
                 onChange={(e) => setAccountNumber(e.target.value)}
                 maxLength={10}
                 value={accountNumber || ''}
               />
-              {isVerifying && <p className="text-sm mt-1">Verifying...</p>}
+              {isVerifying && <p className="text-xs mt-1">Verifying...</p>}
               {accountName && (
-                <span className="text-green-600 text-sm mt-2">
+                <span className="text-green-600 text-xs mt-2">
                   {accountName}
                 </span>
               )}
               {verificationMessage && (
-                <p className="text-red-600 text-sm mt-2">
+                <p className="text-red-600 text-xs mt-2">
                   {verificationMessage}
                 </p>
               )}
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 mt-2">
-            <Label className="text-start text-sm sm:text-base">Amount</Label>
+            <Label className="text-start text-xs sm:text-xs">Amount</Label>
             <Input
               className="sm:col-span-3 w-full border-black text-sm sm:text-base"
               value={amount || ''}
               onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-          <h1 className="text-end">
-            Available Balance: ₦
-            {balanceData?.result.availableBalance}
+          <h1 className="text-end text-xs">
+            Available Balance: ₦{balanceData?.result.availableBalance}
           </h1>
         </div>
         <DialogFooter>
           <Button
             type="submit"
-            className="items-center flex justify-center w-full bg-blue-600 hover:bg-blue-800 text-sm sm:text-base"
+            className="items-center flex justify-center w-full bg-blue-600 hover:bg-blue-800 text-sm sm:text-sm"
           >
             Withdraw
           </Button>
@@ -225,6 +228,3 @@ export function WithdrawDialog({
     </Dialog>
   );
 }
-
-
-

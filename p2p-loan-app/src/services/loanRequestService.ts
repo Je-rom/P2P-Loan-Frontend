@@ -191,21 +191,22 @@ class LoanRequestService {
     trafficType: 'sent' | 'received',
     pageNumber: number,
     pageSize: number,
+    totalItems: number,
   ): Promise<AxiosResponse<LoanRequestResponse>> => {
     return await axiosConfig.get('/api/loan-request/me', {
-      params: { trafficType, pageNumber, pageSize },
+      params: { trafficType, pageNumber, pageSize, totalItems },
     });
   };
 
   static acceptLoanRequest = async (
     loanReqeustId: string,
-  ): Promise<AxiosResponse<AcceptLoanRequestResponse>> => {
+  ): Promise<AcceptLoanRequestResponse> => {
     return await axiosConfig.post(`/api/loan-request/accept/${loanReqeustId}`);
   };
 
   static declineLoanRequest = async (
-    loanReqeustId: number,
-  ): Promise<AxiosResponse<DeclineLoanRequestResponse>> => {
+    loanReqeustId: string,
+  ): Promise<DeclineLoanRequestResponse> => {
     return await axiosConfig.post(`/api/loan-request/decline/${loanReqeustId}`);
   };
 }

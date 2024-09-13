@@ -88,10 +88,10 @@ const ResetPasswordPage = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className="bg-white p-6 rounded-xl w-[800px] h-[450px] flex flex-col items-center justify-center">
+        <div className="bg-white p-6 rounded-xl w-[700px] h-[400px] flex flex-col items-center justify-center">
           <div className="w-full max-w-md text-center">
-            <h1 className="font-bold text-2xl mt-4">Set a new password</h1>
-            <p className="mt-2">
+            <h1 className="font-bold text-base mt-4">Set a new password</h1>
+            <p className="mt-2 text-xs">
               Your previous password has been reseted. Please set a new password
               for your account.
             </p>
@@ -107,7 +107,7 @@ const ResetPasswordPage = () => {
                   name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-light">
+                      <FormLabel className="text-xs font-light">
                         Password
                       </FormLabel>
                       <FormControl>
@@ -130,7 +130,7 @@ const ResetPasswordPage = () => {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-light">
+                      <FormLabel className="text-xs font-light">
                         Re-enter Password
                       </FormLabel>
                       <FormControl>

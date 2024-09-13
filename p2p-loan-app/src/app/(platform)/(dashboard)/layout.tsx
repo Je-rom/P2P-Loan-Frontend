@@ -9,12 +9,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="sticky top-0 z-10 w-full">
         <DashboardNavbar />
       </div>
-      <div className="hidden rounded-r-lg h-full w-[200px] lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 z-30 shrink-0">
+      <div className="hidden rounded-r-lg h-full w-[200px] lg:flex lg:w-52 lg:flex-col lg:fixed lg:inset-y-0 z-30 shrink-0">
         <Sidebar />
       </div>
-      <main className="lg:pl-72">
+      <main className="lg:pl-44">
         <div
-          className="px-8 py-10 lg:px-20 lg:py-16"
+          className="px-6 py-6 lg:px-16 lg:py-10"
           style={{ minHeight: 'calc(100vh - 4rem)' }}
         >
           {children}
@@ -28,7 +28,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default DashboardLayout;
-
 
 // const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 //   const isDesktop = useMediaQuery('(min-width: 768px)');

@@ -117,15 +117,11 @@ const LenderLoanDetailsTable = () => {
   const router = useRouter();
   return (
     <>
-      <Table className="min-w-full bg-white shadow-md rounded-lg mt-4">
+      <Table className="min-w-full bg-white shadow-md rounded-lg mt-4 text-xs">
         <TableHeader className="bg-gray-200 text-gray-700">
-          <TableRow>
-            <TableHead className="w-[150px] py-4 px-6 text-left">
-              Borrower Name
-            </TableHead>
-            <TableHead className="w-[150px] py-4 px-6 text-left">
-              Loan Amount
-            </TableHead>
+          <TableRow className="w-[100px]">
+            <TableHead className="py-2 px-2 text-left">Borrower Name</TableHead>
+            <TableHead className="py-2 px-2 text-left">Loan Amount</TableHead>
             <TableHead className="py-4 px-6 text-left">Interest Rate</TableHead>
             <TableHead className="py-4 px-6 text-left">
               Repayment Frequency
@@ -139,7 +135,6 @@ const LenderLoanDetailsTable = () => {
             <TableHead className="py-4 px-6 text-left">
               Accruing Interest Rate
             </TableHead>
-            <TableHead className="py-4 px-6 text-left">Date</TableHead>
             <TableHead className="text-right py-4 px-6">Active</TableHead>
             <TableHead className="text-right w-[50px] py-4 px-6"></TableHead>
           </TableRow>
@@ -173,12 +168,10 @@ const LenderLoanDetailsTable = () => {
               <TableCell className="py-4 px-6 text-gray-700">
                 {invoice.accruingInterestRate}%
               </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.date}
-              </TableCell>
+
               <TableCell className="text-right py-4 px-6">
                 <span
-                  className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${
+                  className={`inline-block px-2  text-xs font-semibold rounded-full ${
                     invoice.active
                       ? 'bg-green-200 text-green-800'
                       : 'bg-red-200 text-red-800'
