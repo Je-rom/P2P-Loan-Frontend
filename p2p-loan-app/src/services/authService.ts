@@ -123,6 +123,29 @@ export interface CreatePinResponse {
   result: null;
 }
 
+export interface ChangePinRequest {
+  oldPin: string;
+  newPin: string;
+  confirmNewPin: string;
+}
+export interface ChangePinResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: null;
+}
+
+export interface changePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+export interface changePasswordResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: null;
+}
 class AuthService {
   static register = async (
     requestBody: RegisterRequest,
@@ -158,6 +181,18 @@ class AuthService {
     requeestBody: CreatePinRequest,
   ): Promise<AxiosResponse<CreatePinResponse>> => {
     return await axiosConfig.post('/api/auth/create-pin', requeestBody);
+  };
+
+  static changePin = async (
+    requeestBody: ChangePinRequest,
+  ): Promise<AxiosResponse<ChangePinResponse>> => {
+    return await axiosConfig.patch('/api/auth/change-pin', requeestBody);
+  };
+
+  static changePassword = async (
+    requeestBody: changePasswordRequest,
+  ): Promise<AxiosResponse<changePasswordResponse>> => {
+    return await axiosConfig.patch('/api/auth/change-password', requeestBody);
   };
 }
 
