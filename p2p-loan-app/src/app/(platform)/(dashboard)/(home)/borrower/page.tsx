@@ -124,7 +124,8 @@ const ActiveLoanCard: React.FC<{
 const LoanRequestCard: React.FC<{
   onSeeMoreClick: () => void;
   totalLoanRequests: number;
-}> = ({ onSeeMoreClick, totalLoanRequests }) => (
+  isLoading: boolean;
+}> = ({ onSeeMoreClick, totalLoanRequests, isLoading }) => (
   <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-green-50">
     <CardHeader>
       <div className="flex justify-between items-center">
@@ -135,7 +136,10 @@ const LoanRequestCard: React.FC<{
       <div className="flex justify-between">
         <div>
           <h1 className="text-xs">Loan Request</h1>
-          <p className="font-bold text-sm">{totalLoanRequests}</p>
+          <p className="font-bold text-sm">
+            {' '}
+            {isLoading ? 'Loading...' : totalLoanRequests}
+          </p>
         </div>
         <Button
           className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[65px] h-[28px] mt-3 text-xs"
@@ -206,12 +210,11 @@ const BorrowerPage = () => {
   }, [userProfile, isProfileLoading]);
 
   //get total number of loan requests
-  const { data: loanRequests, error } = GetLoanRequest(
-    view,
-    pageNumber,
-    pageSize,
-    totalItems,
-  );
+  const {
+    data: loanRequests,
+    error,
+    isLoading: isLoanRequestsLoading,
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
 
   useEffect(() => {
     if (loanRequests) {
@@ -248,6 +251,7 @@ const BorrowerPage = () => {
         <LoanRequestCard
           onSeeMoreClick={() => router.push('/borrower/loan-request')}
           totalLoanRequests={totalItems}
+          isLoading={isLoanRequestsLoading}
         />
       </div>
       <div className="p-6 mt-14 rounded-2xl border border-gray-200">

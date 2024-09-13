@@ -60,17 +60,29 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
     useLoanRequest();
   const acceptRequest = AcceptLoanRequestMutation();
   const declineRequest = DeclineLoanRequestMutation();
-  const isLoading = acceptRequest.isPending;
-  const isLoading2 = declineRequest.isPending;
 
   const [decisionMade, setDecisionMade] = useState<boolean>(false);
 
   const handleAccept = () => {
-    acceptRequest.mutateAsync(loanRequestId);
+    acceptRequest.mutateAsync(loanRequestId, {
+      onSuccess: () => {
+        setDecisionMade(true);
+      },
+      onError: () => {
+        console.error('Failed to accept loan request');
+      },
+    });
   };
 
   const handleDecline = () => {
-    declineRequest.mutateAsync(loanRequestId);
+    declineRequest.mutateAsync(loanRequestId, {
+      onSuccess: () => {
+        setDecisionMade(true);
+      },
+      onError: () => {
+        console.error('Failed to decline loan request');
+      },
+    });
   };
   return (
     <div className="flex justify-center sm:justify-start mb-4">
@@ -121,16 +133,24 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
             <Button
               className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs"
               onClick={handleAccept}
-              disabled={isLoading}
+              disabled={acceptRequest.isPending}
             >
-              {isLoading ? <Loader2 className="animate-spin" /> : 'Accept'}
+              {acceptRequest.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                'Accept'
+              )}
             </Button>
             <Button
               onClick={handleDecline}
-              disabled={isLoading2}
+              disabled={declineRequest.isPending}
               className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs"
             >
-              {isLoading2 ? <Loader2 className="animate-spin" /> : 'Reject'}
+              {declineRequest.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                'Reject'
+              )}
             </Button>
           </CardFooter>
         )}
