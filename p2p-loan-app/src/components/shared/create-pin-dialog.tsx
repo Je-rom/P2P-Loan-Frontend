@@ -51,31 +51,35 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create PIN</DialogTitle>
-          <DialogDescription>
-            Please create a PIN to enhance your account security.
+          <DialogDescription className="text-xs">
+            To ensure the highest level of security for your account, please set
+            up a PIN. This PIN will be used to authorize transactions, manage
+            loan requests, and access other sensitive activities. Creating a PIN
+            helps protect your account from unauthorized access and ensures that
+            only you can perform critical actions.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="pin" className="text-right">
+            <Label htmlFor="pin" className="text-right text-xs">
               PIN
             </Label>
             <Input
               id="pin"
               type="password"
-              className="col-span-3"
+              className="col-span-3 text-xs"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="confirm-pin" className="text-right">
+            <Label htmlFor="confirm-pin" className="text-right text-xs">
               Confirm PIN
             </Label>
             <Input
               id="confirm-pin"
               type="password"
-              className="col-span-3"
+              className="col-span-3 text-xs"
               value={confirmPin}
               onChange={(e) => setConfirmPin(e.target.value)}
             />

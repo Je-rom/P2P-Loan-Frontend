@@ -57,13 +57,15 @@ const ChangePinDialog: React.FC<ChangePinDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Change PIN</DialogTitle>
-          <DialogDescription>
-            Please change your PIN to enhance your account security.
+          <DialogDescription className="text-xs">
+            To keep your account secure, please update your PIN. Regularly
+            changing your PIN helps protect your account from unauthorized
+            access. Your security is our top priority.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="oldPin" className="text-right">
+            <Label htmlFor="oldPin" className="text-left text-xs">
               Old PIN
             </Label>
             <Input
@@ -72,11 +74,11 @@ const ChangePinDialog: React.FC<ChangePinDialogProps> = ({
               value={oldPin}
               onChange={(e) => setOldPin(e.target.value)}
               placeholder="Enter your old PIN"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="newPin" className="text-right">
+            <Label htmlFor="newPin" className="text-left text-xs">
               New PIN
             </Label>
             <Input
@@ -85,11 +87,11 @@ const ChangePinDialog: React.FC<ChangePinDialogProps> = ({
               value={newPin}
               onChange={(e) => setNewPin(e.target.value)}
               placeholder="Enter your new PIN"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="confirmPin" className="text-right">
+            <Label htmlFor="confirmPin" className="text-left text-xs">
               Confirm PIN
             </Label>
             <Input
@@ -98,7 +100,7 @@ const ChangePinDialog: React.FC<ChangePinDialogProps> = ({
               value={confirmPin}
               onChange={(e) => setConfirmPin(e.target.value)}
               placeholder="Confirm your new PIN"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <Button

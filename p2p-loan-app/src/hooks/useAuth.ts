@@ -164,9 +164,8 @@ const useAuth = () => {
       return response.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (error.response?.data?.message === 'Failed to change pin.') {
-      }
-      console.log('register error:', error);
+      //toast.error(error.response?.data.message);
+      console.log('change pin error:', error);
       console.log(error.response?.data);
     },
     onSuccess: (data: ChangePinResponse) => {
@@ -180,9 +179,8 @@ const useAuth = () => {
       return response.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (error.response?.data?.message === 'Failed to change password.') {
-      }
-      console.log('register error:', error);
+      //toast.error(error.response?.data.message);
+      console.log('change password error:', error);
       console.log(error.response?.data);
     },
     onSuccess: (data: changePasswordResponse) => {

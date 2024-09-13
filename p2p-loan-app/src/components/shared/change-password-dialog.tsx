@@ -58,13 +58,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
-          <DialogDescription>
-            Please change your password to enhance your account security.
+          <DialogDescription className='text-xs'>
+            To maintain the highest level of security for your account, please
+            update your password. Ensure your account remains protected by using a strong,
+            unique password for all your login activities.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="oldPassword" className="text-right">
+            <Label htmlFor="oldPassword" className="text-left text-xs">
               Old Password
             </Label>
             <Input
@@ -73,11 +75,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
               placeholder="Enter your old password"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="newPassword" className="text-right">
+            <Label htmlFor="newPassword" className="text-left text-xs">
               New Password
             </Label>
             <Input
@@ -86,11 +88,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter your new password"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="confirmPassword" className="text-right">
+            <Label htmlFor="confirmPassword" className="text-left text-xs">
               Confirm Password
             </Label>
             <Input
@@ -99,7 +101,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your new password"
-              className="w-full col-span-3"
+              className="w-full col-span-3 text-xs"
             />
           </div>
           <Button
