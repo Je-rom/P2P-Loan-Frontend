@@ -191,10 +191,11 @@ const BorrowerLoanDetailsTable = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuLabel className='text-xs'>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => router.push('/borrower/loan-details')}
+                      className='text-xs'
                     >
                       View details
                     </DropdownMenuItem>

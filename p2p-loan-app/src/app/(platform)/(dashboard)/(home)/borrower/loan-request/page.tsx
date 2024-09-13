@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import useLoanRequest from '@/hooks/useLoanRequest';
 import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 interface LenderOfferCardProps {
   lenderName: string;
@@ -23,6 +24,7 @@ interface LenderOfferCardProps {
   gracePeriod: number;
   loanDuration: number;
   accruingInterestRate: number;
+  loanRequestId: string; //loan request for the lender card prop
 }
 
 const getStatusColor = (status: string) => {
@@ -52,7 +54,24 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   gracePeriod,
   loanDuration,
   accruingInterestRate,
+  loanRequestId,
 }) => {
+  const { AcceptLoanRequestMutation, DeclineLoanRequestMutation } =
+    useLoanRequest();
+  const acceptRequest = AcceptLoanRequestMutation();
+  const declineRequest = DeclineLoanRequestMutation();
+  const isLoading = acceptRequest.isPending;
+  const isLoading2 = declineRequest.isPending;
+
+  const [decisionMade, setDecisionMade] = useState<boolean>(false);
+
+  const handleAccept = () => {
+    acceptRequest.mutateAsync(loanRequestId);
+  };
+
+  const handleDecline = () => {
+    declineRequest.mutateAsync(loanRequestId);
+  };
   return (
     <div className="flex justify-center sm:justify-start mb-4">
       <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
@@ -97,13 +116,21 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
             </p>
           </div>
         </CardContent>
-        {showButtons && (
+        {showButtons && !decisionMade && status.toLowerCase() === 'pending' && (
           <CardFooter className="justify-end gap-8">
-            <Button className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs">
-              Accept
+            <Button
+              className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs"
+              onClick={handleAccept}
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : 'Accept'}
             </Button>
-            <Button className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs">
-              Reject
+            <Button
+              onClick={handleDecline}
+              disabled={isLoading2}
+              className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs"
+            >
+              {isLoading2 ? <Loader2 className="animate-spin" /> : 'Reject'}
             </Button>
           </CardFooter>
         )}
@@ -114,7 +141,6 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
 
 const BorrowersLenderOffer: React.FC = () => {
   const [view, setView] = useState<'received' | 'sent'>('received');
-  const [userName, setUserName] = useState<string | undefined>(undefined);
   const { GetLoanRequest } = useLoanRequest();
   const [pageSize] = useState(5);
   const [pageNumber, setPageNumber] = useState(1);
@@ -162,9 +188,9 @@ const BorrowersLenderOffer: React.FC = () => {
           {view === 'received' && !loanRequests?.result.items.length && (
             <div className="flex flex-col items-center text-center space-y-4">
               <Image
-                src={'/no-results-found.png'}
+                src={'/no-request.jpg'}
                 alt="No loan requests received"
-                width={180}
+                width={200}
                 height={300}
               />
               <p className="text-sm font-semibold text-gray-700">
@@ -177,9 +203,9 @@ const BorrowersLenderOffer: React.FC = () => {
           {view === 'sent' && !loanRequests?.result.items.length && (
             <div className="flex flex-col items-center text-center space-y-4">
               <Image
-                src={'/no-results-found.png'}
+                src={'/not-sent.jpg'}
                 alt="No loan requests sent"
-                width={180}
+                width={200}
                 height={300}
               />
               <p className="text-sm font-semibold text-gray-700">
@@ -209,6 +235,7 @@ const BorrowersLenderOffer: React.FC = () => {
                     gracePeriod={offer.loanOffer.gracePeriodDays}
                     accruingInterestRate={offer.loanOffer.accruingInterestRate}
                     status={offer.status}
+                    loanRequestId={offer.id} //loan request id
                   />
                 );
               })}

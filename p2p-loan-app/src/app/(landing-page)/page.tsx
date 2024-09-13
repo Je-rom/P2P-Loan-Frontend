@@ -32,12 +32,12 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="hidden md:block w-full md:w-auto mt-10 md:mt-0">
+            <div className="hidden md:block w-full md:w-auto">
               <Image
-                src={'/hand-image.svg'}
+                src={'/borrowpointphone.svg'}
                 alt="image of a hand holding a phone"
-                width={300}
-                height={500}
+                width={400}
+                height={50}
               />
             </div>
           </div>

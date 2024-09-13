@@ -200,13 +200,13 @@ class LoanRequestService {
 
   static acceptLoanRequest = async (
     loanReqeustId: string,
-  ): Promise<AxiosResponse<AcceptLoanRequestResponse>> => {
+  ): Promise<AcceptLoanRequestResponse> => {
     return await axiosConfig.post(`/api/loan-request/accept/${loanReqeustId}`);
   };
 
   static declineLoanRequest = async (
-    loanReqeustId: number,
-  ): Promise<AxiosResponse<DeclineLoanRequestResponse>> => {
+    loanReqeustId: string,
+  ): Promise<DeclineLoanRequestResponse> => {
     return await axiosConfig.post(`/api/loan-request/decline/${loanReqeustId}`);
   };
 }

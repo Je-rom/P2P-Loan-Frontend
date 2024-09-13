@@ -34,8 +34,8 @@ export function WithdrawDialog({
 }) {
   const [copySuccess, setCopySuccess] = useState('');
   const [walletId, setWalletId] = useState<string | null>(null);
-  const [accountNumber, setAccountNumber] = useState<number | null>(null);
-  const [selectedBank, setSelectedBank] = useState<number | null>(null);
+  const [accountNumber, setAccountNumber] = useState<string | null>(null);
+  const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [accountName, setAccountName] = useState<string | null>(null);
   const [verificationMessage, setVerificationMessage] = useState<string | null>(
     null,
@@ -153,12 +153,12 @@ export function WithdrawDialog({
                 <SelectContent>
                   <SelectGroup>
                     {isBanksLoading && (
-                      <SelectItem disabled value="loading">
+                      <SelectItem className="text-xs" disabled value="loading">
                         Loading banks...
                       </SelectItem>
                     )}
                     {isBanksError && (
-                      <SelectItem disabled value="error">
+                      <SelectItem className="text-xs" disabled value="error">
                         Failed to load banks
                       </SelectItem>
                     )}
@@ -184,7 +184,7 @@ export function WithdrawDialog({
               <Input
                 className="border-black pr-10 w-full text-xs sm:text-xs"
                 placeholder="Enter account number"
-                onChange={(e) => setAccountNumber(Number(e.target.value))}
+                onChange={(e) => setAccountNumber(e.target.value)}
                 maxLength={10}
                 value={accountNumber || ''}
               />

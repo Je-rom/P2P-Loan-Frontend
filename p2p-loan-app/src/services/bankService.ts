@@ -41,8 +41,8 @@ class BankService {
   };
 
   static getAccountDetails = async (
-    AccountNumber: number,
-    BankCode: number,
+    AccountNumber: string,
+    BankCode: string,
   ): Promise<AxiosResponse<AccountDetailsResponse>> => {
     return await axiosConfig.get('/api/bank/verify', {
       params: {

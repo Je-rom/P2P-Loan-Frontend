@@ -35,8 +35,8 @@ const useBanks = () => {
   };
 
   const GetAccountDetails = (
-    AccountNumber: number,
-    BankCode: number,
+    AccountNumber: string,
+    BankCode: string,
   ): UseQueryResult<
     AccountDetailsResponse,
     AxiosError<{ message: string }>

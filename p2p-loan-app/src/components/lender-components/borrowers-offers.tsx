@@ -7,11 +7,11 @@ import useLoanOffer from '@/hooks/useLoanOffer';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import AutocompleteHint from '@/components/ui/filter';
 import useWallet from '@/hooks/useWallet';
 import useLoanRequest from '@/hooks/useLoanRequest';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import dayjs from 'dayjs';
 
 export function BorrowerOffer() {
   const { GetLoanOffers } = useLoanOffer();
@@ -200,8 +200,7 @@ export function BorrowerOffer() {
                         <p>
                           Loan Duration:
                           <span className="font-bold ml-2">
-                            {active.loanDurationDays}
-                            days
+                            {active.loanDurationDays} days
                           </span>
                         </p>
                         <p>
@@ -213,14 +212,19 @@ export function BorrowerOffer() {
                         <p>
                           Grace Period:
                           <span className="font-bold ml-2">
-                            {active.gracePeriodDays}
-                            days
+                            {active.gracePeriodDays} days
                           </span>
                         </p>
                         <p>
                           Accruing Interest Rate:
                           <span className="font-bold ml-2">
                             {active.accruingInterestRate} %
+                          </span>
+                        </p>
+                        <p>
+                          Date created:
+                          <span className="font-bold ml-2">
+                            {dayjs(active.createdAt).format('MMMM D, YYYY')}
                           </span>
                         </p>
                         <h1 className="mt-1">

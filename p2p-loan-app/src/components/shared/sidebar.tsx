@@ -130,7 +130,7 @@ const Sidebar = () => {
                   <Link key={index} href={route.href || '#'} passHref>
                     <Button
                       className={cn(
-                        'w-[180px] py-3 rounded-xl mt-2',
+                        'w-[180px] py-4 rounded-xl mt-2',
                         activeLink === route.href
                           ? 'bg-white hover:bg-white'
                           : 'bg-blue-200 hover:bg-white',

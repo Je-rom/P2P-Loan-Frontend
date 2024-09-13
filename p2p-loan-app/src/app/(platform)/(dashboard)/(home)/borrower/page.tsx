@@ -233,7 +233,7 @@ const BorrowerPage = () => {
           onClick={() => router.push('/create-offer')}
           className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
         >
-          <Plus color="#ffffff" />
+          {/* <Plus color="#ffffff" /> */}
           New Offer
         </Button>
       </div>
