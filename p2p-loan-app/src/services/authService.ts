@@ -6,10 +6,12 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: string;
   BVN: string;
   userType: string;
   walletProviderId: string | undefined;
   BvnDateOfBirth: string;
+  NIN: string;
 }
 
 export interface RegisterResponse {
@@ -61,7 +63,7 @@ export interface LoginResponse {
   };
 }
 
-export interface emailVerificationRequest {
+export interface EmailVerificationRequest {
   email: string;
   token: string;
 }
@@ -110,6 +112,40 @@ export interface ResetPasswordResponse {
   result: null;
 }
 
+export interface CreatePinRequest {
+  pin: string;
+  confirmPin: string;
+}
+
+export interface CreatePinResponse {
+  status: string;
+  message: string;
+  result: null;
+}
+
+export interface ChangePinRequest {
+  oldPin: string;
+  newPin: string;
+  confirmNewPin: string;
+}
+export interface ChangePinResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: null;
+}
+
+export interface changePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+export interface changePasswordResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: null;
+}
 class AuthService {
   static register = async (
     requestBody: RegisterRequest,
@@ -133,6 +169,30 @@ class AuthService {
     requestBody: ResetPasswordRequest,
   ): Promise<AxiosResponse<ResetPasswordResponse>> => {
     return await axiosConfig.post('/api/auth/reset-password', requestBody);
+  };
+
+  static verifyEmail = async (
+    requestBody: EmailVerificationRequest,
+  ): Promise<AxiosResponse<EmailVerificationResponse>> => {
+    return await axiosConfig.post('/api/auth/verify-email', requestBody);
+  };
+
+  static createPin = async (
+    requeestBody: CreatePinRequest,
+  ): Promise<AxiosResponse<CreatePinResponse>> => {
+    return await axiosConfig.post('/api/auth/create-pin', requeestBody);
+  };
+
+  static changePin = async (
+    requeestBody: ChangePinRequest,
+  ): Promise<AxiosResponse<ChangePinResponse>> => {
+    return await axiosConfig.patch('/api/auth/change-pin', requeestBody);
+  };
+
+  static changePassword = async (
+    requeestBody: changePasswordRequest,
+  ): Promise<AxiosResponse<changePasswordResponse>> => {
+    return await axiosConfig.patch('/api/auth/change-password', requeestBody);
   };
 }
 

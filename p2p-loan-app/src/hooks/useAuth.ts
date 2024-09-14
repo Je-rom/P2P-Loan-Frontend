@@ -1,5 +1,13 @@
 'use client';
 import AuthService, {
+  changePasswordResponse,
+  changePasswordRequest,
+  ChangePinRequest,
+  ChangePinResponse,
+  CreatePinRequest,
+  CreatePinResponse,
+  EmailVerificationRequest,
+  EmailVerificationResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   LoginRequest,
@@ -53,11 +61,17 @@ const useAuth = () => {
       return response?.data;
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      if (
-        error.response?.data?.message ===
-        'Email yet to be verified, Please verify your email'
+      const errorMessage = error.message;
+      const responseMessage = error.response?.data?.message;
+
+      if (errorMessage === 'Network Error') {
+        toast.error('Network Error');
+      } else if (
+        responseMessage === 'Email yet to be verified, Please verify your email'
       ) {
         toast.error('Email yet to be verified, Please verify your email');
+      } else if (responseMessage) {
+        toast.error(responseMessage);
       } else {
         toast.error('Invalid Login details, check your email and password');
       }
@@ -96,7 +110,7 @@ const useAuth = () => {
       return response.data;
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.message);
+      toast.error(error.response?.data.message);
       console.log(axiosResponseMessage(error));
     },
     onSuccess: (data: ResetPasswordResponse) => {
@@ -105,10 +119,81 @@ const useAuth = () => {
     },
   });
 
+  const verifyEmailPasswordMutation = useMutation({
+    mutationFn: async (user: EmailVerificationRequest) => {
+      const response = await AuthService.verifyEmail(user);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Invalid verification token.') {
+        toast.error('Invalid verification token.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: EmailVerificationResponse) => {
+      const { message } = data;
+      console.log('email', message);
+      toast.success('Email verification successful. You can now log in');
+    },
+  });
+
+  const createPinMutation = useMutation({
+    mutationFn: async (pin: CreatePinRequest) => {
+      const response = await AuthService.createPin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to create pin.') {
+        toast.error('Failed to create pin.');
+      } else if (error.response?.data?.message === 'You already have a pin') {
+        toast.error('You already have a pin.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: CreatePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+
+  const changePinMutation = useMutation({
+    mutationFn: async (pin: ChangePinRequest) => {
+      const response = await AuthService.changePin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      //toast.error(error.response?.data.message);
+      console.log('change pin error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: ChangePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+  const changePasswordMutation = useMutation({
+    mutationFn: async (password: changePasswordRequest) => {
+      const response = await AuthService.changePassword(password);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      //toast.error(error.response?.data.message);
+      console.log('change password error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: changePasswordResponse) => {
+      const { message } = data;
+      console.log('Password', message);
+    },
+  });
+
   const logOut = () => {
     clearAuth();
     localStorage.clear();
-    router.push('/login');
+    //to prevent the browser from keeping the protected route in history.
+    router.replace('/login');
   };
 
   return {
@@ -116,6 +201,10 @@ const useAuth = () => {
     loginMutation,
     forgotPasswordMutation,
     resetPasswordMutation,
+    verifyEmailPasswordMutation,
+    createPinMutation,
+    changePinMutation,
+    changePasswordMutation,
     logOut,
     user,
     token,
@@ -123,5 +212,3 @@ const useAuth = () => {
 };
 
 export default useAuth;
-// DELETE FROM Users
-// WHERE Id = '3AEE0692-CBB7-4FD5-A180-E7D153A92F70';

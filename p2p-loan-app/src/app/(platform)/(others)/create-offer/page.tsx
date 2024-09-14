@@ -9,6 +9,8 @@ import useLoanOffer from '@/hooks/useLoanOffer';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import useWallet from '@/hooks/useWallet';
+import { Loader2 } from 'lucide-react';
+import { MoveLeft } from 'lucide-react';
 
 interface FormField {
   label: string;
@@ -23,7 +25,7 @@ interface FormValues {
   loanDurationDays: string;
   loanAmount: string;
   gracePeriodDays: string;
-  paymentFrequency: string;
+  repaymentFrequency: string;
   walletId: string;
   additionalNote: string;
   termsAccepted: boolean;
@@ -39,16 +41,30 @@ const CreateOfferPage = () => {
   const [errors, setErrors] = useState<Errors>({});
   const { CreateLoanOfferMutation } = useLoanOffer();
   const createLoanOfferMutation = CreateLoanOfferMutation();
+  const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
+  const maxCharacters = 288;
+
+  const [walletInfo, setWalletInfo] = useState<{
+    walletId: string;
+    accountNumber: string;
+  }>({
+    walletId: '',
+    accountNumber: '',
+  });
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
       const { result } = getWalletQuery.data;
       if (result.length > 0) {
-        const firstWalletId = result[0].id;
+        const firstWallet = result[0];
+        setWalletInfo({
+          walletId: firstWallet.id,
+          accountNumber: firstWallet.accountNumber,
+        });
         setFormValues((prevValues) => ({
           ...prevValues,
-          walletId: firstWalletId,
+          walletId: firstWallet.id, // Store the walletId in formValues
         }));
       }
     }
@@ -59,6 +75,11 @@ const CreateOfferPage = () => {
       toast.error('Failed to fetch wallet');
     }
   }, [getWalletQuery.isError]);
+
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('user_type');
+    setUserType(storedUserType);
+  }, []);
 
   const formFields: FormField[] = [
     {
@@ -99,9 +120,9 @@ const CreateOfferPage = () => {
     },
     {
       label: 'Payment Frequency',
-      placeholder: 'Payment frequency can only be in Days, Weeks and Month',
+      placeholder: 'Payment frequency can only be Daily, Weekly and Monthly',
       type: 'text',
-      name: 'paymentFrequency',
+      name: 'repaymentFrequency',
     },
   ];
 
@@ -110,7 +131,7 @@ const CreateOfferPage = () => {
     interestRate: '',
     gracePeriodDays: '',
     loanDurationDays: '',
-    paymentFrequency: '',
+    repaymentFrequency: '',
     accruingInterestRate: '',
     walletId: '',
     additionalNote: '',
@@ -121,7 +142,16 @@ const CreateOfferPage = () => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+
+    if (name === 'additionalNote' && value.length > maxCharacters) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `Maximum ${maxCharacters} characters allowed.`,
+      }));
+    } else {
+      setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
+    }
   };
 
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +173,8 @@ const CreateOfferPage = () => {
     }
     return newErrors;
   };
-  const userType = localStorage.getItem('user_type');
+
+  const isLoading = createLoanOfferMutation.isPending;
 
   const handleSubmit = async () => {
     const newErrors = validateForm();
@@ -154,7 +185,7 @@ const CreateOfferPage = () => {
         const createLoanOfferRequest = {
           walletId: formValues.walletId,
           amount: formValues.loanAmount,
-          paymentFrequency: formValues.paymentFrequency,
+          repaymentFrequency: formValues.repaymentFrequency,
           gracePeriodDays: parseInt(formValues.gracePeriodDays, 10),
           loanDurationDays: parseInt(formValues.loanDurationDays, 10),
           interestRate: parseFloat(formValues.interestRate),
@@ -164,6 +195,7 @@ const CreateOfferPage = () => {
         const result = await createLoanOfferMutation.mutateAsync(
           createLoanOfferRequest,
         );
+        console.log(createLoanOfferRequest, 'loan reqqqqqqq');
         if (result.status === 'Created') {
           router.push(`${userType}/my-offers`);
         }
@@ -172,10 +204,17 @@ const CreateOfferPage = () => {
       }
     }
   };
+
   return (
     <>
+      <button onClick={() => router.back()}>
+        <div className="flex items-center">
+          <MoveLeft />
+          <h1 className="ml-1 font-bold">Back</h1>
+        </div>
+      </button>
       <div>
-        <h1 className="font-bold text-xl">Create New Request</h1>
+        <h1 className="font-bold text-xl mt-10">Create New Offer</h1>
       </div>
       <div className="flex flex-col space-y-6 p-4 mt-10">
         {formFields.map((field, index) => (
@@ -192,8 +231,13 @@ const CreateOfferPage = () => {
                 type={field.type}
                 placeholder={field.placeholder}
                 name={field.name}
-                value={formValues[field.name] as string}
+                value={
+                  field.name === 'walletId'
+                    ? walletInfo.accountNumber // Display account number to the user
+                    : (formValues[field.name] as string)
+                }
                 onChange={handleInputChange}
+                readOnly={field.name === 'walletId'} // Make the walletId field read-only
               />
               {errors[field.name] && (
                 <span className="text-red-500">{errors[field.name]}</span>
@@ -208,11 +252,15 @@ const CreateOfferPage = () => {
         </h1>
         <div className="relative w-full md:w-3/4">
           <Textarea
-            placeholder="Add any additional notes here"
+            placeholder="Add any additional notes here, reason why you need the loan or why you are offering the loan etc.."
             name="additionalNote"
             value={formValues.additionalNote}
             onChange={handleInputChange}
+            maxLength={maxCharacters}
           />
+          <div className="text-sm text-gray-500">
+            {formValues.additionalNote.length}/{maxCharacters} characters
+          </div>
           {errors.additionalNote && (
             <span className="text-red-500">{errors.additionalNote}</span>
           )}
@@ -254,10 +302,11 @@ const CreateOfferPage = () => {
             Cancel
           </Button>
           <Button
+            disabled={isLoading}
             className="bg-blue-500 hover:bg-blue-500 font-semibold"
             onClick={handleSubmit}
           >
-            Save
+            {isLoading ? <Loader2 className="animate-spin" /> : 'Create'}
           </Button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import axiosResponseMessage from '@/lib/axiosResponseMessage';
 import loanOfferService, {
   CreateLoanOfferRequest,
   CreateLoanOfferResponse,
+  LoanOffersResponse,
   MyLoanOfferResponse,
 } from '@/services/loanOfferService';
 import { useMutation, UseQueryOptions } from '@tanstack/react-query';
@@ -34,31 +35,59 @@ const useLoanOffer = () => {
     });
   };
 
- const GetMyLoanOffer = (): UseQueryResult<
-   MyLoanOfferResponse,
-   AxiosError<{ message: string }>
- > => {
-   return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
-     queryKey: ['loanOffer'],
-     queryFn: async (): Promise<MyLoanOfferResponse> => {
-       const response = await loanOfferService.getMyLoanOffer();
-       return response.data;
-     },
-     onError: (error: AxiosError<{ message: string }>) => {
-       toast.error(`Error: ${error.response?.data.message || error.message}`);
-       console.log('Failed to fetch loan offers:', error.message);
-     },
-     onSuccess: (data: MyLoanOfferResponse) => {
-       const { message, result } = data;
-       console.log('Loan offers fetched successfully:', result);
-       toast.success(message);
-     },
-   } as UseQueryOptions<MyLoanOfferResponse, AxiosError<{ message: string }>>);
- };
+  const GetMyLoanOffer = (): UseQueryResult<
+    MyLoanOfferResponse,
+    AxiosError<{ message: string }>
+  > => {
+    return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
+      queryKey: ['loanOffer'],
+      queryFn: async (): Promise<MyLoanOfferResponse> => {
+        const response = await loanOfferService.getMyLoanOffer();
+        return response.data;
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toast.error(`Error: ${error.response?.data.message || error.message}`);
+        console.log('Failed to fetch loan offers:', error.message);
+      },
+      onSuccess: (data: MyLoanOfferResponse) => {
+        const { message, result } = data;
+        console.log('Loan offers fetched successfully:', result);
+        toast.success(message);
+      },
+    } as UseQueryOptions<MyLoanOfferResponse, AxiosError<{ message: string }>>);
+  };
+
+  const GetLoanOffers = (
+    pageNumber: number,
+    pageSize: number,
+    filters: { [key: string]: any },
+  ): UseQueryResult<LoanOffersResponse, AxiosError<{ message: string }>> => {
+    return useQuery<LoanOffersResponse, AxiosError<{ message: string }>>({
+      queryKey: ['loanOffers', pageNumber, pageSize, filters],
+      queryFn: async (): Promise<LoanOffersResponse> => {
+        const response = await loanOfferService.getLoanOffers(
+          pageNumber,
+          pageSize,
+          filters,
+        );
+        return response.data;
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toast.error(`Error: ${error.response?.data.message || error.message}`);
+        console.error('Failed to fetch loan offers:', error.message);
+      },
+      onSuccess: (data: LoanOffersResponse) => {
+        const { message, result } = data;
+        console.log('Loan offers fetched successfully:', result);
+        toast.success(message);
+      },
+    } as UseQueryOptions<LoanOffersResponse, AxiosError<{ message: string }>>);
+  };
 
   return {
     CreateLoanOfferMutation,
     GetMyLoanOffer,
+    GetLoanOffers,
   };
 };
 

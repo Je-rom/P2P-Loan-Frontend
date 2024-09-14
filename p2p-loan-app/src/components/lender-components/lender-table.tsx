@@ -45,7 +45,7 @@ const invoices = [
 const LenderTable = () => {
   return (
     <div className="mt-5 bg-gray-100 bg-opacity-100">
-      <Table>
+      <Table className='text-xs'>
         <TableHeader className="bg-white text-center">
           <TableRow className="">
             <TableHead className="">Name</TableHead>
@@ -54,7 +54,7 @@ const LenderTable = () => {
             <TableHead className="text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className='text-xs'>
           {invoices.map((invoice) => (
             <TableRow key={invoice.id}>
               <TableCell className="font-medium">{invoice.name}</TableCell>

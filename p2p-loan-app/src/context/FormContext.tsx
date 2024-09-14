@@ -8,8 +8,10 @@ interface FormData {
     lastName: string;
     email: string;
     BvnDateOfBirth: string;
+    phoneNumber: string;
     password: string;
     userType: string;
+    NIN: string;
   };
   emailVerification: {
     isEmailSent: boolean;
@@ -38,8 +40,10 @@ const initialFormData: FormData = {
     lastName: '',
     email: '',
     BvnDateOfBirth: '',
+    phoneNumber: '',
     password: '',
     userType: '',
+    NIN:'',
   },
   emailVerification: {
     isEmailSent: false,

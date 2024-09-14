@@ -4,7 +4,7 @@ import { useFormStore } from '@/context/FormContext';
 const steps = [
   { number: 1, label: 'Basic Info' },
   { number: 2, label: 'Verify BVN' },
-  { number: 3, label: 'Wallet' },
+  { number: 3, label: 'Link Wallet' },
   { number: 4, label: 'Verify Email ' },
 ];
 
@@ -26,7 +26,7 @@ const StepIndicator: React.FC = () => {
               {s.number}
             </div>
             <div
-              className={`mt-2 text-xs md:text-base ${
+              className={`mt-2 text-xs md:text-xs ${
                 step >= s.number ? 'text-black' : 'text-gray-700'
               }`}
             >
