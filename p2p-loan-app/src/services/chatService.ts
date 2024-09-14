@@ -30,7 +30,7 @@ type ChatDetailResponse = {
 
 class ChatService {
   async createChat(data: ChatRequest): Promise<AxiosResponse<string>> {
-    return axiosConfig.post("/api/ai/ai-chat-bot", data);
+    return axiosConfig.post("/api/support/chat", data);
   }
 
   // async getAllChats(): Promise<AxiosResponse<GetAllChatsResponse>> {
