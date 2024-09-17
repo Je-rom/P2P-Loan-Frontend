@@ -10,7 +10,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Filter from '@/components/ui/filter';
+import useLoanRequest from '@/hooks/useLoanRequest';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 interface LenderOfferCardProps {
   lenderName: string;
@@ -18,8 +20,27 @@ interface LenderOfferCardProps {
   repaymentOptions: string;
   interestRate: number;
   showButtons: boolean;
-  userName?: string;
+  status: string;
+  gracePeriod: number;
+  loanDuration: number;
+  accruingInterestRate: number;
+  loanRequestId: string;
 }
+
+const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'text-yellow-500';
+    case 'processing':
+      return 'text-amber-500';
+    case 'accepted':
+      return 'text-green-500';
+    case 'failed':
+      return 'text-red-500';
+    default:
+      return 'text-gray-500';
+  }
+};
 
 const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   lenderName,
@@ -27,26 +48,45 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   repaymentOptions,
   interestRate,
   showButtons,
-  userName,
+  status,
+  gracePeriod,
+  loanDuration,
+  accruingInterestRate,
+  loanRequestId,
 }) => {
+
+  const { AcceptLoanRequestMutation, DeclineLoanRequestMutation } =
+    useLoanRequest();
+  const acceptRequest = AcceptLoanRequestMutation();
+  const declineRequest = DeclineLoanRequestMutation();
+  const isLoading = acceptRequest.isPending;
+  const isLoading2 = declineRequest.isPending;
+
+  const [decisionMade, setDecisionMade] = useState<boolean>(false);
+
+  const handleAccept = () => {
+    acceptRequest.mutateAsync(loanRequestId);
+  };
+
+  const handleDecline = () => {
+    declineRequest.mutateAsync(loanRequestId);
+  };
   return (
     <div className="flex justify-center sm:justify-start mb-4">
       <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Avatar>
+            <Avatar className="w-6 h-6">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <span className="ml-4">{userName || lenderName}</span>
+            <span className="ml-2 text-base">{lenderName}</span>
           </CardTitle>
-          <CardDescription>Loan Request</CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
+          <div className="space-y-1 text-xs">
             <p>
-              <span className="font-bold">Loan Amount: </span>Up to $
-              {loanAmount}
+              <span className="font-bold">Loan Amount: </span>₦{loanAmount}
             </p>
             <p>
               <span className="font-bold">Interest Rate: </span>
@@ -56,15 +96,40 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
               <span className="font-bold">Frequency of Repayment: </span>
               {repaymentOptions}
             </p>
+
+            <p>
+              <span className="font-bold">Loan Duration: </span>
+              {loanDuration} days
+            </p>
+            <p>
+              <span className="font-bold">Accruing Interest Rate: </span>
+              {accruingInterestRate} %
+            </p>
+            <p>
+              <span className="font-bold">Grace period: </span>
+              {gracePeriod} days
+            </p>
+            <p>
+              <span className="font-bold">Status: </span>
+              <span className={getStatusColor(status)}>{status}</span>
+            </p>
           </div>
         </CardContent>
-        {showButtons && (
+        {showButtons && !decisionMade && status.toLowerCase() === 'pending' && (
           <CardFooter className="justify-end gap-8">
-            <Button className="w-[140px] bg-green-600 hover:bg-green-700">
-              Accept
+            <Button
+              className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs"
+              onClick={handleAccept}
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : 'Accept'}
             </Button>
-            <Button className="w-[140px] bg-red-600 hover:bg-red-700">
-              Reject
+            <Button
+              onClick={handleDecline}
+              disabled={isLoading2}
+              className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs"
+            >
+              {isLoading2 ? <Loader2 className="animate-spin" /> : 'Reject'}
             </Button>
           </CardFooter>
         )}
@@ -75,87 +140,131 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
 
 const LendersBorrowersOffer: React.FC = () => {
   const [view, setView] = useState<'received' | 'sent'>('received');
-  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const { GetLoanRequest } = useLoanRequest();
+  const [pageSize] = useState(5);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
-  useEffect(() => {
-    const firstName = localStorage.getItem('firstName');
-    const lastName = localStorage.getItem('lastName');
-    if (firstName && lastName) {
-      setUserName(`${firstName} ${lastName}`);
-    }
-  }, []);
+  const {
+    data: loanRequests,
+    error,
+    isLoading,
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
 
-  const offers = [
-    {
-      lenderName: 'Lesane Crooks',
-      loanAmount: 50000,
-      repaymentOptions: 'Monthly',
-      interestRate: 5,
-    },
-    {
-      lenderName: 'John Doe',
-      loanAmount: 30000,
-      repaymentOptions: 'Quarterly',
-      interestRate: 4.5,
-    },
-    {
-      lenderName: 'Jane Smith',
-      loanAmount: 25000,
-      repaymentOptions: 'Monthly',
-      interestRate: 6,
-    },
-    {
-      lenderName: 'Alice Johnson',
-      loanAmount: 45000,
-      repaymentOptions: 'Annually',
-      interestRate: 7,
-    },
-    {
-      lenderName: 'Bob Brown',
-      loanAmount: 35000,
-      repaymentOptions: 'Monthly',
-      interestRate: 5.5,
-    },
-    {
-      lenderName: 'Eve Davis',
-      loanAmount: 40000,
-      repaymentOptions: 'Semi-Annually',
-      interestRate: 4.8,
-    },
-  ];
+  const totalItem = loanRequests?.result.totalItems || 0;
+  const totalPages = Math.ceil(totalItem / pageSize);
+
+  if (error) {
+    return <div className="text-sm">Error loading loan requests.</div>;
+  }
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <h1 className="font-bold text-base">Your Loan Requests</h1>
+      <div className="flex justify-between items-center mb-3 mt-5">
         <div className="flex space-x-4">
           <h1
-            className={`text-lg cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'received' ? 'text-blue-500' : ''}`}
             onClick={() => setView('received')}
           >
             Received
           </h1>
           <h1
-            className={`text-lg cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
+            className={`text-xs cursor-pointer ${view === 'sent' ? 'text-blue-500' : ''}`}
             onClick={() => setView('sent')}
           >
             Sent
           </h1>
         </div>
-        <Filter />
       </div>
-      <div className="mt-10 space-y-4">
-        {offers.map((offer, index) => (
-          <LenderOfferCard
-            key={index}
-            lenderName={offer.lenderName}
-            loanAmount={offer.loanAmount}
-            repaymentOptions={offer.repaymentOptions}
-            interestRate={offer.interestRate}
-            showButtons={view === 'received'}
-            userName={view === 'sent' ? userName : undefined}
-          />
-        ))}
-      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center items-center my-8">
+          <p className="text-sm font-semibold">Loading loan requests...</p>
+        </div>
+      ) : (
+        <>
+          {view === 'received' && !loanRequests?.result.items.length && (
+            <div className="flex flex-col items-center text-center space-y-4">
+              <Image
+                src={'/no-request.jpg'}
+                alt="No loan requests received"
+                width={200}
+                height={300}
+              />
+              <p className="text-sm font-semibold text-gray-700">
+                You haven't received any loan requests yet
+              </p>
+              <p className="text-sm text-gray-500">It's coming 😊.</p>
+            </div>
+          )}
+
+          {view === 'sent' && !loanRequests?.result.items.length && (
+            <div className="flex flex-col items-center text-center space-y-4">
+              <Image
+                src={'/not-sent.jpg'}
+                alt="No loan requests sent"
+                width={200}
+                height={300}
+              />
+              <p className="text-sm font-semibold text-gray-700">
+                You haven't sent any loan requests yet
+              </p>
+            </div>
+          )}
+
+          <div className="mt-8 space-y-4">
+            {loanRequests?.result.items
+              .slice(0, pageSize)
+              .map((offer, index) => {
+                const displayName =
+                  view === 'received'
+                    ? `${offer.user.firstName} ${offer.user.lastName}`
+                    : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
+
+                return (
+                  <LenderOfferCard
+                    key={index}
+                    lenderName={displayName}
+                    loanAmount={offer.loanOffer.amount}
+                    repaymentOptions={offer.loanOffer.repaymentFrequency}
+                    interestRate={offer.loanOffer.interestRate}
+                    showButtons={view === 'received'}
+                    loanDuration={offer.loanOffer.loanDurationDays}
+                    gracePeriod={offer.loanOffer.gracePeriodDays}
+                    accruingInterestRate={offer.loanOffer.accruingInterestRate}
+                    status={offer.status}
+                    loanRequestId={offer.id}
+                  />
+                );
+              })}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-4">
+              <Button
+                disabled={pageNumber === 1}
+                onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+                className="h-8 bg-blue-600 hover:bg-blue-600 text-xs"
+              >
+                Previous
+              </Button>
+              <span className="mx-4 text-xs">
+                Page {pageNumber} of {totalPages}
+              </span>
+              <Button
+                disabled={pageNumber === totalPages}
+                onClick={() =>
+                  setPageNumber((prev) => Math.min(prev + 1, totalPages))
+                }
+                className="h-8 bg-blue-600 hover:bg-blue-600 text-xs"
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 };

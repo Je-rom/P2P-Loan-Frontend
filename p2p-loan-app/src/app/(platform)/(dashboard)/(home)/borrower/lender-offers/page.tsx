@@ -7,10 +7,10 @@ const BorrowerLenderOffers = () => {
   return (
     <>
       <div className="flex flex-row sm:flex-row justify-between items-center">
-        <h1 className="text-xl">Lenders Offers</h1>
+        <h1 className="font-bold text-base">Lenders Offers</h1>
         <Filter />
       </div>
-      <div className="border border-gray-200 rounded-2xl p-4 mt-4">
+      <div className="border border-gray-200 rounded-2xl p-2 mt-4">
         <LendersOffer />
       </div>
     </>

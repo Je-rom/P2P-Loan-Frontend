@@ -11,6 +11,7 @@ interface FormData {
     phoneNumber: string;
     password: string;
     userType: string;
+    NIN: string;
   };
   emailVerification: {
     isEmailSent: boolean;
@@ -42,6 +43,7 @@ const initialFormData: FormData = {
     phoneNumber: '',
     password: '',
     userType: '',
+    NIN:'',
   },
   emailVerification: {
     isEmailSent: false,

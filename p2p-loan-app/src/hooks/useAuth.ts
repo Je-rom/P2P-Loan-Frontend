@@ -1,5 +1,11 @@
 'use client';
 import AuthService, {
+  changePasswordResponse,
+  changePasswordRequest,
+  ChangePinRequest,
+  ChangePinResponse,
+  CreatePinRequest,
+  CreatePinResponse,
   EmailVerificationRequest,
   EmailVerificationResponse,
   ForgotPasswordRequest,
@@ -132,10 +138,62 @@ const useAuth = () => {
     },
   });
 
+  const createPinMutation = useMutation({
+    mutationFn: async (pin: CreatePinRequest) => {
+      const response = await AuthService.createPin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      if (error.response?.data?.message === 'Failed to create pin.') {
+        toast.error('Failed to create pin.');
+      } else if (error.response?.data?.message === 'You already have a pin') {
+        toast.error('You already have a pin.');
+      }
+      console.log('register error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: CreatePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+
+  const changePinMutation = useMutation({
+    mutationFn: async (pin: ChangePinRequest) => {
+      const response = await AuthService.changePin(pin);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      //toast.error(error.response?.data.message);
+      console.log('change pin error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: ChangePinResponse) => {
+      const { message } = data;
+      console.log('PIN', message);
+    },
+  });
+  const changePasswordMutation = useMutation({
+    mutationFn: async (password: changePasswordRequest) => {
+      const response = await AuthService.changePassword(password);
+      return response.data;
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      //toast.error(error.response?.data.message);
+      console.log('change password error:', error);
+      console.log(error.response?.data);
+    },
+    onSuccess: (data: changePasswordResponse) => {
+      const { message } = data;
+      console.log('Password', message);
+    },
+  });
+
   const logOut = () => {
     clearAuth();
     localStorage.clear();
-    router.push('/login');
+    //to prevent the browser from keeping the protected route in history.
+    router.replace('/login');
   };
 
   return {
@@ -144,6 +202,9 @@ const useAuth = () => {
     forgotPasswordMutation,
     resetPasswordMutation,
     verifyEmailPasswordMutation,
+    createPinMutation,
+    changePinMutation,
+    changePasswordMutation,
     logOut,
     user,
     token,

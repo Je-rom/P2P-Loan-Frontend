@@ -4,44 +4,117 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
 import { Button } from '../ui/button';
 import useLoanOffer from '@/hooks/useLoanOffer';
+import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useRouter } from 'next/navigation';
+import useWallet from '@/hooks/useWallet';
+import useLoanRequest from '@/hooks/useLoanRequest';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import dayjs from 'dayjs';
 
 export function LendersOffer() {
-   const { GetLoanOffers } = useLoanOffer();
-   const [active, setActive] = useState<any>(null);
-   const { data, isLoading, error } = GetLoanOffers();
-   const ref = useRef<HTMLDivElement>(null);
-   const id = useId();
+  const { GetLoanOffers } = useLoanOffer();
+  const { CreateLoanRequestMutation } = useLoanRequest();
+  const createLoanRequest = CreateLoanRequestMutation();
+  const { getWalletQuery } = useWallet();
+  const [walletId, setWalletId] = useState<string | null>(null);
+  const [active, setActive] = useState<any>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const pageSize = 10;
+  const [filters, setFilters] = React.useState<{ [key: string]: any }>({});
+  const { data, isLoading, error } = GetLoanOffers(
+    pageNumber,
+    pageSize,
+    filters,
+  );
+  const ref = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const router = useRouter();
 
-   const borrowerOffers = data?.result.items.filter(
-     (offer: { type: string }) => offer.type === 'lender',
-   );
+  const lendersOffers = data?.result.items.filter(
+    (offer: { type: string }) => offer.type === 'lender',
+  );
 
-   useEffect(() => {
-     function onKeyDown(event: KeyboardEvent) {
-       if (event.key === 'Escape') {
-         setActive(false);
-       }
-     }
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setActive(false);
+      }
+    }
 
-     if (active && typeof active === 'object') {
-       document.body.style.overflow = 'hidden';
-     } else {
-       document.body.style.overflow = 'auto';
-     }
+    if (active && typeof active === 'object') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
 
-     window.addEventListener('keydown', onKeyDown);
-     return () => window.removeEventListener('keydown', onKeyDown);
-   }, [active]);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [active]);
 
-   useOutsideClick(ref, () => setActive(null));
+  useOutsideClick(ref, () => setActive(null));
 
-   if (isLoading) {
-     return <div>Loading...</div>;
-   }
+  useEffect(() => {
+    if (getWalletQuery.isSuccess && getWalletQuery.data) {
+      const { result } = getWalletQuery.data;
+      if (result.length > 0) {
+        const firstWallet = result[0];
+        setWalletId(firstWallet.id);
+      }
+    }
+  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
 
-   if (error) {
-     return <div>Error loading offers.</div>;
-   }
+  const isLoading1 = createLoanRequest.isPending;
+
+  //handle applying for a loan
+  const handleApply = (offer: any) => {
+    if (!walletId) {
+      toast.error('No wallet found');
+      return;
+    }
+    const loanRequest = {
+      loanOfferId: offer.id, //lender's loan offer ID
+      walletId, //borrower's wallet ID
+      additionalInformation: offer.additionalInformation || '', //additional info from the lender's offer
+    };
+    createLoanRequest.mutateAsync(loanRequest);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <Image
+          src={'/loadingLoanOffer.gif'}
+          alt="loading"
+          width={200}
+          height={10}
+        />
+        <h1 className="font-bold text-sm">Loading lender's offers...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <Image src={'/failed.gif'} alt="loading" width={60} height={10} />
+        <h1 className="font-bold text-sm">Failed to get lenders offers...</h1>
+      </div>
+    );
+  }
+
+  const handleNextPage = () => {
+    if (pageNumber * pageSize < data?.result.totalItems!) {
+      setPageNumber((prev) => prev + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
@@ -81,10 +154,10 @@ export function LendersOffer() {
             <motion.div
               layoutId={`card-${active.id}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px] h-1/2 md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl"
+              className="w-full max-w-[500px] h-1/2 md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <div>
-                <div className="flex justify-between items-start p-4">
+              <div className="overflow-y-auto max-h-[70vh] p-4">
+                <div className="flex justify-between items-start">
                   <div className="">
                     <motion.h3
                       layoutId={`title-${active.id}-${id}`}
@@ -94,9 +167,9 @@ export function LendersOffer() {
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.id}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400"
+                      className="text-neutral-600 dark:text-neutral-400 font-bold text-sm"
                     >
-                      {active.additionalInformation}
+                      Loan Amount: {active.amount}
                     </motion.p>
                   </div>
 
@@ -107,18 +180,92 @@ export function LendersOffer() {
                     className="px-4 py-3 text-sm rounded-full font-bold text-white"
                   ></motion.a>
                 </div>
-                <div className="pt-4 relative px-4">
+                <div className="pt-4">
                   <motion.div
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
+                    className="text-neutral-600 text-xs md:text-sm lg:text-base pb-10 flex flex-col items-start gap-4 dark:text-neutral-400"
                   >
-                    <p>Amount: ${active.amount}</p>
-                    <p>Interest Rate: {active.interestRate}%</p>
-                    <p>Loan Duration: {active.loanDurationDays} days</p>
-                    <Button>Apply here</Button>
+                    <div className="flex gap-24 text-xs">
+                      <div>
+                        <p>
+                          Interest Rate:
+                          <span className="font-bold ml-2">
+                            {active.interestRate}
+                          </span>
+                          %
+                        </p>
+                        <p>
+                          Loan Duration:
+                          <span className="font-bold ml-2">
+                            {active.loanDurationDays} days
+                          </span>
+                        </p>
+                        <p>
+                          Repayment Frequency:
+                          <span className="font-bold ml-2">
+                            {active.repaymentFrequency}
+                          </span>
+                        </p>
+                        <p>
+                          Grace Period:
+                          <span className="font-bold ml-2">
+                            {active.gracePeriodDays} days
+                          </span>
+                        </p>
+                        <p>
+                          Accruing Interest Rate:
+                          <span className="font-bold ml-2">
+                            {active.accruingInterestRate} %
+                          </span>
+                        </p>
+                        <p>
+                          Date created:
+                          <span className="font-bold ml-2">
+                            {dayjs(active.createdAt).format('MMMM D, YYYY')}
+                          </span>
+                        </p>
+                        <h1 className="mt-1">
+                          Offer status:
+                          <Button
+                            className={
+                              active.active
+                                ? 'ml-2 bg-green-400 hover:bg-green-500 text-xs w-12 h-5'
+                                : 'ml-2 bg-red-400 hover:bg-red-500 text-xs w-12'
+                            }
+                          >
+                            {active.active ? 'ACTIVE' : 'INACTIVE'}
+                          </Button>
+                        </h1>
+                      </div>
+                      <div
+                        className="text-xs"
+                        onClick={() => router.push('/profile')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <Avatar className="w-6 h-6">
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        {active.user.firstName} {active.user.lastName}
+                      </div>
+                    </div>
+                    <p className="font-medium mt-3 text-xs">
+                      {active.additionalInformation}
+                    </p>
+                    <Button
+                      disabled={isLoading1}
+                      onClick={() => handleApply(active)}
+                      className="bg-blue-400 hover:bg-blue-400 text-sm w-[100px] h-[35px]"
+                    >
+                      {isLoading1 ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        'Apply Here'
+                      )}
+                    </Button>
                   </motion.div>
                 </div>
               </div>
@@ -126,39 +273,60 @@ export function LendersOffer() {
           </div>
         ) : null}
       </AnimatePresence>
+
+      {/* <div className="mb-4">
+        <AutocompleteHint filters={filters} setFilters={setFilters} />
+      </div> */}
+
       <ul className="max-w-full mx-auto w-full gap-4">
-        {borrowerOffers?.map((offer: any) => (
+        {lendersOffers?.map((offer: any) => (
           <motion.div
             layoutId={`card-${offer.id}-${id}`}
             key={offer.id}
             onClick={() => setActive(offer)}
-            className="shadow-lg bg-gray-100 border mt-6 p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className="shadow-lg bg-blue-50 border mt-6 p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="">
                 <motion.h3
                   layoutId={`title-${offer.id}-${id}`}
-                  className="text-neutral-800 dark:text-neutral-200 text-center md:text-left font-bold"
+                  className="text-neutral-800 dark:text-neutral-200 text-center md:text-left font-bold text-xs"
                 >
                   {offer.user.firstName} {offer.user.lastName}
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${offer.id}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
+                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-xs"
                 >
-                  {offer.additionalInformation}
+                  Loan Amount: {offer.amount}
                 </motion.p>
               </div>
             </div>
             <motion.button
               layoutId={`button-${offer.id}-${id}`}
-              className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0"
+              className="px-2 py-2 rounded-full bg-gray-100 hover:bg-blue-400 hover:text-white text-black mt-4 md:mt-0 text-xs"
             >
               See More
             </motion.button>
           </motion.div>
         ))}
       </ul>
+      <div className="flex justify-between mt-4 text-xs">
+        <Button
+          className="text-xs w-14 h-7 bg-blue-500"
+          onClick={handlePreviousPage}
+          disabled={pageNumber === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          className="text-xs w-14 h-7 bg-blue-500"
+          onClick={handleNextPage}
+          disabled={pageNumber * pageSize >= data?.result.totalItems!}
+        >
+          Next
+        </Button>
+      </div>
     </>
   );
 }
@@ -195,43 +363,3 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
-
-const cards = [
-  // {
-  //   description: 'Get the funds to purchase your dream car.',
-  //   title: 'Auto Loan',
-  //   ctaText: 'See More',
-  //   content: () => {
-  //     return (
-  //       <div>
-  //         <p>
-  //           Our auto loans provide you with the funds to purchase a new or used
-  //           vehicle. Enjoy competitive interest rates, flexible terms, and a
-  //           straightforward application process to get you on the road quickly
-  //           and easily.
-  //         </p>
-  //         <ul className="mt-4">
-  //           <li>
-  //             <strong>Loan Amount:</strong> Up to $40,000
-  //           </li>
-  //           <li>
-  //             <strong>Loan Purpose:</strong> Vehicle purchase
-  //           </li>
-  //           <li>
-  //             <strong>Loan Category:</strong> Secured
-  //           </li>
-  //           <li>
-  //             <strong>Loan Duration:</strong> 2 to 7 years
-  //           </li>
-  //           <li>
-  //             <strong>Interest Rate:</strong> 3.99% to 7.99% APR
-  //           </li>
-  //           <li>
-  //             <strong>Frequency of Repayment:</strong> Monthly
-  //           </li>
-  //         </ul>
-  //       </div>
-  //     );
-  //   },
-  // },
-];

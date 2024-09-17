@@ -107,20 +107,20 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-3 py-10 flex-1 bg-blue-400">
-        <div className="flex items-center justify-between mb-6 lg:mb-14">
-          <div className="ml-5">
+      <div className="px-2 py-3 flex-1 bg-blue-400">
+        <div className="flex items-center justify-between mb-4">
+          <div className="ml-5 mt-3">
             <NavbarLogo />
           </div>
         </div>
-        <div className="flex flex-col justify-between h-[75dvh] overflow-auto scrollbar-hide">
-          <div className="md:mt-8">
+        <div className="flex flex-col justify-between">
+          <div className="md:mt-9">
             {loading ? (
               <div className="space-y-2">
                 {[...Array(6)].map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="w-[250px] py-8 rounded-xl mt-2"
+                    className="w-[190px] py-4 rounded-xl mt-2"
                   />
                 ))}
               </div>
@@ -130,7 +130,7 @@ const Sidebar = () => {
                   <Link key={index} href={route.href || '#'} passHref>
                     <Button
                       className={cn(
-                        'w-[250px] py-8 rounded-xl mt-2',
+                        'w-[180px] py-4 rounded-xl mt-2',
                         activeLink === route.href
                           ? 'bg-white hover:bg-white'
                           : 'bg-blue-200 hover:bg-white',
@@ -140,12 +140,12 @@ const Sidebar = () => {
                       <div className="flex items-center w-full">
                         <Image
                           src={route.icon}
-                          width={26}
+                          width={15}
                           height={20}
                           alt="icon"
-                          className="mr-4"
+                          className="mr-2"
                         />
-                        <span className="text-gray-800 text-xl group-hover:text-blue-400">
+                        <span className="text-gray-800 text-sm group-hover:text-blue-400">
                           {route.title}
                         </span>
                       </div>
@@ -156,13 +156,13 @@ const Sidebar = () => {
             )}
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-10">
           <Button
             className="text-sm flex p-5 w-full justify-start font-medium cursor-pointer rounded-lg text-white bg-blue-400 hover:bg-blue-400 items-center"
             onClick={() => setIsOpen(true)}
           >
-            <LogOut className={cn('h-6 w-14 mr-3 text-xl')} />
-            <h1 className="text-xl">Sign Out</h1>
+            <LogOut className={cn('h-6 w-4 mr-3 text-xl')} />
+            <h1 className="text-sm">Sign Out</h1>
           </Button>
           <LogoutDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)} />
         </div>

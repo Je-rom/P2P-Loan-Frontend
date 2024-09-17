@@ -16,7 +16,7 @@ const VerifyEmail: React.FC = () => {
     { number: 3, label: 'Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
-  const { formData, updateFormData, sendVerificationEmail } = useFormStore();
+  const { formData, updateFormData, prevStep } = useFormStore();
   const [isEmailSent, setIsEmailSent] = useState(
     formData.emailVerification.isEmailSent,
   );
@@ -53,33 +53,41 @@ const VerifyEmail: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    prevStep();
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-6xl h-[500px]">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl h-[450px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
           </div>
         </div>
+        <button className="flex items-center" onClick={handleBack}>
+          <Image src="/chevron_back.svg" alt="Back" width={20} height={20} />
+          <span className="text-sm">Back</span>
+        </button>
         <div className="flex flex-col items-center justify-center mt-8">
-          <Image src={'/email-icon.svg'} alt="email" width={90} height={100} />
-          <h1 className="font-bold text-lg">Check Your Email</h1>
-          <p className="text-center mt-2">
+          <Image src={'/email-icon.svg'} alt="email" width={60} height={100} />
+          <h1 className="font-bold text-base">Check Your Email</h1>
+          <p className="text-center mt-2 text-sm">
             Please open your mail app to verify your account
           </p>
-          <h1 className="mt-4 flex">
+          {/* <h1 className="mt-4 flex">
             Didn't receive any mail?
             <button>
               <span className="text-blue-400">Click to resend</span>
             </button>
-          </h1>
+          </h1> */}
           <div className="flex items-center mt-4 gap-2">
             <Button
               onClick={handleDone}
               disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-800 w-full"
+              className="bg-blue-600 hover:bg-blue-800 px-4 h-8 text-sm"
             >
-              DONE
+              {isLoading ? <Loader2 className="animate-spin" /> : 'DONE'}
             </Button>
           </div>
         </div>

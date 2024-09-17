@@ -26,7 +26,7 @@ const StepIndicator: React.FC = () => {
               {s.number}
             </div>
             <div
-              className={`mt-2 text-xs md:text-base ${
+              className={`mt-2 text-xs md:text-xs ${
                 step >= s.number ? 'text-black' : 'text-gray-700'
               }`}
             >

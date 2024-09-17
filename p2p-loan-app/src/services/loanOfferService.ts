@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 export interface CreateLoanOfferRequest {
   walletId: string;
   amount: string;
-  paymentFrequency: string;
+  repaymentFrequency: string;
   gracePeriodDays: number;
   loanDurationDays: number;
   interestRate: number;
@@ -174,10 +174,18 @@ class loanOfferService {
     return await axiosConfig.get('/api/loan-offer/me');
   };
 
-  static getLoanOffers = async (): Promise<
-    AxiosResponse<LoanOffersResponse>
-  > => {
-    return await axiosConfig.get('/api/loan-offer');
+  static getLoanOffers = async (
+    pageNumber: number,
+    pageSize: number,
+    filters?: { [key: string]: any },
+  ): Promise<AxiosResponse<LoanOffersResponse>> => {
+    return await axiosConfig.get('/api/loan-offer', {
+      params: {
+        pageNumber,
+        pageSize,
+        ...filters,
+      },
+    });
   };
 }
 

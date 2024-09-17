@@ -4,21 +4,30 @@ import { Card, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FaCopy, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { CircleDollarSign } from 'lucide-react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import BorrowerWalletTable from '@/components/borrower-components/borrower-wallet-table';
 import useWallet from '@/hooks/useWallet';
 import { toast } from 'sonner';
-import { AxiosError } from 'axios';
-import WalletService, { WalletBalance } from '@/services/walletService';
-import { useQuery } from '@tanstack/react-query';
+import { Copy } from 'lucide-react';
+import { TopUpDialog } from './topUpDialog';
+import { WithdrawDialog } from './withdrawDialog';
 
 const Wallet = () => {
   const router = useRouter();
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
-  const { getWalletQuery } = useWallet();
+  const { getWalletQuery, useWalletBalanceQuery } = useWallet();
+  const [copySuccess, setCopySuccess] = useState('');
+
+  const copyToClipboard = (text: any) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopySuccess('Copied!');
+      setTimeout(() => setCopySuccess(''), 2000);
+    });
+  };
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -41,26 +50,7 @@ const Wallet = () => {
     data: balanceData,
     isLoading: isBalanceLoading,
     isError: isBalanceError,
-  } = useQuery<WalletBalance, AxiosError<{ message: string }>>({
-    queryKey: ['walletBalance', walletId],
-    queryFn: async (): Promise<WalletBalance> => {
-      if (!walletId) {
-        throw new Error('Wallet ID not found');
-      }
-      const response = await WalletService.getWalletBalance(walletId);
-      return response.data;
-    },
-    enabled: !!walletId,
-    onError: (error: AxiosError<{ message: string }>) => {
-      console.error('Failed to fetch wallet balance:', error.message);
-      toast.error(`Error: ${error.response?.data.message || error.message}`);
-    },
-    onSuccess: (data: WalletBalance) => {
-      const { message, result } = data;
-      console.log('Wallet balance fetched successfully:', result);
-      toast.success(message);
-    },
-  });
+  } = useWalletBalanceQuery(walletId || '');
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -69,8 +59,8 @@ const Wallet = () => {
   if (getWalletQuery.isLoading || isBalanceLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src="/Opener Loading.gif" alt="load" width={300} height={30} />;
-        <h1 className="font-bold text-xl">
+        <Image src="/Opener Loading.gif" alt="load" width={200} height={30} />
+        <h1 className="font-bold text-base">
           We are getting your wallet details...
         </h1>
       </div>
@@ -80,8 +70,8 @@ const Wallet = () => {
   if (getWalletQuery.isError || isBalanceError) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src="/Failed Mail.gif" alt="load" width={300} height={30} />;
-        <h1 className="font-bold text-xl">
+        <Image src="/Failed Mail.gif" alt="load" width={200} height={30} />;
+        <h1 className="font-bold text-base">
           Sorry we couldn't get your wallet details...
         </h1>
       </div>
@@ -90,13 +80,16 @@ const Wallet = () => {
 
   return (
     <>
+      {copySuccess && (
+        <div className="text-green-400 text-center font-bold text-2xl">
+          {copySuccess}
+        </div>
+      )}
       <div className="px-2 md:px-2">
-        <h1 className="font-bold text-xl md:text-2xl lg:text-3xl">
-          Your Wallet
-        </h1>
+        <h1 className="font-bold text-base">Your Wallet</h1>
         <div className="flex justify-start mt-5">
           <Card
-            className="w-full max-w-[600px] h-[220px] rounded-3xl relative"
+            className="w-full max-w-[380px] h-[140px] rounded-3xl relative"
             style={{
               backgroundImage: `url('/cardbg.svg')`,
               backgroundSize: 'cover',
@@ -109,38 +102,41 @@ const Wallet = () => {
                   <Image
                     src="/monnifyY.png"
                     alt="monnify logo"
-                    width={45}
+                    width={25}
                     height={60}
                     className=""
                   />
-                  <span className="text-base md:text-lg lg:text-xl">
+                  <span className="text-sm md:text-sm lg:text-sm">
                     Your Account
                   </span>
                 </div>
               </div>
             </CardHeader>
-            <CardFooter className="flex flex-col items-start px-4 md:px-6">
+            <CardFooter className="flex flex-col items-start">
               <div className="flex items-center">
-                <h1 className="mr-1 font-semibold text-sm md:text-base">
-                  Account Number: {accountNumber}
+                <h1 className="mr-1 text-xs md:text-xs">
+                  Account Number:{' '}
+                  {accountNumber
+                    ? `${accountNumber.slice(0, 8)}...`
+                    : 'Not available'}
                 </h1>
-                <h2 className="mr-2 text-sm md:text-base"></h2>
-                <button className="text-lg md:text-xl">
-                  <FaCopy />
-                </button>
+                <div
+                  className="flex ml-2 items-center pr-3 cursor-pointer"
+                  onClick={() => copyToClipboard(accountNumber)}
+                >
+                  <Copy className="w-4" />
+                </div>
               </div>
-              <div className="flex items-center mt-5">
-                <h1 className="mr-6 font-semibold text-sm md:text-base">
-                  Available Balance
-                </h1>
+              <div className="flex items-center mt-1">
+                <h1 className="mr-6 text-xs md:text-xs">Available Balance</h1>
                 <button
                   onClick={toggleBalanceVisibility}
-                  className="text-lg md:text-xl"
+                  className="text-sm md:text-sm"
                 >
                   {isBalanceVisible ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
-              <p className="font-bold text-xl md:text-2xl mt-2">
+              <p className="font-bold text-sm md:text-base mt-2">
                 {isBalanceVisible
                   ? `₦ ${balanceData?.result.availableBalance.toFixed(2)}`
                   : '******'}
@@ -149,30 +145,41 @@ const Wallet = () => {
           </Card>
         </div>
         <div className="mt-5 flex gap-4">
-          <Button className="bg-blue-400 hover:bg-blue-400">
-            <CircleDollarSign color="#ffffff" className="mr-1" />
-            Deposit
-          </Button>
-          <Button className="bg-blue-400 hover:bg-blue-400">
+          <Button
+            className="bg-blue-400 hover:bg-blue-400 w-[80px] h-[30px]"
+            onClick={() => setIsWithdrawOpen(true)}
+          >
             <Image
               src={'/withdraw.svg'}
-              alt="top up"
-              width={16}
+              alt="withdraw"
+              width={10}
               height={16}
               className="mr-2"
             />
-            <span>Withdraw</span>
+            <span className="text-xs">Withdraw</span>
           </Button>
-          <Button className="bg-blue-400 hover:bg-blue-400" onClick={() => {}}>
+          <WithdrawDialog
+            open={isWithdrawOpen}
+            onOpenChange={() => setIsWithdrawOpen(false)}
+          />
+
+          <Button
+            className="bg-blue-400 hover:bg-blue-400 w-[80px] h-[30px]"
+            onClick={() => setIsTopUpOpen(true)}
+          >
             <Image
               src={'/plus.svg'}
               alt="top up"
-              width={16}
+              width={10}
               height={16}
               className="mr-2"
             />
-            <span>Top Up</span>
+            <span className='text-xs'>Top Up</span>
           </Button>
+          <TopUpDialog
+            open={isTopUpOpen}
+            onOpenChange={() => setIsTopUpOpen(false)}
+          />
         </div>
         <div>
           <BorrowerWalletTable />

@@ -60,28 +60,30 @@ const useWallet = () => {
     },
   } as UseQueryOptions<WalletResponse, AxiosError<{ message: string }>>);
 
-  const getWalletBalanceQuery = (walletId: string) =>
-    useQuery<WalletBalance, AxiosError<{ message: string }>>({
-      queryKey: ['walletBalance', walletId],
-      queryFn: async (): Promise<WalletBalance> => {
-        const response = await WalletService.getWalletBalance(walletId);
-        return response.data;
-      },
-      onError: (error: AxiosError<{ message: string }>) => {
-        console.error('Failed to fetch wallet balance:', error.message);
-        toast.error(`Error: ${error.response?.data.message || error.message}`);
-      },
-      onSuccess: (data: WalletBalance) => {
-        const { message, result } = data;
-        console.log('Wallet balance fetched successfully:', result);
-        toast.success(message);
-      },
-    } as UseQueryOptions<WalletBalance, AxiosError<{ message: string }>>);
+  const useWalletBalanceQuery = (walletId: string) =>{
+     return useQuery<WalletBalance, AxiosError<{ message: string }>>({
+       queryKey: ['walletBalance', walletId],
+       queryFn: async (): Promise<WalletBalance> => {
+         const response = await WalletService.getWalletBalance(walletId);
+         return response.data;
+       },
+       onError: (error: AxiosError<{ message: string }>) => {
+         console.error('Failed to fetch wallet balance:', error.message);
+         toast.error(`Error: ${error.response?.data.message || error.message}`);
+       },
+       onSuccess: (data: WalletBalance) => {
+         const { message, result } = data;
+         console.log('Wallet balance fetched successfully:', result);
+         toast.success(message);
+       },
+     } as UseQueryOptions<WalletBalance, AxiosError<{ message: string }>>);
+  }
+   
 
   return {
     GetWalletProvider,
     getWalletQuery,
-    getWalletBalanceQuery,
+    useWalletBalanceQuery,
   };
 };
 
