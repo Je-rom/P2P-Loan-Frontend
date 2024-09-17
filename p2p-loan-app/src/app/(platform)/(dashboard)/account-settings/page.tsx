@@ -6,8 +6,6 @@ import ChangePasswordDialog from '@/components/shared/change-password-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import useProfile from '@/hooks/useProfile';
 import dayjs from 'dayjs';
-import ChatModal from "../../(others)/chatModal";
-
 
 
 const AccountSettings = () => {

@@ -62,7 +62,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-md w-full max-w-3xl h-[80vh] flex flex-col">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">HealthPadi AI</h2>
+          <h2 className="text-xl font-bold">BorrowHub</h2>
           <button onClick={onClose} className="text-red-500">
             Close
           </button>
@@ -78,7 +78,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
             >
               {message.role === "assistant" && (
                 <Avatar className="mr-2 bg-white p-1">
-                  <AvatarFallback className="bg-green-500 text-white">
+                  <AvatarFallback className="bg-sky-50 text-white">
                     A
                   </AvatarFallback>
                 </Avatar>
@@ -108,11 +108,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             className="flex-grow p-2 border border-gray-300 rounded-md"
-            placeholder="Message HealthPadi AI..."
+            placeholder="Type here to chat with me..."
           />
           <button
             onClick={handleSendMessage}
-            className="ml-2 bg-green-500 text-white p-2 rounded-md flex items-center justify-center"
+            className="ml-2 bg-sky-500 text-white p-2 rounded-md flex items-center justify-center"
           >
             <Send className="w-5 h-5" />
           </button>
