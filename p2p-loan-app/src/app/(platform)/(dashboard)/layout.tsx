@@ -1,9 +1,20 @@
 'use client';
 import DashboardNavbar from '@/components/shared/dashboard-navbar';
 import Sidebar from '@/components/shared/sidebar';
-import React from 'react';
+import { MessageCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import ChatModal from '../(others)/chatModal';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false); //
+
+  const handleOpenChat = () => {
+    setIsChatModalOpen(true); // Open ChatModal when button is clicked
+  };
+
+  const handleCloseChat = () => {
+    setIsChatModalOpen(false); // Close ChatModal
+  };
   return (
     <div className="h-full relative">
       <div className="sticky top-0 z-10 w-full">
@@ -23,6 +34,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </div> */}
       </main>
+      <ChatModal isOpen={isChatModalOpen} onClose={handleCloseChat} />
+    <div
+      className="fixed bottom-6 right-6 p-4 bg-sky-400 rounded-full shadow-lg cursor-pointer hover:bg-sky-500"
+      onClick={handleOpenChat}
+    >
+      <MessageCircle className="text-white w-8 h-8" />
+    </div>
     </div>
   );
 };
