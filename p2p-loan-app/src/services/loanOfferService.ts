@@ -168,10 +168,18 @@ class loanOfferService {
     return await axiosConfig.post('/api/loan-offer', requestBody);
   };
 
-  static getMyLoanOffer = async (): Promise<
-    AxiosResponse<MyLoanOfferResponse>
-  > => {
-    return await axiosConfig.get('/api/loan-offer/me');
+  static getMyLoanOffer = async (
+    totalItems: number,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<AxiosResponse<MyLoanOfferResponse>> => {
+    return await axiosConfig.get('/api/loan-offer/me', {
+      params: {
+        totalItems,
+        pageNumber,
+        pageSize,
+      },
+    });
   };
 
   static getLoanOffers = async (

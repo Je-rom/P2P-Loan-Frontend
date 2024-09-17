@@ -13,6 +13,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import useLoanRequest from '@/hooks/useLoanRequest';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import AcceptRequestPinDialog from '@/components/shared/acceptPinDialog';
 
 interface LenderOfferCardProps {
   lenderName: string;
@@ -24,13 +34,13 @@ interface LenderOfferCardProps {
   gracePeriod: number;
   loanDuration: number;
   accruingInterestRate: number;
-  loanRequestId: string; //loan request for the lender card prop
+  loanRequestId: string;
 }
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case 'pending':
-      return 'text-yellow-500';
+      return 'text-yellow-400';
     case 'processing':
       return 'text-amber-500';
     case 'approved':
@@ -62,15 +72,18 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   const declineRequest = DeclineLoanRequestMutation();
 
   const [decisionMade, setDecisionMade] = useState<boolean>(false);
+  const [pin, setPin] = useState<string>('');
+  const [pinDialogOpen, setPinDialogOpen] = useState(false);
 
   const handleAccept = () => {
-    acceptRequest.mutateAsync(loanRequestId, {
-      onSuccess: () => {
-        setDecisionMade(true);
-      },
-      onError: () => {
-        console.error('Failed to accept loan request');
-      },
+    setPinDialogOpen(true);
+  };
+
+  const handlePinSubmit = (enteredPin: string) => {
+    setPin(enteredPin);
+    acceptRequest.mutateAsync({
+      loanRequestId,
+      pin: { PIN: enteredPin },
     });
   };
 
@@ -85,95 +98,114 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
     });
   };
   return (
-    <div className="flex justify-center sm:justify-start mb-4">
-      <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Avatar className="w-6 h-6">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <span className="ml-2 text-base">{lenderName}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-1 text-xs">
-            <p>
-              <span className="font-bold">Loan Amount: </span>₦{loanAmount}
-            </p>
-            <p>
-              <span className="font-bold">Interest Rate: </span>
-              {interestRate} %
-            </p>
-            <p>
-              <span className="font-bold">Frequency of Repayment: </span>
-              {repaymentOptions}
-            </p>
+    <>
+      <div className="flex justify-center sm:justify-start mb-4">
+        <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Avatar className="w-6 h-6">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <span className="ml-2 text-base">{lenderName}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1 text-xs">
+              <p>
+                <span className="font-bold">Loan Amount: </span>₦{loanAmount}
+              </p>
+              <p>
+                <span className="font-bold">Interest Rate: </span>
+                {interestRate} %
+              </p>
+              <p>
+                <span className="font-bold">Frequency of Repayment: </span>
+                {repaymentOptions}
+              </p>
 
-            <p>
-              <span className="font-bold">Loan Duration: </span>
-              {loanDuration} days
-            </p>
-            <p>
-              <span className="font-bold">Accruing Interest Rate: </span>
-              {accruingInterestRate} %
-            </p>
-            <p>
-              <span className="font-bold">Grace period: </span>
-              {gracePeriod} days
-            </p>
-            <p>
-              <span className="font-bold">Status: </span>
-              <span className={getStatusColor(status)}>{status}</span>
-            </p>
-          </div>
-        </CardContent>
-        {showButtons && !decisionMade && status.toLowerCase() === 'pending' && (
-          <CardFooter className="justify-end gap-8">
-            <Button
-              className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs"
-              onClick={handleAccept}
-              disabled={acceptRequest.isPending}
-            >
-              {acceptRequest.isPending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                'Accept'
-              )}
-            </Button>
-            <Button
-              onClick={handleDecline}
-              disabled={declineRequest.isPending}
-              className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs"
-            >
-              {declineRequest.isPending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                'Reject'
-              )}
-            </Button>
-          </CardFooter>
-        )}
-      </Card>
-    </div>
+              <p>
+                <span className="font-bold">Loan Duration: </span>
+                {loanDuration} days
+              </p>
+              <p>
+                <span className="font-bold">Accruing Interest Rate: </span>
+                {accruingInterestRate} %
+              </p>
+              <p>
+                <span className="font-bold">Grace period: </span>
+                {gracePeriod} days
+              </p>
+              <p className="font-bold">
+                <span>Status: </span>
+                <span className={getStatusColor(status)}>{status}</span>
+              </p>
+            </div>
+          </CardContent>
+          {showButtons &&
+            !decisionMade &&
+            status.toLowerCase() === 'pending' && (
+              <CardFooter className="justify-end gap-8">
+                <Button
+                  className="w-[60px] h-[30px] bg-green-600 hover:bg-green-700 text-xs"
+                  onClick={handleAccept}
+                  disabled={acceptRequest.isPending}
+                >
+                  {acceptRequest.isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    'Accept'
+                  )}
+                </Button>
+                <Button
+                  onClick={handleDecline}
+                  disabled={declineRequest.isPending}
+                  className="w-[60px] h-[30px] bg-red-600 hover:bg-red-700 text-xs"
+                >
+                  {declineRequest.isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    'Reject'
+                  )}
+                </Button>
+              </CardFooter>
+            )}
+        </Card>
+      </div>
+      <AcceptRequestPinDialog
+        isOpen={pinDialogOpen}
+        onClose={() => setPinDialogOpen(false)}
+        onSubmit={handlePinSubmit}
+      />
+    </>
   );
 };
 
-const BorrowersLenderOffer: React.FC = () => {
+const LoanRequest: React.FC = () => {
   const [view, setView] = useState<'received' | 'sent'>('received');
   const { GetLoanRequest } = useLoanRequest();
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(2);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const orderBy = 'CreatedAt desc';
 
   const {
     data: loanRequests,
     error,
     isLoading,
-  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems, orderBy);
 
-  const totalItem = loanRequests?.result.totalItems || 0;
-  const totalPages = Math.ceil(totalItem / pageSize);
+  useEffect(() => {
+    if (loanRequests?.result) {
+      setTotalItems(loanRequests.result.totalItems);
+    }
+  }, [loanRequests]);
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+  };
+
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   if (error) {
     return <div className="text-sm">Error loading loan requests.</div>;
@@ -200,7 +232,8 @@ const BorrowersLenderOffer: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center my-8">
+        <div className="flex flex-col justify-center items-center my-8">
+          <Loader2 className="animate-spin text-blue-500" size={48} />
           <p className="text-sm font-semibold">Loading loan requests...</p>
         </div>
       ) : (
@@ -235,59 +268,97 @@ const BorrowersLenderOffer: React.FC = () => {
           )}
 
           <div className="mt-8 space-y-4">
-            {loanRequests?.result.items
-              .slice(0, pageSize)
-              .map((offer, index) => {
-                const displayName =
-                  view === 'received'
-                    ? `${offer.user.firstName} ${offer.user.lastName}`
-                    : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
+            {loanRequests?.result.items.map((offer, index) => {
+              const displayName =
+                view === 'received'
+                  ? `${offer.user.firstName} ${offer.user.lastName}`
+                  : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
 
-                return (
-                  <LenderOfferCard
-                    key={index}
-                    lenderName={displayName}
-                    loanAmount={offer.loanOffer.amount}
-                    repaymentOptions={offer.loanOffer.repaymentFrequency}
-                    interestRate={offer.loanOffer.interestRate}
-                    showButtons={view === 'received'}
-                    loanDuration={offer.loanOffer.loanDurationDays}
-                    gracePeriod={offer.loanOffer.gracePeriodDays}
-                    accruingInterestRate={offer.loanOffer.accruingInterestRate}
-                    status={offer.status}
-                    loanRequestId={offer.id} //loan request id
-                  />
-                );
-              })}
+              return (
+                <LenderOfferCard
+                  key={index}
+                  lenderName={displayName}
+                  loanAmount={offer.loanOffer.amount}
+                  repaymentOptions={offer.loanOffer.repaymentFrequency}
+                  interestRate={offer.loanOffer.interestRate}
+                  showButtons={view === 'received'}
+                  loanDuration={offer.loanOffer.loanDurationDays}
+                  gracePeriod={offer.loanOffer.gracePeriodDays}
+                  accruingInterestRate={offer.loanOffer.accruingInterestRate}
+                  status={offer.status}
+                  loanRequestId={offer.id}
+                />
+              );
+            })}
           </div>
 
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-4">
-              <Button
-                disabled={pageNumber === 1}
-                onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-                className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
-              >
-                Previous
-              </Button>
-              <span className="mx-4 text-xs">
-                Page {pageNumber} of {totalPages}
-              </span>
-              <Button
-                disabled={pageNumber === totalPages}
-                onClick={() =>
-                  setPageNumber((prev) => Math.min(prev + 1, totalPages))
-                }
-                className="h-4 bg-blue-600 hover:bg-blue-600 text-xs"
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          <div className="mt-8 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                {pageNumber > 1 && (
+                  <PaginationItem>
+                    <PaginationPrevious
+                      className="text-xs"
+                      onClick={() => handlePageChange(pageNumber - 1)}
+                    />
+                  </PaginationItem>
+                )}
+                {(() => {
+                  let startPage = Math.max(1, pageNumber - 1);
+                  let endPage = Math.min(totalPages, pageNumber + 1);
+
+                  if (pageNumber === 1) {
+                    endPage = Math.min(3, totalPages);
+                  } else if (pageNumber === totalPages) {
+                    startPage = Math.max(totalPages - 2, 1);
+                  }
+                  const pages = [];
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          className="text-xs"
+                          isActive={i === pageNumber}
+                          onClick={() => handlePageChange(i)}
+                        >
+                          {i}
+                        </PaginationLink>
+                      </PaginationItem>,
+                    );
+                  }
+                  return pages;
+                })()}
+                {pageNumber < totalPages - 2 && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+                {pageNumber + 1 < totalPages && (
+                  <PaginationItem>
+                    <PaginationLink
+                      className="text-xs"
+                      isActive={pageNumber === totalPages}
+                      onClick={() => handlePageChange(totalPages)}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                )}
+                {pageNumber < totalPages && (
+                  <PaginationItem>
+                    <PaginationNext
+                      className="text-xs"
+                      onClick={() => handlePageChange(pageNumber + 1)}
+                    />
+                  </PaginationItem>
+                )}
+              </PaginationContent>
+            </Pagination>
+          </div>
         </>
       )}
     </>
   );
 };
 
-export default BorrowersLenderOffer;
+export default LoanRequest;

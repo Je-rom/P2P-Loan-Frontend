@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,11 +20,11 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useEffect, useRef, useState } from 'react';
-import useWallet from '@/hooks/useWallet';
 import { toast } from 'sonner';
+import useWallet from '@/hooks/useWallet';
 import useBanks from '@/hooks/useBank';
 import BankService from '@/services/bankService';
+import { Loader2 } from 'lucide-react';
 
 export function WithdrawDialog({
   open = false,
@@ -32,7 +33,6 @@ export function WithdrawDialog({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
-  const [copySuccess, setCopySuccess] = useState('');
   const [walletId, setWalletId] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState<string | null>(null);
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
@@ -41,22 +41,38 @@ export function WithdrawDialog({
     null,
   );
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
-  const [amount, setAmount] = useState<string | null>(null);
-  const { getWalletQuery, useWalletBalanceQuery } = useWallet();
+  const [amount, setAmount] = useState<number | null>(null);
+  const [pin, setPin] = useState('');
+  const [withdrawalFee, setWithdrawalFee] = useState<number | null>(null);
+
+  const {
+    getWalletQuery,
+    useWalletBalanceQuery,
+    useWithdrawFeeQuery,
+    Withdraw,
+  } = useWallet();
+  const withdraw = Withdraw();
   const { GetBanks, GetAccountDetails } = useBanks();
+
+  // Fetch withdrawal fee when both account number and amount are entered
+  const { data: withdrawalFeeData, error: withdrawalFeeError } =
+    useWithdrawFeeQuery(amount || 0);
+
+  useEffect(() => {
+    if (withdrawalFeeData) {
+      setWithdrawalFee(withdrawalFeeData.result.fee);
+    } else if (withdrawalFeeError) {
+      toast.error('Failed to fetch withdrawal fee');
+    }
+  }, [withdrawalFeeData, withdrawalFeeError]);
+
+  const isPinValid = pin.length === 4 && /^\d+$/.test(pin);
 
   const {
     data: banksData,
     isLoading: isBanksLoading,
     isError: isBanksError,
   } = GetBanks();
-
-  useEffect(() => {
-    if (getWalletQuery.isError) {
-      toast.error('Failed to fetch wallet');
-    }
-  }, [getWalletQuery.isError]);
-
   const {
     data: balanceData,
     isLoading: isBalanceLoading,
@@ -112,8 +128,55 @@ export function WithdrawDialog({
       setVerificationMessage(null);
       setIsVerifying(false);
       setAmount(null);
+      setWithdrawalFee(null);
     }
     onOpenChange && onOpenChange(isOpen);
+  };
+
+  const isLoading = withdraw.isPending;
+  const handleSubmit = () => {
+    if (!amount) {
+      toast.error('Please enter the amount.');
+      return;
+    }
+
+    if (!walletId) {
+      toast.error('Wallet ID is missing.');
+      return;
+    }
+
+    if (!selectedBank) {
+      toast.error('Please select a bank.');
+      return;
+    }
+
+    if (!accountNumber || accountNumber.length !== 10) {
+      toast.error('Please enter a valid account number.');
+      return;
+    }
+
+    if (!isPinValid) {
+      toast.error('Please enter a valid 4-digit PIN.');
+      return;
+    }
+
+    withdraw.mutateAsync({
+      amount,
+      walletId,
+      destinationBankCode: selectedBank,
+      destinationAccountNumber: accountNumber,
+      currency: 'NGN',
+      PIN: pin,
+    });
+    // setAmount(null);
+    // setWalletId(null);
+    // setSelectedBank(null);
+    // setAccountNumber(null);
+    // setPin('');
+    // setAccountName(null);
+    // setVerificationMessage(null);
+    // setWithdrawalFee(null);
+    // handleDialogClose(false);
   };
 
   return (
@@ -135,14 +198,7 @@ export function WithdrawDialog({
               Choose a bank
             </Label>
             <div className="relative sm:col-span-3 w-full">
-              <Select
-                onValueChange={(value) => {
-                  const selectedBank = banksData?.result.responseBody.find(
-                    (bank) => bank.code === value,
-                  );
-                  setSelectedBank(value);
-                }}
-              >
+              <Select onValueChange={(value) => setSelectedBank(value)}>
                 <SelectTrigger className="w-full text-xs">
                   <SelectValue
                     placeholder={
@@ -176,6 +232,7 @@ export function WithdrawDialog({
               </Select>
             </div>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 mt-2">
             <Label className="text-start text-xs sm:text-xs">
               Account Number
@@ -201,30 +258,65 @@ export function WithdrawDialog({
               )}
             </div>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 mt-2">
             <Label className="text-start text-xs sm:text-xs">Amount</Label>
             <Input
               className="sm:col-span-3 w-full border-black text-sm sm:text-base"
               value={amount || ''}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => setAmount(Number(e.target.value))}
             />
           </div>
-          <h1 className="text-end text-xs">
+
+          {withdrawalFee !== null && (
+            <div className="text-xs text-black">
+              Withdrawal Fee: ₦{withdrawalFee}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 mt-2">
+            <Label className="text-start text-xs sm:text-xs">
+              Enter your pin
+            </Label>
+            <div className="relative sm:col-span-3 w-full">
+              <Input
+                id="pin"
+                type="text"
+                className="text-xs border-black"
+                pattern="\d*"
+                maxLength={4}
+                value={pin}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setPin(value);
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          <h1 className="text-end text-xs text-green-700 font-bold">
             Available Balance: ₦{balanceData?.result.availableBalance}
           </h1>
         </div>
+
         <DialogFooter>
           <Button
+            disabled={!isPinValid || isLoading}
+            onClick={handleSubmit}
             type="submit"
             className="items-center flex justify-center w-full bg-blue-600 hover:bg-blue-800 text-sm sm:text-sm"
           >
-            Withdraw
+            {isLoading ? <Loader2 className="animate-spin" /> : 'Withdraw'}
           </Button>
         </DialogFooter>
-        {copySuccess && (
-          <div className="text-green-600 text-center mt-2">{copySuccess}</div>
-        )}
       </DialogContent>
     </Dialog>
   );
 }
+
+//   const [copySuccess, setCopySuccess] = useState('');
+//  {copySuccess && (
+// //           <div className="text-green-600 text-center mt-2">{copySuccess}</div>
+// //         )}

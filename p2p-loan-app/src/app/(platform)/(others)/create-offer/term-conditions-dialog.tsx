@@ -31,8 +31,8 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
             <strong>Last Updated:</strong> 12-08-2024
           </p>
           <p>
-            Welcome to BorrowPointe! These Terms and Conditions govern your use
-            of the BorrowPointe application for obtaining loans through our
+            Welcome to BorrowHub! These Terms and Conditions govern your use of
+            the BorrowHub application for obtaining loans through our
             peer-to-peer (P2P) lending platform. By accessing or using the
             Application to request or receive loans, you agree to be bound by
             these Terms.
@@ -48,7 +48,7 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
           <section>
             <h2 className="font-bold mt-4">2. Overview of Services</h2>
             <p>
-              BorrowPointe provides a platform where borrowers can request loans
+              BorrowHub provides a platform where borrowers can request loans
               and lenders can offer loans. The Application facilitates the
               connection and transaction process between borrowers and lenders
               but does not directly participate in the lending or borrowing
@@ -85,7 +85,7 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
             <p>
               Borrowers can create loan requests by specifying the loan amount,
               purpose, repayment terms, and other relevant details. All loan
-              requests are subject to review and approval by BorrowPointe. You
+              requests are subject to review and approval by BorrowHub. You
               understand and agree that submitting a loan request does not
               guarantee that your loan will be funded.
             </p>
@@ -107,18 +107,18 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
               You agree to repay the loan according to the terms specified in
               the Loan Agreement. Failure to make timely payments may result in
               additional fees, penalties, and reporting to credit bureaus.
-              BorrowPointe may also take collection actions as described in the
+              BorrowHub may also take collection actions as described in the
               Loan Agreement.
             </p>
           </section>
           <section>
             <h2 className="font-bold mt-4">8. Fees and Charges</h2>
             <p>
-              BorrowPointe may charge fees for its services, including
-              origination fees, late payment fees, and other charges as outlined
-              in the Application. All fees will be clearly disclosed before you
-              agree to any loan. You are responsible for paying all fees
-              associated with the loan as specified in the Loan Agreement.
+              BorrowHub may charge fees for its services, including origination
+              fees, late payment fees, and other charges as outlined in the
+              Application. All fees will be clearly disclosed before you agree
+              to any loan. You are responsible for paying all fees associated
+              with the loan as specified in the Loan Agreement.
             </p>
           </section>
           <section>
@@ -162,27 +162,27 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
             <h2 className="font-bold mt-4">12. Disclaimers</h2>
             <p>
               The Application is provided "as is" and "as available" without any
-              warranties of any kind, express or implied. BorrowPointe disclaims
+              warranties of any kind, express or implied. BorrowHub disclaims
               all warranties, including but not limited to, the warranties of
               merchantability, fitness for a particular purpose, and
-              non-infringement. BorrowPointe does not warrant that the
-              Application will be error-free, secure, or available at all times.
+              non-infringement. BorrowHub does not warrant that the Application
+              will be error-free, secure, or available at all times.
             </p>
           </section>
           <section>
             <h2 className="font-bold mt-4">13. Limitation of Liability</h2>
             <p>
-              In no event shall BorrowPointe be liable for any direct, indirect,
+              In no event shall BorrowHub be liable for any direct, indirect,
               incidental, special, consequential, or punitive damages arising
               out of or related to your use of or inability to use the
-              Application, even if BorrowPointe has been advised of the
-              possibility of such damages.
+              Application, even if BorrowHub has been advised of the possibility
+              of such damages.
             </p>
           </section>
           <section>
             <h2 className="font-bold mt-4">14. Modifications to Terms</h2>
             <p>
-              BorrowPointe reserves the right to modify these Terms at any time.
+              BorrowHub reserves the right to modify these Terms at any time.
               Any changes will be effective immediately upon posting the updated
               Terms within the Application. Your continued use of the
               Application following the posting of changes constitutes your
@@ -192,9 +192,9 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
           <section>
             <h2 className="font-bold mt-4">15. Termination</h2>
             <p>
-              BorrowPointe may terminate or suspend your access to the
-              Application at any time, with or without cause or notice, for any
-              reason, including but not limited to, a breach of these Terms.
+              BorrowHub may terminate or suspend your access to the Application
+              at any time, with or without cause or notice, for any reason,
+              including but not limited to, a breach of these Terms.
             </p>
           </section>
           <section>
@@ -209,7 +209,7 @@ const TermsAndConditionDialog: React.FC<TermsAndConditionDialogProps> = ({
             <h2 className="font-bold mt-4">17. Contact Information</h2>
             <p>
               If you have any questions or concerns about these Terms, please
-              contact us at hello@borrowpointe.com.
+              contact us at hello@BorrowHub.com.
             </p>
           </section>
         </DialogDescription>

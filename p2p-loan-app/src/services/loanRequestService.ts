@@ -166,11 +166,20 @@ export interface LoanRequestResponse {
   };
 }
 
+export interface AcceptLoanRequestRequest {
+  PIN: string;
+}
+
 export interface AcceptLoanRequestResponse {
   status: string;
   statusCode: string;
   message: string;
   result: string;
+}
+
+export interface AcceptLoanRequestMutationVariables {
+  loanRequestId: string;
+  pin: AcceptLoanRequestRequest;
 }
 
 export interface DeclineLoanRequestResponse {
@@ -192,16 +201,22 @@ class LoanRequestService {
     pageNumber: number,
     pageSize: number,
     totalItems: number,
+    orderBy?: string,
   ): Promise<AxiosResponse<LoanRequestResponse>> => {
     return await axiosConfig.get('/api/loan-request/me', {
-      params: { trafficType, pageNumber, pageSize, totalItems },
+      params: { trafficType, pageNumber, pageSize, totalItems, orderBy },
     });
   };
 
   static acceptLoanRequest = async (
-    loanReqeustId: string,
+    loanRequestId: string,
+    requestBody: AcceptLoanRequestRequest,
   ): Promise<AcceptLoanRequestResponse> => {
-    return await axiosConfig.post(`/api/loan-request/accept/${loanReqeustId}`);
+    const response = await axiosConfig.post(
+      `/api/loan-request/accept/${loanRequestId}`,
+      requestBody,
+    );
+    return response.data;
   };
 
   static declineLoanRequest = async (

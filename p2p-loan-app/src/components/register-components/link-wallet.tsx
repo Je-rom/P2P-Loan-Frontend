@@ -37,7 +37,7 @@ const LinkWallet: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Link Wallet' },
+    { number: 3, label: 'Choose Wallet' },
     { number: 4, label: 'Verify Email' },
   ];
 
@@ -58,7 +58,6 @@ const LinkWallet: React.FC = () => {
   useEffect(() => {
     if (data) {
       console.log('Fetched wallet providers:', data.result);
-      setWalletProvider(data.result[0]?.slug || null);
     }
     if (isError) {
       console.error('Error fetching wallet providers:', error);
@@ -125,7 +124,6 @@ const LinkWallet: React.FC = () => {
               Choose a provider to securely manage your digital assets and
               transactions.
             </p>
-            {formError && <p className="text-red-500">{formError}</p>}
             <div className="mt-10 flex justify-center items-center">
               <Form {...form}>
                 <form
@@ -199,6 +197,7 @@ const LinkWallet: React.FC = () => {
                                   key={provider.id}
                                   className="text-xs"
                                   value={provider.id}
+                                  disabled={!provider.enabled}
                                 >
                                   <div className="flex text-xs">
                                     <Image

@@ -18,7 +18,7 @@ import AuthService, {
 } from '@/services/authService';
 import { useAuthState } from '@/store/authStore';
 import axiosResponseMessage from '@/lib/axiosResponseMessage';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 const useAuth = () => {
   const router = useRouter();
   const { setUser, setToken, user, token, clearAuth } = useAuthState();
+  const queryClient = useQueryClient();
 
   const SignUpMutation = () => {
     return useMutation({
@@ -155,6 +156,7 @@ const useAuth = () => {
     onSuccess: (data: CreatePinResponse) => {
       const { message } = data;
       console.log('PIN', message);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 

@@ -28,7 +28,7 @@ const BVNVerification: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Link Wallet' },
+    { number: 3, label: 'Choose Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
 
@@ -138,7 +138,7 @@ const BVNVerification: React.FC = () => {
                   </div>
                   <div className="py-2 flex justify-between items-center">
                     <Button
-                      className="rounded-xl bg-blue-600 hover:bg-blue-800 text-white"
+                      className="rounded-xl bg-blue-600 hover:bg-blue-800 text-white w-full"
                       type="submit"
                     >
                       {isLoading ? (

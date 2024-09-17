@@ -32,9 +32,10 @@ export function BorrowerOffer() {
   const id = useId();
   const router = useRouter();
 
-  const borrowerOffers = data?.result.items.filter(
-    (offer: { type: string }) => offer.type === 'borrower',
-  );
+  const borrowerOffers =
+    data?.result?.items?.filter(
+      (offer: { type: string }) => offer.type === 'borrower',
+    ) || [];
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -74,7 +75,7 @@ export function BorrowerOffer() {
       return;
     }
     const loanRequest = {
-      loanOfferId: offer.id, //lender's loan offer ID
+      loanOfferId: offer.id, 
       walletId, //borrower's wallet ID
       additionalInformation: offer.additionalInformation || '', //additional info from the lender's offer
     };
@@ -84,13 +85,24 @@ export function BorrowerOffer() {
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
+        <Image src={'/Loading.gif'} alt="loading" width={100} height={10} />
+        <h1 className="font-bold text-sm">Loading offers...</h1>
+      </div>
+    );
+  }
+
+  if (!data || borrowerOffers.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center">
         <Image
-          src={'/loadingLoanOffer.gif'}
-          alt="loading"
-          width={200}
+          src={'/Withdrawal Receipt.gif'}
+          alt="no offer"
+          width={100}
           height={10}
         />
-        <h1 className="font-bold text-sm">Loading lender's offers...</h1>
+        <h1 className="font-bold text-sm">
+          No offers available at the moment.
+        </h1>
       </div>
     );
   }
@@ -99,7 +111,9 @@ export function BorrowerOffer() {
     return (
       <div className="flex flex-col justify-center items-center">
         <Image src={'/failed.gif'} alt="loading" width={60} height={10} />
-        <h1 className="font-bold text-sm">Failed to get lenders offers...</h1>
+        <h1 className="font-bold text-sm">
+          Failed to get offers, try again later...
+        </h1>
       </div>
     );
   }

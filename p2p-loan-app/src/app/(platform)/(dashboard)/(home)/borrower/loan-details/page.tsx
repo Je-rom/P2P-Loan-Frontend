@@ -24,7 +24,7 @@ const LoanDetails = () => {
     <>
       <button onClick={() => router.back()}>
         <div className="flex items-center">
-          <MoveLeft className='w-3' />
+          <MoveLeft className="w-3" />
           <h1 className="ml-1 font-bold text-xs">Back</h1>
         </div>
       </button>
@@ -53,16 +53,6 @@ const LoanDetails = () => {
                   </p>
                   <p>
                     <span className="font-bold">Grace Period Days:</span>
-                  </p>
-                  <p>
-                    <span>
-                      Additional Information: CommonJS is a module system used
-                      in JavaScript to structure and organize code. It allows
-                      developers to break their code into smaller, reusable
-                      modules, making it easier to manage and maintain,
-                      especially in large projects. A module in CommonJS is
-                      simply a JavaScript file.
-                    </span>
                   </p>
                 </div>
               </CardContent>
