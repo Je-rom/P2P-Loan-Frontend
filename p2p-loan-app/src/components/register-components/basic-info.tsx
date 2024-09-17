@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormStore } from '@/context/FormContext';
 import {
   Form,
@@ -27,7 +27,7 @@ const BasicInfo: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Link Wallet' },
+    { number: 3, label: 'Choose Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
 
@@ -48,7 +48,16 @@ const BasicInfo: React.FC = () => {
       NIN: z.string(),
       password: z
         .string()
-        .min(8, { message: 'Password must be at least 8 characters' }),
+        .min(8, { message: 'Password is required, at least 8 characters' })
+        .max(100, { message: 'Password must be less than 100 characters' })
+        .regex(/[A-Z]/, {
+          message: 'Password must contain at least one uppercase letter',
+        })
+        .regex(/[0-9]/, { message: 'Password must contain at least one digit' })
+        .regex(/[@$!%*?&#]/, {
+          message:
+            'Password must contain at least one special character (@, $, !, %, *, ?, &, #)',
+        }),
       confirmPassword: z
         .string()
         .min(1, { message: 'Confirm Password is required' }),
@@ -62,21 +71,28 @@ const BasicInfo: React.FC = () => {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      BvnDateOfBirth: '',
-      password: '',
-      confirmPassword: '',
-      NIN: '',
+      firstName: formData.basicInfo?.firstName || '',
+      middleName: formData.basicInfo?.middleName || '',
+      lastName: formData.basicInfo?.lastName || '',
+      email: formData.basicInfo?.email || '',
+      phoneNumber: formData.basicInfo?.phoneNumber || '',
+      BvnDateOfBirth: formData.basicInfo?.BvnDateOfBirth || '',
+      password: formData.basicInfo?.password || '',
+      confirmPassword: formData.basicInfo?.password || '',
+      NIN: formData.basicInfo?.NIN || '',
     },
   });
 
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
+    updateFormData({ basicInfo: { ...formData.basicInfo, userType: option } });
   };
+
+  useEffect(() => {
+    if (formData.basicInfo?.userType) {
+      setSelectedOption(formData.basicInfo.userType);
+    }
+  }, [formData.basicInfo?.userType]);
 
   const onSubmit = async (data: RegisterFormValues) => {
     if (!selectedOption) {
@@ -125,8 +141,8 @@ const BasicInfo: React.FC = () => {
               Create your account
             </h1>
             <p className="text-sm md:text-sm p-4">
-              Follow thes steps to create your account, enter your personal information and
-              set up your account securely. Let's get started!
+              Follow thes steps to create your account, enter your personal
+              information and set up your account securely. Let's get started!
             </p>
           </div>
           <div className="flex items-center justify-center gap-4 mb-6">

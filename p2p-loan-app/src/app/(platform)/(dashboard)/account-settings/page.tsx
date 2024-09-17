@@ -1,115 +1,119 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import axios from 'axios';
-import { IoChevronForward } from 'react-icons/io5';
-import { Edit as EditIcon } from '@mui/icons-material';
-import Button from '@mui/material/Button';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import ChangePinDialog from '@/components/shared/change-pin-dialog';
+import ChangePasswordDialog from '@/components/shared/change-password-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import useProfile from '@/hooks/useProfile';
+import dayjs from 'dayjs';
 
-const ProfileSettings = () => {
-  const [personalInfo, setPersonalInfo] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth: '',
-  });
 
-  useEffect(() => {
-    const fetchSettingData = async () => {
-      try {
-        const response = await axios.get('');
-        const data = response.data();
+const AccountSettings = () => {
+  const [isChangePinDialogOpen, setIsChangePinDialogOpen] = useState(false);
+  const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
+    useState(false);
 
-        setPersonalInfo(data.personalInfo);
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-      }
-    };
-    fetchSettingData();
-  }, []);
+  const { GetCurrentUser } = useProfile();
+  const { data: userProfile, isLoading, error } = GetCurrentUser();
 
   const handleChangePin = () => {
-    // Logic for changing pin (e.g., open a modal to change)
+    setIsChangePinDialogOpen(true);
   };
 
   const handleChangePassword = () => {
-    // Logic for changing password (e.g., open a modal to change)
+    setIsChangePasswordDialogOpen(true);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading profile</div>;
+  }
+
+  if (!userProfile) {
+    return <div>No profile data available</div>;
+  }
+
+  const userType = localStorage.getItem('user_type');
+
+  const { firstName, lastName, email, pinCreated, createdAt } = userProfile;
+
   return (
-    <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-      <div className="">
-        <div className="flex items-center mb-6">
-          <div className="relative w-20 h-20 rounded-full overflow-hidden mr-4">
-            <Image src="" alt="pics" layout="fill" objectFit="cover" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Veronica R. Smith</h1>
-            <p className="text-gray-600">Developer</p>
-            <p className="text-gray-600">11, Thomas street, Lekki Lagos</p>
-          </div>
+    <div className="">
+      <div className="flex items-center">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback>U</AvatarFallback>
+        </Avatar>
+        <div className="ml-4">
+          <h1 className="text-base font-bold">{`${firstName} ${lastName}`}</h1>
+          <p className="text-sm text-gray-600">
+            {userType === 'lender' ? 'Lender' : 'Borrower'}
+          </p>
         </div>
+      </div>
 
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold mb-1">Personal Information</h2>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              startIcon={<EditIcon />}
-              sx={{
-                minWidth: 'auto',
-                padding: '2px 4px',
-                fontSize: '0.75rem',
-                textTransform: 'none',
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="mb-2">
-              <span className="font-medium">First Name: </span> Veronica
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Middle Name: </span> Rhiana
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Last Name: </span> Smith
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Gender: </span> Female
-            </div>
-            <div className="mb-2">
-              <span className="font-medium">Date of Birth: </span> 23-09-1960
-            </div>
-          </div>
+      <div className="mt-5">
+        <div className="flex justify-between items-center">
+          <h2 className="text-base font-semibold">Personal Information</h2>
         </div>
-
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Security</h2>
-          <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Pin</span>
-            <IoChevronForward
-              size={20}
-              className="text-blue-500"
-              onClick={handleChangePin}
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+          <div className="text-sm">
+            <span className="font-medium">First Name: </span> {firstName}
           </div>
-          <div className="border-t border-gray-300 py-2 flex items-center justify-between">
-            <span>Change Password</span>
-            <IoChevronForward
-              size={20}
-              className="text-blue-500"
-              onClick={handleChangePassword}
-            />
+
+          <div className="text-sm">
+            <span className="font-medium">Last Name: </span> {lastName}
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Email: </span> {email}
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Pin created: </span>
+            {pinCreated ? 'Yes' : 'No'}
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Account created: </span>
+            {dayjs(createdAt).format('MMMM D, YYYY')}
           </div>
         </div>
       </div>
+
+      <div className="mt-5">
+        <h2 className="text-base font-semibold mb-2">Security</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          Keeping your account secure is a priority. Regularly updating your PIN
+          and password helps protect your personal data from unauthorized
+          access. Use the options below to manage your security settings.
+        </p>
+        <div className="flex flex-col space-y-4">
+          <Button
+            onClick={handleChangePin}
+            className="text-sm w-1/2 bg-blue-500 hover:bg-blue-500"
+          >
+            Change Pin
+          </Button>
+          <Button
+            onClick={handleChangePassword}
+            className="text-sm w-1/2 bg-blue-500 hover:bg-blue-500"
+          >
+            Change Password
+          </Button>
+        </div>
+      </div>
+
+      <ChangePinDialog
+        isDialogOpen={isChangePinDialogOpen}
+        setIsDialogOpen={setIsChangePinDialogOpen}
+      />
+      <ChangePasswordDialog
+        isDialogOpen={isChangePasswordDialogOpen}
+        setIsDialogOpen={setIsChangePasswordDialogOpen}
+      />
     </div>
   );
 };
 
-export default ProfileSettings;
+export default AccountSettings;

@@ -1,10 +1,13 @@
 'use client';
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import TermsAndConditionDialog from './term-conditions-dialog';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import useLoanOffer from '@/hooks/useLoanOffer';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -12,47 +15,88 @@ import useWallet from '@/hooks/useWallet';
 import { Loader2 } from 'lucide-react';
 import { MoveLeft } from 'lucide-react';
 
-interface FormField {
-  label: string;
-  placeholder: string;
-  type: string;
-  name: keyof FormValues;
-}
+const formSchema = z.object({
+  loanAmount: z
+    .string()
+    .nonempty('Loan Amount is required')
+    .refine(
+      (val) => {
+        const amount = parseInt(val, 10);
+        return amount >= 1000 && amount <= 500000;
+      },
+      {
+        message: 'Loan Amount must be between 1,000 and 500,000 naira',
+      },
+    ),
+  interestRate: z
+    .string()
+    .nonempty('Interest Rate is required')
+    .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid interest rate'),
+  accruingInterestRate: z
+    .string()
+    .nonempty('Accruing Interest Rate is required')
+    .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid accruing interest rate'),
+  loanDurationDays: z
+    .string()
+    .nonempty('Loan Duration is required')
+    .regex(/^\d+$/, 'Loan Duration must be a number'),
+  gracePeriodDays: z
+    .string()
+    .nonempty('Grace Period is required')
+    .regex(/^\d+$/, 'Grace Period must be a number'),
+  repaymentFrequency: z.string().nonempty('Repayment Frequency is required'),
+  walletId: z.string().nonempty('Wallet ID is required'),
+  additionalNote: z.string().max(288, 'Maximum 288 characters allowed'),
+  // termsAccepted: z.boolean().refine((val) => val === true, {
+  //   message: 'You must accept the terms and conditions',
+  // }),
+});
 
-interface FormValues {
-  interestRate: string;
-  accruingInterestRate: string;
-  loanDurationDays: string;
-  loanAmount: string;
-  gracePeriodDays: string;
-  repaymentFrequency: string;
-  walletId: string;
-  additionalNote: string;
-  termsAccepted: boolean;
-}
-
-interface Errors {
-  [key: string]: string;
-}
+type FormValues = z.infer<typeof formSchema>;
 
 const CreateOfferPage = () => {
   const { getWalletQuery } = useWallet();
-  const [isOpen, setIsOpen] = useState(false);
-  const [errors, setErrors] = useState<Errors>({});
   const { CreateLoanOfferMutation } = useLoanOffer();
   const createLoanOfferMutation = CreateLoanOfferMutation();
-  const [userType, setUserType] = useState<string | null>(null);
   const router = useRouter();
-  const maxCharacters = 288;
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [userType, setUserType] = useState<string | null>(null);
   const [walletInfo, setWalletInfo] = useState<{
     walletId: string;
     accountNumber: string;
-  }>({
-    walletId: '',
-    accountNumber: '',
+  }>({ walletId: '', accountNumber: '' });
+
+  // Initialize react-hook-form
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch,
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      loanAmount: '',
+      interestRate: '',
+      accruingInterestRate: '',
+      loanDurationDays: '',
+      gracePeriodDays: '',
+      repaymentFrequency: '',
+      walletId: '',
+      additionalNote: '',
+      // termsAccepted: false,
+    },
   });
 
+  const maxCharacters = 288;
+
+  // Fetch user type from local storage
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('user_type');
+    setUserType(storedUserType);
+  }, []);
+
+  // Fetch wallet details and set wallet info
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
       const { result } = getWalletQuery.data;
@@ -62,13 +106,10 @@ const CreateOfferPage = () => {
           walletId: firstWallet.id,
           accountNumber: firstWallet.accountNumber,
         });
-        setFormValues((prevValues) => ({
-          ...prevValues,
-          walletId: firstWallet.id, // Store the walletId in formValues
-        }));
+        setValue('walletId', firstWallet.id);
       }
     }
-  }, [getWalletQuery.isSuccess, getWalletQuery.data]);
+  }, [getWalletQuery.isSuccess, getWalletQuery.data, setValue]);
 
   useEffect(() => {
     if (getWalletQuery.isError) {
@@ -76,134 +117,40 @@ const CreateOfferPage = () => {
     }
   }, [getWalletQuery.isError]);
 
-  useEffect(() => {
-    const storedUserType = localStorage.getItem('user_type');
-    setUserType(storedUserType);
-  }, []);
+  // Function to create a user-friendly wallet ID display
+  // const formatWalletId = (walletId: string) => {
+  //   if (walletId.length > 10) {
+  //     return `${walletId.slice(0, 8)}...`;
+  //   }
+  //   return walletId;
+  // };
 
-  const formFields: FormField[] = [
-    {
-      label: 'Loan Amount',
-      placeholder: 'Enter the loan amount',
-      type: 'number',
-      name: 'loanAmount',
-    },
-    {
-      label: 'Your Wallet',
-      placeholder: 'Add your borrow pointe wallet',
-      type: 'text',
-      name: 'walletId',
-    },
-    {
-      label: 'Interest Rate',
-      placeholder: 'Specify the interest rate for this loan',
-      type: 'text',
-      name: 'interestRate',
-    },
-    {
-      label: 'Accruing Interest Rate',
-      placeholder: 'Accuring interest rate',
-      type: 'text',
-      name: 'accruingInterestRate',
-    },
-    {
-      label: 'Loan duration',
-      placeholder: 'Specify the duration for this loan',
-      type: 'text',
-      name: 'loanDurationDays',
-    },
-    {
-      label: 'Grace Period',
-      placeholder: 'Give a fair grace period for your offer',
-      type: 'text',
-      name: 'gracePeriodDays',
-    },
-    {
-      label: 'Payment Frequency',
-      placeholder: 'Payment frequency can only be Daily, Weekly and Monthly',
-      type: 'text',
-      name: 'repaymentFrequency',
-    },
-  ];
-
-  const [formValues, setFormValues] = useState<FormValues>({
-    loanAmount: '',
-    interestRate: '',
-    gracePeriodDays: '',
-    loanDurationDays: '',
-    repaymentFrequency: '',
-    accruingInterestRate: '',
-    walletId: '',
-    additionalNote: '',
-    termsAccepted: false,
-  });
-
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === 'additionalNote' && value.length > maxCharacters) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: `Maximum ${maxCharacters} characters allowed.`,
-      }));
-    } else {
-      setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
-      setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
-    }
-  };
-
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      termsAccepted: e.target.checked,
-    }));
-  };
-
-  const validateForm = () => {
-    let newErrors: Errors = {};
-    formFields.forEach((field) => {
-      if (!formValues[field.name]) {
-        newErrors[field.name] = `${field.label} is required`;
+  // Handle form submission
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const createLoanOfferRequest = {
+        walletId: data.walletId,
+        amount: data.loanAmount,
+        repaymentFrequency: data.repaymentFrequency,
+        gracePeriodDays: parseInt(data.gracePeriodDays, 10),
+        loanDurationDays: parseInt(data.loanDurationDays, 10),
+        interestRate: parseFloat(data.interestRate),
+        accruingInterestRate: data.accruingInterestRate,
+        additionalInformation: data.additionalNote,
+      };
+      const result = await createLoanOfferMutation.mutateAsync(
+        createLoanOfferRequest,
+      );
+      if (result.status === 'Created') {
+        router.push(`${userType}/my-offers`);
       }
-    });
-    if (!formValues.termsAccepted) {
-      newErrors.termsAccepted = 'You must accept the terms and conditions';
+    } catch (error) {
+      console.log(error, 'create offer error');
     }
-    return newErrors;
   };
 
   const isLoading = createLoanOfferMutation.isPending;
-
-  const handleSubmit = async () => {
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-    } else {
-      try {
-        const createLoanOfferRequest = {
-          walletId: formValues.walletId,
-          amount: formValues.loanAmount,
-          repaymentFrequency: formValues.repaymentFrequency,
-          gracePeriodDays: parseInt(formValues.gracePeriodDays, 10),
-          loanDurationDays: parseInt(formValues.loanDurationDays, 10),
-          interestRate: parseFloat(formValues.interestRate),
-          accruingInterestRate: formValues.accruingInterestRate,
-          additionalInformation: formValues.additionalNote,
-        };
-        const result = await createLoanOfferMutation.mutateAsync(
-          createLoanOfferRequest,
-        );
-        console.log(createLoanOfferRequest, 'loan reqqqqqqq');
-        if (result.status === 'Created') {
-          router.push(`${userType}/my-offers`);
-        }
-      } catch (error) {
-        console.log(error, 'create offer error');
-      }
-    }
-  };
+  const additionalNoteLength = watch('additionalNote').length;
 
   return (
     <>
@@ -216,100 +163,152 @@ const CreateOfferPage = () => {
       <div>
         <h1 className="font-bold text-xl mt-10">Create New Offer</h1>
       </div>
-      <div className="flex flex-col space-y-6 p-4 mt-10">
-        {formFields.map((field, index) => (
-          <div
-            key={index}
-            className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full"
-          >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col space-y-6 p-4 mt-10">
+          {[
+            {
+              label: 'Loan Amount',
+              name: 'loanAmount',
+              placeholder: 'Enter the loan amount',
+              type: 'number',
+            },
+            {
+              label: 'Your Wallet Id',
+              name: 'walletId',
+              placeholder: 'Add your borrow pointe wallet',
+              type: 'text',
+            },
+            {
+              label: 'Interest Rate',
+              name: 'interestRate',
+              placeholder: 'Specify the interest rate',
+              type: 'text',
+            },
+            {
+              label: 'Accruing Interest Rate',
+              name: 'accruingInterestRate',
+              placeholder: 'Accruing interest rate',
+              type: 'text',
+            },
+            {
+              label: 'Loan Duration',
+              name: 'loanDurationDays',
+              placeholder: 'Specify loan duration',
+              type: 'text',
+            },
+            {
+              label: 'Grace Period',
+              name: 'gracePeriodDays',
+              placeholder: 'Specify grace period',
+              type: 'text',
+            },
+          ].map((field, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full"
+            >
+              <h1 className="mb-2 md:mb-0 md:w-1/4">
+                {field.label} <span className="text-red-500">*</span>
+              </h1>
+              <div className="relative w-full md:w-3/4">
+                <Input
+                  {...register(field.name as keyof FormValues)}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  className="w-full"
+                  readOnly={field.name === 'walletId'}
+                  value={
+                    field.name === 'walletId'
+                      ? walletInfo.walletId
+                      : undefined
+                  }
+                />
+                {errors[field.name as keyof FormValues] && (
+                  <span className="text-red-500">
+                    {errors[field.name as keyof FormValues]?.message}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+
+          <div className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full">
             <h1 className="mb-2 md:mb-0 md:w-1/4">
-              {field.label} <span className="text-red-500">*</span>
+              Payment Frequency <span className="text-red-500">*</span>
             </h1>
             <div className="relative w-full md:w-3/4">
-              <Input
-                className={`w-full pl-${field.type === 'number' ? '8' : '3'} md:pl-${field.type === 'number' ? '10' : '4'}`}
-                type={field.type}
-                placeholder={field.placeholder}
-                name={field.name}
-                value={
-                  field.name === 'walletId'
-                    ? walletInfo.accountNumber // Display account number to the user
-                    : (formValues[field.name] as string)
-                }
-                onChange={handleInputChange}
-                readOnly={field.name === 'walletId'} // Make the walletId field read-only
+              <select
+                {...register('repaymentFrequency')}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+              </select>
+              {errors.repaymentFrequency && (
+                <span className="text-red-500">
+                  {errors.repaymentFrequency?.message}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full p-4">
+          <h1 className="mb-2 md:mb-0 md:w-1/4">Additional Note</h1>
+          <div className="relative w-full md:w-3/4">
+            <Textarea
+              {...register('additionalNote')}
+              placeholder="Add any additional notes here..."
+              maxLength={maxCharacters}
+            />
+            <div className="text-sm text-gray-500">
+              {additionalNoteLength}/{maxCharacters} characters
+            </div>
+            {errors.additionalNote && (
+              <span className="text-red-500">
+                {errors.additionalNote?.message}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="w-full md:w-auto">
+            <h1>
+              Click to see the
+              <button onClick={() => setIsOpen(true)} className="text-blue-400">
+                Terms and Conditions
+              </button>
+              <TermsAndConditionDialog
+                open={isOpen}
+                onOpenChange={() => setIsOpen(!isOpen)}
               />
-              {errors[field.name] && (
-                <span className="text-red-500">{errors[field.name]}</span>
-              )}
+            </h1>
+            <div className="flex items-start space-x-2 mt-2">
+              <Checkbox/>
+              <div className="grid gap-1.5 leading-none">
+                <label className="text-sm font-medium">
+                  Accept terms and conditions
+                </label>
+                {/* {errors.termsAccepted && (
+                  <span className="text-red-500">
+                    {errors.termsAccepted?.message}
+                  </span>
+                )} */}
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full p-4">
-        <h1 className="mb-2 md:mb-0 md:w-1/4">
-          Additional Note <span className="text-red-500"></span>
-        </h1>
-        <div className="relative w-full md:w-3/4">
-          <Textarea
-            placeholder="Add any additional notes here, reason why you need the loan or why you are offering the loan etc.."
-            name="additionalNote"
-            value={formValues.additionalNote}
-            onChange={handleInputChange}
-            maxLength={maxCharacters}
-          />
-          <div className="text-sm text-gray-500">
-            {formValues.additionalNote.length}/{maxCharacters} characters
-          </div>
-          {errors.additionalNote && (
-            <span className="text-red-500">{errors.additionalNote}</span>
-          )}
-        </div>
-      </div>
-      <div className="mt-10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
-        <div className="w-full md:w-auto">
-          <h1>
-            Click to see the
-            <button onClick={() => setIsOpen(true)} className="text-blue-400">
-              Terms and Conditions
-            </button>
-            <TermsAndConditionDialog
-              open={isOpen}
-              onOpenChange={() => setIsOpen(!isOpen)}
-            />
-          </h1>
-          <div className="flex items-start space-x-2 mt-2">
-            <Checkbox
-              checked={formValues.termsAccepted}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange({
-                  target: { checked },
-                } as ChangeEvent<HTMLInputElement>)
-              }
-            />
-            <div className="grid gap-1.5 leading-none">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Accept terms and conditions
-              </label>
-              {errors.termsAccepted && (
-                <span className="text-red-500">{errors.termsAccepted}</span>
-              )}
-            </div>
+          <div className="flex space-x-4 w-full md:w-auto justify-center">
+            <Button
+              disabled={isLoading}
+              className="bg-blue-500 hover:bg-blue-500 font-semibold"
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : 'Create'}
+            </Button>
           </div>
         </div>
-        <div className="flex space-x-4 w-full md:w-auto justify-center">
-          <Button className="bg-white text-gray-400 font-semibold hover:bg-red-700 hover:text-white">
-            Cancel
-          </Button>
-          <Button
-            disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-500 font-semibold"
-            onClick={handleSubmit}
-          >
-            {isLoading ? <Loader2 className="animate-spin" /> : 'Create'}
-          </Button>
-        </div>
-      </div>
+      </form>
     </>
   );
 };

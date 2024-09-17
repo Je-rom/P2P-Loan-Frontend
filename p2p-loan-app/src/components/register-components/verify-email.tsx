@@ -13,10 +13,10 @@ const VerifyEmail: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Wallet' },
+    { number: 3, label: 'Choose Wallet' },
     { number: 4, label: 'Verify Email ' },
   ];
-  const { formData, updateFormData, sendVerificationEmail } = useFormStore();
+  const { formData, updateFormData, prevStep } = useFormStore();
   const [isEmailSent, setIsEmailSent] = useState(
     formData.emailVerification.isEmailSent,
   );
@@ -48,13 +48,13 @@ const VerifyEmail: React.FC = () => {
       }
     } catch (error) {
       console.log(error);
-      localStorage.removeItem('step');
-      setTimeout(() => {
-        window.location.reload();
-      }, 90000);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBack = () => {
+    prevStep();
   };
 
   return (
@@ -65,6 +65,10 @@ const VerifyEmail: React.FC = () => {
             <StepIndicator />
           </div>
         </div>
+        <button className="flex items-center" onClick={handleBack}>
+          <Image src="/chevron_back.svg" alt="Back" width={20} height={20} />
+          <span className="text-sm">Back</span>
+        </button>
         <div className="flex flex-col items-center justify-center mt-8">
           <Image src={'/email-icon.svg'} alt="email" width={60} height={100} />
           <h1 className="font-bold text-base">Check Your Email</h1>

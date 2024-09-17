@@ -13,6 +13,7 @@ import DatePickerWithRange from '@/components/ui/date-range';
 import LenderTable from '@/components/lender-components/lender-table';
 import useProfile from '@/hooks/useProfile';
 import CreatePinDialog from '@/components/shared/create-pin-dialog';
+import useLoanRequest from '@/hooks/useLoanRequest';
 
 interface ImageComponentProps {
   src: string;
@@ -91,23 +92,28 @@ const BalanceCard: React.FC<{
   );
 };
 
-const ActiveLoanCard: React.FC<{
+const LoanRequestCard: React.FC<{
   onSeeMoreClick: () => void;
-}> = ({ onSeeMoreClick }) => (
-  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-purple-50">
+  totalLoanRequests: number;
+  isLoading: boolean;
+}> = ({ onSeeMoreClick, totalLoanRequests, isLoading }) => (
+  <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-green-50">
     <CardHeader>
       <div className="flex justify-between items-center">
-        <ImageComponent src="active-loans.svg" alt="Active Loan" />
+        <ImageComponent src="loan-req.svg" alt="Loan request" />
       </div>
     </CardHeader>
     <CardContent>
       <div className="flex justify-between">
         <div>
-          <h1 className="text-xs">Active Loan</h1>
-          <p className="font-bold text-sm">66</p>
+          <h1 className="text-xs">Loan Request</h1>
+          <p className="font-bold text-sm">
+            {' '}
+            {isLoading ? 'Loading...' : totalLoanRequests}
+          </p>
         </div>
         <Button
-          className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
+          className="bg-green-200 hover:bg-green-100 text-green-900 rounded-full w-[65px] h-[28px] mt-3 text-xs"
           onClick={onSeeMoreClick}
         >
           See More
@@ -116,6 +122,32 @@ const ActiveLoanCard: React.FC<{
     </CardContent>
   </Card>
 );
+
+// const ActiveLoanCard: React.FC<{
+//   onSeeMoreClick: () => void;
+// }> = ({ onSeeMoreClick }) => (
+//   <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-purple-50">
+//     <CardHeader>
+//       <div className="flex justify-between items-center">
+//         <ImageComponent src="active-loans.svg" alt="Active Loan" />
+//       </div>
+//     </CardHeader>
+//     <CardContent>
+//       <div className="flex justify-between">
+//         <div>
+//           <h1 className="text-xs">Active Loan</h1>
+//           <p className="font-bold text-sm">66</p>
+//         </div>
+//         <Button
+//           className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
+//           onClick={onSeeMoreClick}
+//         >
+//           See More
+//         </Button>
+//       </div>
+//     </CardContent>
+//   </Card>
+// );
 
 const LenderPage = () => {
   const [fullName, setFullName] = useState('');
@@ -126,6 +158,11 @@ const LenderPage = () => {
   const router = useRouter();
   const { GetCurrentUser } = useProfile();
   const { data: userProfile, isLoading: isProfileLoading } = GetCurrentUser();
+  const { GetLoanRequest } = useLoanRequest();
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [pageSize] = useState(5);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [view, setView] = useState<'received' | 'sent'>('received');
 
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
@@ -169,6 +206,18 @@ const LenderPage = () => {
     }
   }, [userProfile, isProfileLoading]);
 
+  //get total number of loan requests
+  const {
+    data: loanRequests,
+    error,
+    isLoading: isLoanRequestsLoading,
+  } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
+  useEffect(() => {
+    if (loanRequests) {
+      setTotalItems(loanRequests.result.totalItems);
+    }
+  }, [loanRequests]);
+
   return (
     <>
       <CreatePinDialog
@@ -178,13 +227,12 @@ const LenderPage = () => {
       <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
           <h1 className="font-bold text-sm">Hi {fullName}</h1>
-          <p className="text-xs">Welcome to BorrowPointe</p>
+          <p className="text-xs">Welcome to BorrowHub</p>
         </div>
         <Button
           onClick={() => router.push('/create-offer')}
           className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
         >
-          <Plus color="#ffffff" />
           New Offer
         </Button>
       </div>
@@ -195,22 +243,13 @@ const LenderPage = () => {
           toggleBalanceVisibility={toggleBalanceVisibility}
           onSeeMoreClick={() => router.push('/lender/wallet')}
         />
-        <ActiveLoanCard onSeeMoreClick={() => router.push('/lender/loan')} />
-      </div>
-      <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-6 flex flex-col md:flex-row justify-between items-start">
-        <h1 className="font-bold text-xl sm:text-base">Transactions</h1>
-        <div className="flex flex-col md:flex-row items-center md:items-start mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
-          <div className="relative flex-grow w-full max-w-[200px]">
-            <Input
-              className="w-full rounded-xl text-xs"
-              placeholder="Search history"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3" />
-          </div>
-          <div className="relative flex-grow w-full max-w-[250px]">
-            <DatePickerWithRange />
-          </div>
-        </div>
+
+        <LoanRequestCard
+          onSeeMoreClick={() => router.push('/borrower/loan-request')}
+          totalLoanRequests={totalItems}
+          isLoading={isLoanRequestsLoading}
+        />
+        {/* <ActiveLoanCard onSeeMoreClick={() => router.push('/lender/loan')} /> */}
       </div>
       <div className="w-full mt-4 md:mt-0">
         <LenderTable />

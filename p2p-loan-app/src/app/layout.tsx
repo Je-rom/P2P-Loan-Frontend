@@ -10,7 +10,7 @@ const ubuntu = Ubuntu({
 });
 
 export const metadata: Metadata = {
-  title: 'BorrowPointe',
+  title: 'BorrowHub',
   description:
     "Peer-to-Peer (P2P) Microloan Platform that bridges the gap between borrower's and lenders",
 };

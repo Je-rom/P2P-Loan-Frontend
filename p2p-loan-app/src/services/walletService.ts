@@ -65,7 +65,54 @@ export interface WalletBalance {
   };
 }
 
-export interface WalletTransaction {}
+export interface WithdrawRequest {
+  amount: number;
+  walletId: string;
+  destinationBankCode: string;
+  destinationAccountNumber: string;
+  currency: string;
+  PIN: string;
+}
+
+export interface WithdrawResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: null;
+}
+
+export interface WithdrawalFeeResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: {
+    fee: number;
+  };
+}
+
+export interface WalletTransactionResponse {
+  status: string;
+  statusCode: string;
+  message: string;
+  result: {
+    content: {
+      id: string;
+      amount: number;
+      isCredit: boolean;
+      narration: string;
+      transactionDate: string;
+      transactionReference: string;
+    }[];
+    totalPages: number;
+    pageSize: number;
+    pageNo: number;
+    totalElements: number;
+    numberOfElements: number;
+    size: number;
+    number: number;
+    empty: boolean;
+  };
+}
 
 class WalletService {
   static getWalletProvider = async (): Promise<
@@ -82,6 +129,35 @@ class WalletService {
     walletId: string,
   ): Promise<AxiosResponse<WalletBalance>> => {
     return await axiosConfig.get(`/api/wallet/balance/${walletId}`);
+  };
+
+  static withdraw = async (
+    requestBody: WithdrawRequest,
+  ): Promise<AxiosResponse<WithdrawResponse>> => {
+    return await axiosConfig.post('/api/wallet/withdraw', requestBody);
+  };
+
+  static withdrawalFee = async (
+    amount: number,
+  ): Promise<AxiosResponse<WithdrawalFeeResponse>> => {
+    return await axiosConfig.get(`/api/wallet/withdrawal/fee/${amount}`);
+  };
+
+  static walletTransaction = async (
+    walletId: string,
+    totalPages: number,
+    pageSize: number,
+    pageNo: number,
+    totalElements: number,
+  ): Promise<AxiosResponse<WalletTransactionResponse>> => {
+    return await axiosConfig.get(`/api/wallet/transactions/${walletId}`, {
+      params: {
+        totalPages,
+        pageSize,
+        pageNo,
+        totalElements,
+      },
+    });
   };
 }
 

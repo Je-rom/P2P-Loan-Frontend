@@ -35,18 +35,23 @@ const useLoanOffer = () => {
     });
   };
 
-  const GetMyLoanOffer = (): UseQueryResult<
-    MyLoanOfferResponse,
-    AxiosError<{ message: string }>
-  > => {
+  const GetMyLoanOffer = (
+    totalItems: number,
+    pageNumber: number,
+    pageSize: number,
+  ): UseQueryResult<MyLoanOfferResponse, AxiosError<{ message: string }>> => {
     return useQuery<MyLoanOfferResponse, AxiosError<{ message: string }>>({
-      queryKey: ['loanOffer'],
+      queryKey: ['loanOffer', totalItems, pageNumber, pageSize],
       queryFn: async (): Promise<MyLoanOfferResponse> => {
-        const response = await loanOfferService.getMyLoanOffer();
+        const response = await loanOfferService.getMyLoanOffer(
+          totalItems,
+          pageNumber,
+          pageSize,
+        );
         return response.data;
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toast.error(`Error: ${error.response?.data.message || error.message}`);
+        toast.error(error.response?.data.message || error.message);
         console.log('Failed to fetch loan offers:', error.message);
       },
       onSuccess: (data: MyLoanOfferResponse) => {

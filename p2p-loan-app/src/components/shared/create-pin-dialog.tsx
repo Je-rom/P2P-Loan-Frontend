@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import useAuth from '@/hooks/useAuth';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CreatePinDialogProps {
   isDialogOpen: boolean;
@@ -26,6 +27,11 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
 
+  const isPinValid = pin.length === 4 && /^\d+$/.test(pin);
+  const isConfirmPinValid = confirmPin.length === 4 && /^\d+$/.test(confirmPin);
+  const isFormValid = isPinValid && isConfirmPinValid && pin === confirmPin;
+
+
   const handleSubmit = async () => {
     if (pin !== confirmPin) {
       toast.error('PIN and Confirm PIN do not match.');
@@ -38,6 +44,8 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
         onSuccess: () => {
           toast.success('PIN created successfully.');
           setIsDialogOpen(false);
+
+          
         },
         onError: () => {
           toast.error('Failed to create PIN.');
@@ -47,42 +55,60 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create PIN</DialogTitle>
-          <DialogDescription>
-            Please create a PIN to enhance your account security.
+          <DialogDescription className="text-xs">
+            To ensure the highest level of security for your account, please set
+            up a PIN. This PIN will be used to authorize transactions, manage
+            loan requests, and access other sensitive activities. Creating a PIN
+            helps protect your account from unauthorized access and ensures that
+            only you can perform critical actions.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="pin" className="text-right">
+            <Label htmlFor="pin" className="text-right text-xs">
               PIN
             </Label>
             <Input
               id="pin"
-              type="password"
-              className="col-span-3"
+              type="text"
+              className="col-span-3 text-xs"
+              pattern="\d*"
+              maxLength={4}
               value={pin}
-              onChange={(e) => setPin(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setPin(value);
+                }
+              }}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="confirm-pin" className="text-right">
+            <Label htmlFor="confirm-pin" className="text-right text-xs">
               Confirm PIN
             </Label>
             <Input
               id="confirm-pin"
-              type="password"
-              className="col-span-3"
+              type="text"
+              className="col-span-3 text-xs"
+              pattern="\d*"
+              maxLength={4}
               value={confirmPin}
-              onChange={(e) => setConfirmPin(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setConfirmPin(value);
+                }
+              }}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" onClick={handleSubmit}>
+          <Button type="button" onClick={handleSubmit} disabled={!isFormValid}>
             Save PIN
           </Button>
         </DialogFooter>

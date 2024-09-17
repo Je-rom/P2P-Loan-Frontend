@@ -1,6 +1,4 @@
 'use client';
-import axiosResponseMessage from '@/lib/axiosResponseMessage';
-import { toast } from 'sonner';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import ProfileService, { MyProfile } from '@/services/profileService';
 

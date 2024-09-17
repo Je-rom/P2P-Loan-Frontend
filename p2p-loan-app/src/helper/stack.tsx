@@ -36,7 +36,7 @@ const CARDS = [
     designation: 'Senior Designer',
     content: (
       <p>
-        Using BorrowPointe has been a <Highlight>game-changer</Highlight>. It’s
+        Using BorrowHub has been a <Highlight>game-changer</Highlight>. It’s
         incredibly easy to navigate and has made managing my loans and
         investments much more efficient.
       </p>
@@ -48,7 +48,7 @@ const CARDS = [
     designation: 'Senior Shitposter',
     content: (
       <p>
-        BorrowPointe has made it incredibly simple for
+        BorrowHub has made it incredibly simple for
         <Highlight>lenders and borrowers to connect</Highlight>. The platform’s
         design facilitates <Highlight>smooth interactions</Highlight>
       </p>

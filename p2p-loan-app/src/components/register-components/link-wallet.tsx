@@ -22,12 +22,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
-import { Confetti } from '@/components/ui/confetti';
 import useWallet from '@/hooks/useWallet';
 
 const LinkWallet: React.FC = () => {
   const router = useRouter();
-  const { formData, nextStep, updateFormData } = useFormStore();
+  const { formData, nextStep, updateFormData, prevStep } = useFormStore();
   const { step } = useFormStore();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -38,16 +37,14 @@ const LinkWallet: React.FC = () => {
   const steps = [
     { number: 1, label: 'Basic Info' },
     { number: 2, label: 'Verify BVN' },
-    { number: 3, label: 'Link Wallet' },
+    { number: 3, label: 'Choose Wallet' },
     { number: 4, label: 'Verify Email' },
   ];
 
   const currentStep = steps.find((s) => s.number === step);
 
   const WalletSchema = z.object({
-    wallet: z.string({
-      required_error: 'Please select a wallet provider to display.',
-    }),
+    wallet: z.string().nonempty({ message: 'Please select a wallet provider' }),
   });
 
   type WalletFormValues = z.infer<typeof WalletSchema>;
@@ -61,19 +58,24 @@ const LinkWallet: React.FC = () => {
   useEffect(() => {
     if (data) {
       console.log('Fetched wallet providers:', data.result);
-      setWalletProvider(data.result[0]?.slug || null);
     }
     if (isError) {
       console.error('Error fetching wallet providers:', error);
+      setFormError('Failed to load wallet providers. Please try again.');
     }
   }, [data, isError, error]);
 
-  const handleWalletSubmit: SubmitHandler<{ wallet: string }> = async (
-    data,
+  const handleWalletSubmit: SubmitHandler<WalletFormValues> = async (
+    formData,
   ) => {
     setLoading(true);
+    setFormError(null); // Clear previous errors
     try {
-      const walletProviderId = data.wallet;
+      const walletProviderId = formData.wallet;
+      if (!walletProviderId) {
+        setFormError('Please select a wallet provider.');
+        return;
+      }
       await updateFormData({
         linkWallet: {
           walletProvider: walletProviderId,
@@ -88,9 +90,13 @@ const LinkWallet: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    prevStep();
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-base lg:max-w-xl xl:max-w-3xl h-[450px]">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-base lg:max-w-xl xl:max-w-3xl h-[460px]">
         <div className="flex items-center justify-center mt-8">
           <div className="w-full max-w-2xl text-center">
             <StepIndicator />
@@ -98,6 +104,15 @@ const LinkWallet: React.FC = () => {
         </div>
         <div className="mt-10 flex flex-col items-center">
           <div className="w-full max-w-lg">
+            <button className="flex items-center mb-2" onClick={handleBack}>
+              <Image
+                src="/chevron_back.svg"
+                alt="Back"
+                width={20}
+                height={20}
+              />
+              <span className="text-sm">Back</span>
+            </button>
             <h1 className="text-sm flex gap-2 items-center">
               <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs">
                 {currentStep?.number}
@@ -109,7 +124,6 @@ const LinkWallet: React.FC = () => {
               Choose a provider to securely manage your digital assets and
               transactions.
             </p>
-            {formError && <p className="text-red-500">{formError}</p>}
             <div className="mt-10 flex justify-center items-center">
               <Form {...form}>
                 <form
@@ -125,7 +139,7 @@ const LinkWallet: React.FC = () => {
                           onValueChange={(value) => field.onChange(value)}
                           value={field.value}
                         >
-                          <FormControl className='text-xs'>
+                          <FormControl className="text-xs">
                             <SelectTrigger className="border-2 border-black">
                               <SelectValue placeholder="Select a wallet provider" />
                             </SelectTrigger>
@@ -157,7 +171,7 @@ const LinkWallet: React.FC = () => {
                                   Loading wallet providers...
                                 </div>
                               </SelectItem>
-                            ) : error ? (
+                            ) : isError ? (
                               <SelectItem value="error" disabled>
                                 <div className="flex justify-center items-center text-red-600 text-xs">
                                   <svg
@@ -183,6 +197,7 @@ const LinkWallet: React.FC = () => {
                                   key={provider.id}
                                   className="text-xs"
                                   value={provider.id}
+                                  disabled={!provider.enabled}
                                 >
                                   <div className="flex text-xs">
                                     <Image
@@ -209,13 +224,7 @@ const LinkWallet: React.FC = () => {
                       type="submit"
                       disabled={loading}
                     >
-                      {loading ? (
-                        'Submitting...'
-                      ) : (
-                        <>
-                          <Confetti /> NEXT
-                        </>
-                      )}
+                      {loading ? 'Submitting...' : 'NEXT'}
                     </Button>
                   </div>
                 </form>

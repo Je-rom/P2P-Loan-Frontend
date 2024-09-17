@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
   Pagination,
@@ -16,7 +16,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -24,15 +23,33 @@ import {
 
 const MyOffers = () => {
   const { GetMyLoanOffer } = useLoanOffer();
-  const { data, error, isLoading } = GetMyLoanOffer();
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
-  const [currentPage, setCurrentPage] = useState(2);
+  const { data, error, isLoading } = GetMyLoanOffer(
+    totalItems,
+    pageNumber,
+    pageSize,
+  );
+
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPageNumber(newPage);
+    }
+  };
+  useEffect(() => {
+    if (data?.result.totalItems) {
+      setTotalItems(data.result.totalItems);
+    }
+  }, [data]);
 
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center text-xs">
-        <h1>Please wait, we are getting your loan offers</h1>
         <Loader2 className="animate-spin text-blue-500" size={48} />
+        <h1>Please wait, we are getting your loan offers</h1>
       </div>
     );
   }
@@ -40,7 +57,7 @@ const MyOffers = () => {
   if (error) {
     return (
       <div className="flex justify-center text-red-500 text-xs">
-        <p className='text-sm'>Failed to load loan offers</p>
+        <p className="text-sm">Failed to load loan offers</p>
       </div>
     );
   }
@@ -64,15 +81,6 @@ const MyOffers = () => {
     );
   }
 
-  const totalItems = data.result.totalItems;
-  const currentPagef = data.result.pageNumber;
-  const itemsPerPage = data.result.pageSize;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
-
   return (
     <>
       <div className="">
@@ -82,9 +90,6 @@ const MyOffers = () => {
         <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden text-xs">
           <TableHeader className="bg-white border">
             <TableRow className="bg-blue-100">
-              <TableHead className="font-bold text-black-900">
-                Loan Name
-              </TableHead>
               <TableHead className="font-bold text-black-900">
                 Loan Amount
               </TableHead>
@@ -97,120 +102,110 @@ const MyOffers = () => {
               <TableHead className="font-bold text-black-900">
                 Repayment Frequency
               </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Grace Period
+              </TableHead>
+              <TableHead className="font-bold text-black-900">
+                Acurring Interest Rate
+              </TableHead>
+              <TableHead className="font-bold text-black-900">Active</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="border text-xs">
             {data.result.items.map((offer) => (
               <TableRow key={offer.id}>
-                <TableCell>{offer.gracePeriodDays}</TableCell>
-                <TableCell>{offer.amount}</TableCell>
+                <TableCell>₦{offer.amount}</TableCell>
                 <TableCell>{offer.interestRate}%</TableCell>
                 <TableCell>{offer.loanDurationDays} days</TableCell>
-                <TableCell>{offer.repaymentFrequency}</TableCell>
+                <TableCell className="capitalize">
+                  {offer.repaymentFrequency}
+                </TableCell>
+                <TableCell>{offer.gracePeriodDays} days</TableCell>
+                <TableCell>{offer.accruingInterestRate}</TableCell>
+                <TableCell className="">
+                  <span
+                    className={`inline-block px-2 text-xs font-semibold rounded-full ${
+                      offer.active
+                        ? 'bg-green-600 text-white'
+                        : 'bg-red-600 text-white'
+                    }`}
+                  >
+                    {offer.active ? 'Yes' : 'No'}
+                  </span>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
-          <TableFooter></TableFooter>
         </Table>
       </div>
       <div className="mt-20 text-xs text-end">
         <p>Total Offers: {data?.result.totalItems}</p>
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Pagination>
+          <PaginationContent>
+            {pageNumber > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  className="text-xs"
+                  onClick={() => handlePageChange(pageNumber - 1)}
+                />
+              </PaginationItem>
+            )}
+            {(() => {
+              let startPage = Math.max(1, pageNumber - 1);
+              let endPage = Math.min(totalPages, pageNumber + 1);
+
+              if (pageNumber === 1) {
+                endPage = Math.min(3, totalPages);
+              } else if (pageNumber === totalPages) {
+                startPage = Math.max(totalPages - 2, 1);
+              }
+              const pages = [];
+              for (let i = startPage; i <= endPage; i++) {
+                pages.push(
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      className="text-xs"
+                      isActive={i === pageNumber}
+                      onClick={() => handlePageChange(i)}
+                    >
+                      {i}
+                    </PaginationLink>
+                  </PaginationItem>,
+                );
+              }
+              return pages;
+            })()}
+            {pageNumber < totalPages - 2 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            {pageNumber + 1 < totalPages && (
+              <PaginationItem>
+                <PaginationLink
+                  className="text-xs"
+                  isActive={pageNumber === totalPages}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            {pageNumber < totalPages && (
+              <PaginationItem>
+                <PaginationNext
+                  className="text-xs"
+                  onClick={() => handlePageChange(pageNumber + 1)}
+                />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
       </div>
     </>
   );
 };
 
 export default MyOffers;
-
-{
-  /* <div className="flex justify-center mt-6">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={() =>
-                    handlePageChange(Math.max(1, currentPagef - 1))
-                  }
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href="#"
-                    isActive={currentPagef === index + 1}
-                    onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              {totalPages > 5 && (
-                <>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink
-                      href="#"
-                      onClick={() => handlePageChange(totalPages)}
-                    >
-                      {totalPages}
-                    </PaginationLink>
-                  </PaginationItem>
-                </>
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={() =>
-                    handlePageChange(Math.min(totalPages, currentPagef + 1))
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div> */
-}
-
-{
-  /* <div className="flex flex-col items-start gap-6 p-6 bg-gray-100">
-        {data?.result.items.map((offer) => (
-          <Card
-            key={offer.id}
-            className="w-full bg-blue-50 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
-          >
-            <CardHeader className="border-gray-200 p-4">
-              <CardTitle className="text-xl font-semibold text-gray-700">
-                Loan Offer Details
-              </CardTitle>
-              <CardDescription className="text-sm text-gray-500">
-                Detailed information about your loan offer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div className="text-sm text-gray-600">
-                <strong>Amount:</strong> {offer.amount}
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>Repayment Frequency:</strong> {offer.repaymentFrequency}
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>Grace Period:</strong> {offer.gracePeriodDays} days
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>Loan Duration:</strong> {offer.loanDurationDays} days
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>Interest Rate:</strong> {offer.interestRate}%
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>Accruing Interest Rate:</strong>{' '}
-                {offer.accruingInterestRate}%
-              </div>
-            </CardContent>
-            <CardFooter className="border-gray-200 p-4 text-right"></CardFooter>
-          </Card>
-        ))}
-      </div> */
-}

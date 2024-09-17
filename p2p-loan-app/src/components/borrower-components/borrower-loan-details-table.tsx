@@ -1,185 +1,147 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { EllipsisVertical, MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-
-const invoices = [
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: true,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: false,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: true,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: false,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: true,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: false,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: true,
-    date: '12 -12-1999',
-  },
-  {
-    name: 'john doe',
-    amount: 250,
-    repaymentFrequency: 'Monthly',
-    gracePeriodDays: 30,
-    loanDurationDays: 365,
-    accruingInterestRate: 5.5,
-    interestRate: 3.0,
-    active: false,
-    date: '12 -12-1999',
-  },
-];
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { MoreHorizontal } from 'lucide-react';
+import useLoan from '@/hooks/useLoan';
+import dayjs from 'dayjs';
 
 const BorrowerLoanDetailsTable = () => {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [pageSize] = useState(10);
+
+  const { getMyLoans } = useLoan();
+  const { data, isLoading, isError, error } = getMyLoans(
+    currentPage,
+    pageSize,
+    totalItems,
+  );
+
+  // Update the total items when data changes
+  useEffect(() => {
+    if (data?.result.totalItems) {
+      setTotalItems(data.result.totalItems);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const loans = data?.result.items || [];
+
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   return (
     <>
       <Table className="min-w-full bg-white shadow-md rounded-lg mt-4 text-xs">
         <TableHeader className="bg-gray-200 text-gray-700">
           <TableRow className="w-[100px]">
             <TableHead className="py-2 px-2 text-left">Lender Name</TableHead>
-            <TableHead className="py-2 px-2 text-left">
-              Loan Amount
-            </TableHead>
             <TableHead className="py-4 px-6 text-left">Interest Rate</TableHead>
+            <TableHead className="py-4 px-6 text-left">
+              Principal Amount
+            </TableHead>
+            <TableHead className="py-4 px-6 text-left">Amount to pay</TableHead>
             <TableHead className="py-4 px-6 text-left">
               Repayment Frequency
             </TableHead>
-            <TableHead className="py-4 px-6 text-left">
-              Grace Period (Days)
-            </TableHead>
+            <TableHead className="py-4 px-6 text-left">Due Date</TableHead>
             <TableHead className="py-4 px-6 text-left">
               Loan Duration (Days)
             </TableHead>
             <TableHead className="py-4 px-6 text-left">
               Accruing Interest Rate
             </TableHead>
+            <TableHead className="py-4 px-6 text-left">
+              Current Interest Rate
+            </TableHead>
             <TableHead className="text-right py-4 px-6">Active</TableHead>
             <TableHead className="text-right w-[50px] py-4 px-6"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice, index) => (
+          {loans.map((loan, index) => (
             <TableRow
-              key={invoice.amount}
+              key={index}
               className={`hover:bg-gray-100 ${
                 index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
               }`}
             >
+              <TableCell className="py-4 px-6 font-medium text-gray-900 capitalize">
+                {loan.lender.firstName} {loan.lender.lastName}
+              </TableCell>
+              <TableCell className="py-4 px-6 text-gray-700">
+                {loan.currentInterestRate}%
+              </TableCell>
               <TableCell className="py-4 px-6 font-medium text-gray-900">
-                {invoice.name}
+                ₦{loan.principalAmount}
               </TableCell>
               <TableCell className="py-4 px-6 font-medium text-gray-900">
-                ${invoice.amount}
+                ₦{loan.amountLeft}
+              </TableCell>
+              <TableCell className="py-4 px-6 text-gray-700 capitalize">
+                {loan.repaymentFrequency}
               </TableCell>
               <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.interestRate}%
+                {dayjs(loan.dueDate).format('MMMM D, YYYY')}
               </TableCell>
               <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.repaymentFrequency}
+                {loan.loanDurationDays}
               </TableCell>
               <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.gracePeriodDays}
+                {loan.accruingInterestRate}%
               </TableCell>
               <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.loanDurationDays}
+                {loan.currentInterestRate}%
               </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {invoice.accruingInterestRate}%
-              </TableCell>
-
+            
               <TableCell className="text-right py-4 px-6">
                 <span
-                  className={`inline-block px-2  text-xs font-semibold rounded-full ${
-                    invoice.active
-                      ? 'bg-green-200 text-green-800'
-                      : 'bg-red-200 text-red-800'
+                  className={`inline-block px-2 text-xs font-semibold rounded-full ${
+                    loan.status
+                      ? 'bg-green-600 text-white'
+                      : 'bg-red-600 text-white'
                   }`}
                 >
-                  {invoice.active ? 'Yes' : 'No'}
+                  {loan.status ? 'Yes' : 'No'}
                 </span>
               </TableCell>
               <TableCell className="text-right py-4 px-6">
@@ -191,11 +153,13 @@ const BorrowerLoanDetailsTable = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel className='text-xs'>Actions</DropdownMenuLabel>
+                    <DropdownMenuLabel className="text-xs">
+                      Actions
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => router.push('/borrower/loan-details')}
-                      className='text-xs'
+                      className="text-xs"
                     >
                       View details
                     </DropdownMenuItem>
@@ -206,6 +170,70 @@ const BorrowerLoanDetailsTable = () => {
           ))}
         </TableBody>
       </Table>
+
+      <div className="mt-8 flex justify-center">
+        <Pagination>
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  className="text-xs"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                />
+              </PaginationItem>
+            )}
+            {(() => {
+              let startPage = Math.max(1, currentPage - 1);
+              let endPage = Math.min(totalPages, currentPage + 1);
+
+              if (currentPage === 1) {
+                endPage = Math.min(3, totalPages);
+              } else if (currentPage === totalPages) {
+                startPage = Math.max(totalPages - 2, 1);
+              }
+              const pages = [];
+              for (let i = startPage; i <= endPage; i++) {
+                pages.push(
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      className="text-xs"
+                      isActive={i === currentPage}
+                      onClick={() => handlePageChange(i)}
+                    >
+                      {i}
+                    </PaginationLink>
+                  </PaginationItem>,
+                );
+              }
+              return pages;
+            })()}
+            {currentPage < totalPages - 2 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            {currentPage + 1 < totalPages && (
+              <PaginationItem>
+                <PaginationLink
+                  className="text-xs"
+                  isActive={currentPage === totalPages}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext
+                  className="text-xs"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
+      </div>
     </>
   );
 };

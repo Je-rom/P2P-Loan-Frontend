@@ -43,7 +43,7 @@ const initialFormData: FormData = {
     phoneNumber: '',
     password: '',
     userType: '',
-    NIN:'',
+    NIN: '',
   },
   emailVerification: {
     isEmailSent: false,
@@ -65,13 +65,11 @@ export const useFormStore = create<FormState>((set) => ({
   nextStep: () =>
     set((state) => {
       const nextStep = state.step + 1;
-      localStorage.setItem('step', String(nextStep));
       return { step: nextStep };
     }),
   prevStep: () =>
     set((state) => {
       const prevStep = state.step - 1;
-      localStorage.setItem('step', String(prevStep));
       return { step: prevStep };
     }),
   updateFormData: (data: Partial<FormData>) =>

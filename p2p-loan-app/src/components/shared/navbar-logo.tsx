@@ -13,7 +13,7 @@ const NavbarLogo = () => {
           height={40}
         /> */}
         <h1 className="font-bold text-base text-white hidden md:block ml-2">
-          BorrowPointe
+          BorrowHub
         </h1>
       </div>
     </>

@@ -1,21 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { EllipsisVertical, Plus, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Image from 'next/image';
-import { Input } from '@/components/ui/input';
-import DatePickerWithRange from '@/components/ui/date-range';
 import BorrowerTable from '@/components/borrower-components/borrower-table';
 import { useRouter } from 'next/navigation';
-import Filter from '@/components/ui/filter';
-import BorrowerRepaymentTable from '@/components/borrower-components/borrower-repayment-table';
 import useWallet from '@/hooks/useWallet';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'sonner';
 import useProfile from '@/hooks/useProfile';
 import CreatePinDialog from '@/components/shared/create-pin-dialog';
 import useLoanRequest from '@/hooks/useLoanRequest';
+import useLoan from '@/hooks/useLoan';
 
 interface ImageComponentProps {
   src: string;
@@ -96,8 +92,9 @@ const BalanceCard: React.FC<{
 };
 
 const ActiveLoanCard: React.FC<{
+  amountLeft: number;
   onSeeMoreClick: () => void;
-}> = ({ onSeeMoreClick }) => (
+}> = ({ amountLeft, onSeeMoreClick }) => (
   <Card className="w-full md:w-[220px] h-[122px] shadow-xl bg-purple-50">
     <CardHeader>
       <div className="flex justify-between items-center">
@@ -107,8 +104,12 @@ const ActiveLoanCard: React.FC<{
     <CardContent>
       <div className="flex justify-between">
         <div>
-          <h1 className="text-xs">Active Loan</h1>
-          <p className="font-bold text-sm">99</p>
+          <h1 className="text-xs">Active loan amount</h1>
+          <p className="font-bold text-sm">
+            {amountLeft !== undefined
+              ? `₦ ${amountLeft.toFixed(2)}`
+              : 'Loading...'}
+          </p>
         </div>
         <Button
           className="bg-purple-200 hover:bg-purple-200 text-purple-900 rounded-full w-[65px] h-[28px] text-xs mt-3"
@@ -137,7 +138,6 @@ const LoanRequestCard: React.FC<{
         <div>
           <h1 className="text-xs">Loan Request</h1>
           <p className="font-bold text-sm">
-            {' '}
             {isLoading ? 'Loading...' : totalLoanRequests}
           </p>
         </div>
@@ -155,18 +155,20 @@ const LoanRequestCard: React.FC<{
 const BorrowerPage = () => {
   const [fullName, setFullName] = useState('');
   const [walletId, setWalletId] = useState<string | null>(null);
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
   const { getWalletQuery } = useWallet();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const { GetCurrentUser } = useProfile();
   const { data: userProfile, isLoading: isProfileLoading } = GetCurrentUser();
   const { GetLoanRequest } = useLoanRequest();
+  const { getMyActiveLoan } = useLoan();
   const [pageSize] = useState(5);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [view, setView] = useState<'received' | 'sent'>('received');
 
+  //get wallet id and details
   useEffect(() => {
     if (getWalletQuery.isSuccess && getWalletQuery.data) {
       const { result } = getWalletQuery.data;
@@ -195,6 +197,7 @@ const BorrowerPage = () => {
     }
   }, []);
 
+  //check user profile for pin creation
   useEffect(() => {
     if (userProfile && !isProfileLoading) {
       console.log('User Profile:', userProfile);
@@ -215,12 +218,22 @@ const BorrowerPage = () => {
     error,
     isLoading: isLoanRequestsLoading,
   } = GetLoanRequest(view, pageNumber, pageSize, totalItems);
-
   useEffect(() => {
     if (loanRequests) {
       setTotalItems(loanRequests.result.totalItems);
     }
   }, [loanRequests]);
+
+  //get active loan
+  const {
+    data: activeLoan,
+    isError,
+    isLoading: isLoadingActiveLoan,
+  } = getMyActiveLoan();
+
+  // Determine whether to display the ActiveLoanCard
+  const shouldDisplayActiveLoanCard =
+    !isLoadingActiveLoan && (activeLoan?.result.amountLeft ?? 0) > 0;
   return (
     <>
       <CreatePinDialog
@@ -230,13 +243,12 @@ const BorrowerPage = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
           <h1 className="font-bold text-sm">Hi {fullName}</h1>
-          <p className="text-xs">Welcome to BorrowPointe</p>
+          <p className="text-xs">Welcome to BorrowHub</p>
         </div>
         <Button
           onClick={() => router.push('/create-offer')}
           className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
         >
-          {/* <Plus color="#ffffff" /> */}
           New Offer
         </Button>
       </div>
@@ -247,35 +259,19 @@ const BorrowerPage = () => {
           toggleBalanceVisibility={toggleBalanceVisibility}
           onSeeMoreClick={() => router.push('/borrower/wallet')}
         />
-        <ActiveLoanCard onSeeMoreClick={() => router.push('/borrower/loan')} />
+        {shouldDisplayActiveLoanCard && (
+          <ActiveLoanCard
+            onSeeMoreClick={() => router.push('/borrower/loan')}
+            amountLeft={activeLoan?.result.amountLeft ?? 0}
+          />
+        )}
         <LoanRequestCard
           onSeeMoreClick={() => router.push('/borrower/loan-request')}
           totalLoanRequests={totalItems}
           isLoading={isLoanRequestsLoading}
         />
       </div>
-      <div className="p-6 mt-14 rounded-2xl border border-gray-200">
-        <div className="flex justify-between items-center">
-          <h1 className="font-bold text-base">Repayments</h1>
-          <Filter />
-        </div>
-        <BorrowerRepaymentTable />
-      </div>
-      <div className="bg-gray-100 bg-opacity-100 rounded-2xl mt-10 p-4 flex flex-col md:flex-row justify-between items-start">
-        <h1 className="font-bold text-base sm:text-base">Transactions</h1>
-        <div className="flex flex-col md:flex-row items-center md:items-start mt-4 md:mt-0 gap-4 md:gap-6 w-full md:w-auto">
-          <div className="relative flex-grow w-full max-w-[200px]">
-            <Input
-              className="w-full rounded-xl text-xs"
-              placeholder="Search history"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3" />
-          </div>
-          <div className="relative flex-grow w-full max-w-[250px]">
-            <DatePickerWithRange />
-          </div>
-        </div>
-      </div>
+
       <div className="w-full mt-4 md:mt-0">
         <BorrowerTable />
       </div>

@@ -9,11 +9,11 @@ const LandingPage = () => {
   return (
     <>
       <section className="bg-transparent">
-        <div className="pt-10 pb-0 md:pt-20 bg-gray-100">
+        <div className="bg-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
-            <div className="w-full md:w-[718px] pr-4 pt- md:pt-20 pl-3 md:pl-20 text-center md:text-left">
+            <div className="w-full md:w-[718px] pr-4  md:pt-20 pl-3 md:pl-20 text-center md:text-left mt-20">
               <h1 className="font-bold text-2xl md:text-5xl">
-                Welcome to BorrowPointe
+                Welcome to BorrowHub
               </h1>
               <p className="flex tracking-wide justify-between items-center text-gray-600 mt-4 md:mt-6 mb-8 text-xs md:text-sm">
                 Need a loan? Skip the banks and connect directly with lenders
@@ -92,7 +92,7 @@ const LandingPage = () => {
 
       <footer className="bg-white text-black text-center p-3">
         <p className="text-xs">
-          Copyright &copy; {new Date().getFullYear()} BorrowPointe. All rights
+          Copyright &copy; {new Date().getFullYear()} BorrowHub. All rights
           reserved.
         </p>
       </footer>

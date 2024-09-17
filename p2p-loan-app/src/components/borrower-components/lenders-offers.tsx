@@ -32,9 +32,10 @@ export function LendersOffer() {
   const id = useId();
   const router = useRouter();
 
-  const lendersOffers = data?.result.items.filter(
-    (offer: { type: string }) => offer.type === 'lender',
-  );
+  const lendersOffers =
+    data?.result?.items?.filter(
+      (offer: { type: string }) => offer.type === 'lender',
+    ) || [];
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -84,22 +85,35 @@ export function LendersOffer() {
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image
-          src={'/loadingLoanOffer.gif'}
-          alt="loading"
-          width={200}
-          height={10}
-        />
-        <h1 className="font-bold text-sm">Loading lender's offers...</h1>
+        <Image src={'/Loading.gif'} alt="loading" width={100} height={10} />
+        <h1 className="font-bold text-sm">Loading offers...</h1>
       </div>
     );
   }
 
+   if (!data || lendersOffers.length === 0) {
+     return (
+       <div className="flex flex-col justify-center items-center">
+         <Image
+           src={'/Withdrawal Receipt.gif'}
+           alt="no offer"
+           width={100}
+           height={10}
+         />
+         <h1 className="font-bold text-sm">
+           No offers available at the moment.
+         </h1>
+       </div>
+     );
+   }
+
   if (error) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <Image src={'/failed.gif'} alt="loading" width={60} height={10} />
-        <h1 className="font-bold text-sm">Failed to get lenders offers...</h1>
+        <Image src={'/failed.gif'} alt="loading" width={100} height={10} />
+        <h1 className="font-bold text-sm">
+          Failed to get offers, try again later...
+        </h1>
       </div>
     );
   }
