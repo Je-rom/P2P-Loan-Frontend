@@ -45,7 +45,7 @@ const LoanDetails = () => {
   const [loanId, setLoanId] = useState<string | null>(null);
   const [pageNumber, setpageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(5);
-  const [pageSize] = useState(1);
+  const [pageSize] = useState(10);
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
