@@ -450,7 +450,7 @@ export function WithdrawDialog({
   };
 
   const isLoading = withdraw.isPending;
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!amount) {
       toast.error('Please enter the amount.');
       return;
@@ -476,7 +476,7 @@ export function WithdrawDialog({
       return;
     }
 
-    withdraw.mutateAsync({
+    const result = await withdraw.mutateAsync({
       amount,
       walletId,
       destinationBankCode: selectedBank,
@@ -484,15 +484,20 @@ export function WithdrawDialog({
       currency: 'NGN',
       PIN: pin,
     });
-     setAmount(null);
-     setWalletId(null);
-     setSelectedBank(null);
-     setAccountNumber(null);
-     setPin('');
-     setAccountName(null);
-     setVerificationMessage(null);
-     setWithdrawalFee(null);
-     handleDialogClose(false);
+    if (
+      result.status === 'Success' ||
+      result.message === 'Failed to debit your  wallet'
+    ) {
+      setAmount(null);
+      setWalletId(null);
+      setSelectedBank(null);
+      setAccountNumber(null);
+      setPin('');
+      setAccountName(null);
+      setVerificationMessage(null);
+      setWithdrawalFee(null);
+      handleDialogClose(false);
+    }
   };
 
   return (

@@ -94,9 +94,9 @@ const useWallet = () => {
         console.log('failed to create', error.message);
       },
       onSuccess: (data: WithdrawResponse) => {
-        const { message } = data;
+        const { message, status } = data;
         toast.success(data.message);
-        console.log('withdrawal', message);
+        console.log('withdrawal', message, status);
         console.log(data.message);
       },
     });

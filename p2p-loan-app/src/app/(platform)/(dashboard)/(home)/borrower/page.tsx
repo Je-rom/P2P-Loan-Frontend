@@ -233,7 +233,10 @@ const BorrowerPage = () => {
 
   // Determine whether to display the ActiveLoanCard
   const shouldDisplayActiveLoanCard =
-    !isLoadingActiveLoan && (activeLoan?.result.amountLeft ?? 0) > 0;
+    !isLoadingActiveLoan &&
+    activeLoan?.result?.amountLeft != null &&
+    activeLoan.result.amountLeft > 0;
+
   return (
     <>
       <CreatePinDialog
@@ -262,7 +265,7 @@ const BorrowerPage = () => {
         {shouldDisplayActiveLoanCard && (
           <ActiveLoanCard
             onSeeMoreClick={() => router.push('/borrower/loan')}
-            amountLeft={activeLoan?.result.amountLeft ?? 0}
+            amountLeft={activeLoan?.result?.amountLeft ?? 0}
           />
         )}
         <LoanRequestCard
