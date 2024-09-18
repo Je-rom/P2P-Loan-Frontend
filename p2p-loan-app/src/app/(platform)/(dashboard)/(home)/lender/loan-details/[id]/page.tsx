@@ -30,8 +30,8 @@ const LoanDetails = () => {
     isLoading: repaymentLoan,
     isError: repaymentError,
     error,
-  } = useGetLoanRepaymentsQuery(loanId || '', totalItems, pageSize, pageNumber);
-
+  } = useGetLoanRepaymentsQuery(loanId || '', totalItems, pageNumber, pageSize);
+  console.log('Repayment Data:', repaymentData);
   useEffect(() => {
     if (id) {
       setLoanId(id as string);
@@ -100,6 +100,20 @@ const LoanDetails = () => {
                       {dayjs(loanData.result.dueDate).format('MMMM D, YYYY')}
                     </strong>
                   </p>
+                  <p>
+                    <span>Status:</span>{' '}
+                    <span
+                      className={`inline-block px-2 text-xs font-semibold rounded-full ${
+                        loanData.result.status === 'Active'
+                          ? 'bg-green-600 text-white'
+                          : loanData.result.status === 'Completed'
+                            ? 'bg-transparent text-black'
+                            : 'bg-red-600 text-white'
+                      }`}
+                    >
+                      {loanData.result.status}
+                    </span>
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -115,7 +129,7 @@ const LoanDetails = () => {
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Payment Method</TableHead>
+                {/* <TableHead>Payment Method</TableHead> */}
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -124,7 +138,7 @@ const LoanDetails = () => {
                 <TableRow key={index}>
                   <TableCell>{loanRepayment.loan.dueDate}</TableCell>
                   <TableCell>₦{loanRepayment.amount}</TableCell>
-                  <TableCell>{loanRepayment.interestRate}</TableCell>
+                  {/* <TableCell>{loanRepayment.interestRate}</TableCell> */}
                   <TableCell>{loanRepayment.status}</TableCell>
                 </TableRow>
               ))}
