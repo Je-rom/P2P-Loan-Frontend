@@ -37,8 +37,8 @@ const BorrowerLoanDetailsTable = () => {
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pageSize] = useState(10);
 
-  const { getMyLoans } = useLoan();
-  const { data, isLoading, isError, error } = getMyLoans(
+  const { useMyLoans } = useLoan();
+  const { data, isLoading, isError, error } = useMyLoans(
     currentPage,
     pageSize,
     totalItems,
@@ -132,7 +132,7 @@ const BorrowerLoanDetailsTable = () => {
               <TableCell className="py-4 px-6 text-gray-700">
                 {loan.currentInterestRate}%
               </TableCell>
-            
+
               <TableCell className="text-right py-4 px-6">
                 <span
                   className={`inline-block px-2 text-xs font-semibold rounded-full ${
@@ -158,7 +158,9 @@ const BorrowerLoanDetailsTable = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => router.push('/borrower/loan-details')}
+                      onClick={() =>
+                        router.push(`/borrower/loan-details/${loan.id}`)
+                      }
                       className="text-xs"
                     >
                       View details

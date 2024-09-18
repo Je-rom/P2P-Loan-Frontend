@@ -37,8 +37,8 @@ const LenderLoanDetailsTable = () => {
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pageSize] = useState(5);
 
-  const { getMyLoans } = useLoan();
-  const { data, isLoading, isError, error } = getMyLoans(
+  const { useMyLoans } = useLoan();
+  const { data, isLoading, isError, error } = useMyLoans(
     currentPage,
     pageSize,
     totalItems,

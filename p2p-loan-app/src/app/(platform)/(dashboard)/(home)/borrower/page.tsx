@@ -162,7 +162,7 @@ const BorrowerPage = () => {
   const { GetCurrentUser } = useProfile();
   const { data: userProfile, isLoading: isProfileLoading } = GetCurrentUser();
   const { GetLoanRequest } = useLoanRequest();
-  const { getMyActiveLoan } = useLoan();
+  const { useMyActiveLoan } = useLoan();
   const [pageSize] = useState(5);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -229,7 +229,7 @@ const BorrowerPage = () => {
     data: activeLoan,
     isError,
     isLoading: isLoadingActiveLoan,
-  } = getMyActiveLoan();
+  } = useMyActiveLoan();
 
   // Determine whether to display the ActiveLoanCard
   const shouldDisplayActiveLoanCard =

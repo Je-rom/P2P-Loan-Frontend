@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -54,7 +54,6 @@ export function WithdrawDialog({
   const withdraw = Withdraw();
   const { GetBanks, GetAccountDetails } = useBanks();
 
-  // Fetch withdrawal fee when both account number and amount are entered
   const { data: withdrawalFeeData, error: withdrawalFeeError } =
     useWithdrawFeeQuery(amount || 0);
 
@@ -89,13 +88,7 @@ export function WithdrawDialog({
     }
   }, [getWalletQuery.isSuccess, getWalletQuery.data]);
 
-  useEffect(() => {
-    if (selectedBank && accountNumber?.toString().length === 10) {
-      verifyAccountDetails();
-    }
-  }, [selectedBank, accountNumber]);
-
-  const verifyAccountDetails = async () => {
+  const verifyAccountDetails = useCallback(async () => {
     if (!accountNumber || !selectedBank) {
       toast.error('Please select a bank and enter your account number.');
       return;
@@ -118,7 +111,13 @@ export function WithdrawDialog({
     } finally {
       setIsVerifying(false);
     }
-  };
+  }, [accountNumber, selectedBank]);
+
+  useEffect(() => {
+    if (selectedBank && accountNumber?.toString().length === 10) {
+      verifyAccountDetails();
+    }
+  }, [selectedBank, accountNumber, verifyAccountDetails]);
 
   const handleDialogClose = (isOpen: boolean) => {
     if (!isOpen) {
@@ -168,15 +167,15 @@ export function WithdrawDialog({
       currency: 'NGN',
       PIN: pin,
     });
-    // setAmount(null);
-    // setWalletId(null);
-    // setSelectedBank(null);
-    // setAccountNumber(null);
-    // setPin('');
-    // setAccountName(null);
-    // setVerificationMessage(null);
-    // setWithdrawalFee(null);
-    // handleDialogClose(false);
+    setAmount(null);
+    setWalletId(null);
+    setSelectedBank(null);
+    setAccountNumber(null);
+    setPin('');
+    setAccountName(null);
+    setVerificationMessage(null);
+    setWithdrawalFee(null);
+    handleDialogClose(false);
   };
 
   return (

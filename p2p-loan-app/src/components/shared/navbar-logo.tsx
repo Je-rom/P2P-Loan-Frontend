@@ -5,13 +5,13 @@ const NavbarLogo = () => {
   return (
     <>
       <div className="flex items-center">
-        {/* <Image
+        <Image
           className="align-middle"
-          src="/logo.png"
+          src="/Group.svg"
           alt="logo"
-          width={90}
+          width={50}
           height={40}
-        /> */}
+        />
         <h1 className="font-bold text-base text-white hidden md:block ml-2">
           BorrowHub
         </h1>

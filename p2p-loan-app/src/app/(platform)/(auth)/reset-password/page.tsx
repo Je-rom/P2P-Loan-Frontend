@@ -14,7 +14,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
-import { triggerConfetti } from '@/helper/confetti';
 import { useSearchParams, useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'sonner';
