@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+
 import BorrowerLoanDetailsTable from '@/components/borrower-components/borrower-loan-details-table';
 
 const ActiveLoan = () => {

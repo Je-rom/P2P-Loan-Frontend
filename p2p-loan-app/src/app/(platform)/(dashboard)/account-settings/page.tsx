@@ -114,6 +114,8 @@ const AccountSettings = () => {
       />
     </div>
   );
-};
+
+}
+
 
 export default AccountSettings;

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,6 +8,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import useLoan from '@/hooks/useLoan';
 
 interface TableDetail {
   name: string;
@@ -56,6 +66,19 @@ const tableDetails: TableDetail[] = [
 ];
 
 const BorrowerRepaymentTable = () => {
+  const [loanId, setLoanId] = useState<string | null>(null);
+  const totalItems = 100;
+  const pageNumber = 1;
+  const pageSize = 10;
+
+  const { useGetLoanRepaymentsQuery } = useLoan();
+  const { data, isLoading, isError, error } = useGetLoanRepaymentsQuery(
+    loanId || '',
+    totalItems,
+    pageNumber,
+    pageSize,
+  );
+
   return (
     <>
       <div className="overflow-auto max-h-[400px] mt-5 scrollbar-hide">
@@ -68,7 +91,7 @@ const BorrowerRepaymentTable = () => {
               <TableHead className="text-right">Balance</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className='text-xs'>
+          <TableBody className="text-xs">
             {tableDetails.map((detail, index) => (
               <TableRow key={index}>
                 <TableCell>{detail.name}</TableCell>
