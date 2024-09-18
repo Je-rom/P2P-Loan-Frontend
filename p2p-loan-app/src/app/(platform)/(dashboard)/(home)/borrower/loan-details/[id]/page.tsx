@@ -25,6 +25,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 const LoanDetails = () => {
   const router = useRouter();
@@ -35,8 +44,8 @@ const LoanDetails = () => {
   const [amount, setAmount] = useState('');
   const [loanId, setLoanId] = useState<string | null>(null);
   const [pageNumber, setpageNumber] = useState(1);
-  const [totalItems, setTotalItems] = useState<number>(0);
-  const [pageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState<number>(5);
+  const [pageSize] = useState(1);
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
@@ -80,7 +89,16 @@ const LoanDetails = () => {
     return <div>No loan data available</div>;
   }
 
-  const loanRepayments = repaymentData?.result.items || [];
+  const loanRepayments = repaymentData?.result?.items || [];
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setpageNumber(newPage);
+    }
+  };
+
+  console.log(repaymentData);
 
   return (
     <>
@@ -312,23 +330,91 @@ const LoanDetails = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Payment Method</TableHead>
+                  <TableHead>Amount Paid</TableHead>
+                  <TableHead>Amount Left</TableHead>
+                  <TableHead>Interest Rate</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loanRepayments?.map((loanRepayment, index) => (
                   <TableRow key={index}>
-                    <TableCell>{loanRepayment.loan.dueDate}</TableCell>
+                    <TableCell>
+                      {dayjs(loanRepayment.loan.dueDate).format('MMMM D, YYYY')}
+                    </TableCell>
                     <TableCell>₦{loanRepayment.amount}</TableCell>
-                    <TableCell>{loanRepayment.interestRate}</TableCell>
+                    <TableCell>₦{loanRepayment.loan.amountLeft}</TableCell>
+                    <TableCell>{loanRepayment.interestRate}%</TableCell>
                     <TableCell>{loanRepayment.status}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              {pageNumber > 1 && (
+                <PaginationItem>
+                  <PaginationPrevious
+                    className="text-xs"
+                    onClick={() => handlePageChange(pageNumber - 1)}
+                  />
+                </PaginationItem>
+              )}
+              {(() => {
+                let startPage = Math.max(1, pageNumber - 1);
+                let endPage = Math.min(totalPages, pageNumber + 1);
+
+                if (pageNumber === 1) {
+                  endPage = Math.min(3, totalPages);
+                } else if (pageNumber === totalPages) {
+                  startPage = Math.max(totalPages - 2, 1);
+                }
+                const pages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        className="text-xs"
+                        isActive={i === pageNumber}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </PaginationLink>
+                    </PaginationItem>,
+                  );
+                }
+                return pages;
+              })()}
+              {pageNumber < totalPages - 2 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              {pageNumber + 1 < totalPages && (
+                <PaginationItem>
+                  <PaginationLink
+                    className="text-xs"
+                    isActive={pageNumber === totalPages}
+                    onClick={() => handlePageChange(totalPages)}
+                  >
+                    {totalPages}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {pageNumber < totalPages && (
+                <PaginationItem>
+                  <PaginationNext
+                    className="text-xs"
+                    onClick={() => handlePageChange(pageNumber + 1)}
+                  />
+                </PaginationItem>
+              )}
+            </PaginationContent>
+          </Pagination>
         </div>
       </div>
     </>

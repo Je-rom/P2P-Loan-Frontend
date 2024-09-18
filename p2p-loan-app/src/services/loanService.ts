@@ -403,9 +403,9 @@ export interface GetLoanRepayments {
       loan: {
         id: string;
         borrowerId: string;
-        lenderId: string | null;
-        loanOfferId: string | null;
-        loanRequestId: string | null;
+        lenderId: string;
+        loanOfferId: string;
+        loanRequestId: string;
         amountLeft: number;
         dueDate: string;
         initialInterestRate: number;
