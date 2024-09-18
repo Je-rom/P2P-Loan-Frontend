@@ -111,7 +111,7 @@ const useLoan = () => {
     pageSize: number,
   ) => {
     return useQuery<GetLoanRepayments, AxiosError<{ message: string }>>({
-      queryKey: ['loanRepayments', LoanId],
+      queryKey: ['loanRepayments', LoanId, totalItems, pageNumber, pageSize],
       queryFn: async (): Promise<GetLoanRepayments> => {
         const response = await LoanService.getLoanRepayments(
           LoanId,
