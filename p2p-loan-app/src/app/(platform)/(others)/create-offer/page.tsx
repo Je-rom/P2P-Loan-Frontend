@@ -47,9 +47,9 @@ const formSchema = z.object({
   repaymentFrequency: z.string().nonempty('Repayment Frequency is required'),
   walletId: z.string().nonempty('Wallet ID is required'),
   additionalNote: z.string().max(288, 'Maximum 288 characters allowed'),
-  // termsAccepted: z.boolean().refine((val) => val === true, {
-  //   message: 'You must accept the terms and conditions',
-  // }),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions',
+  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -71,6 +71,7 @@ const CreateOfferPage = () => {
     register,
     handleSubmit,
     setValue,
+    clearErrors,
     formState: { errors },
     watch,
   } = useForm<FormValues>({
@@ -84,7 +85,7 @@ const CreateOfferPage = () => {
       repaymentFrequency: '',
       walletId: '',
       additionalNote: '',
-      // termsAccepted: false,
+      termsAccepted: false,
     },
   });
 
@@ -152,6 +153,8 @@ const CreateOfferPage = () => {
   const isLoading = createLoanOfferMutation.isPending;
   const additionalNoteLength = watch('additionalNote').length;
 
+  const termsAccepted = watch('termsAccepted');
+
   return (
     <>
       <button onClick={() => router.back()}>
@@ -191,15 +194,15 @@ const CreateOfferPage = () => {
               type: 'text',
             },
             {
-              label: 'Loan Duration',
-              name: 'loanDurationDays',
-              placeholder: 'Specify loan duration',
-              type: 'text',
-            },
-            {
               label: 'Grace Period',
               name: 'gracePeriodDays',
               placeholder: 'Specify grace period',
+              type: 'text',
+            },
+            {
+              label: 'Loan Duration',
+              name: 'loanDurationDays',
+              placeholder: 'Specify loan duration',
               type: 'text',
             },
           ].map((field, index) => (
@@ -218,9 +221,7 @@ const CreateOfferPage = () => {
                   className="w-full"
                   readOnly={field.name === 'walletId'}
                   value={
-                    field.name === 'walletId'
-                      ? walletInfo.walletId
-                      : undefined
+                    field.name === 'walletId' ? walletInfo.walletId : undefined
                   }
                 />
                 {errors[field.name as keyof FormValues] && (
@@ -286,16 +287,25 @@ const CreateOfferPage = () => {
               />
             </h1>
             <div className="flex items-start space-x-2 mt-2">
-              <Checkbox/>
+              <Checkbox
+                checked={termsAccepted}
+                onCheckedChange={(checked) => {
+                  setValue('termsAccepted', !!checked);
+                  if (checked) {
+                    clearErrors('termsAccepted'); // Clear the error when the checkbox is ticked
+                  }
+                }}
+                className="mt-1"
+              />
               <div className="grid gap-1.5 leading-none">
                 <label className="text-sm font-medium">
                   Accept terms and conditions
                 </label>
-                {/* {errors.termsAccepted && (
+                {errors.termsAccepted && (
                   <span className="text-red-500">
                     {errors.termsAccepted?.message}
                   </span>
-                )} */}
+                )}
               </div>
             </div>
           </div>

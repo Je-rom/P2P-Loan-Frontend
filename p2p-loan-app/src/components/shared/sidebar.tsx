@@ -120,7 +120,7 @@ const Sidebar = () => {
                 {[...Array(6)].map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="w-[190px] py-4 rounded-xl mt-2"
+                    className="w-full py-4 rounded-xl mt-2"
                   />
                 ))}
               </div>
@@ -130,7 +130,7 @@ const Sidebar = () => {
                   <Link key={index} href={route.href || '#'} passHref>
                     <Button
                       className={cn(
-                        'w-[180px] py-4 rounded-xl mt-2',
+                        'py-4 rounded-xl mt-2 w-full',
                         activeLink === route.href
                           ? 'bg-white hover:bg-white'
                           : 'bg-blue-200 hover:bg-white',

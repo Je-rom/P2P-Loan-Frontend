@@ -98,76 +98,88 @@ const LenderLoanDetailsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {loans.map((loan, index) => (
-            <TableRow
-              key={index}
-              className={`hover:bg-gray-100 ${
-                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-              }`}
-            >
-              <TableCell className="py-4 px-6 font-medium text-gray-900 capitalize">
-                {loan.borrower.firstName} {loan.borrower.lastName}
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {loan.currentInterestRate}%
-              </TableCell>
-              <TableCell className="py-4 px-6 font-medium text-gray-900">
-                ₦{loan.principalAmount}
-              </TableCell>
-              <TableCell className="py-4 px-6 font-medium text-gray-900">
-                ₦{loan.amountLeft}
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700 capitalize">
-                {loan.repaymentFrequency}
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {dayjs(loan.dueDate).format('MMMM D, YYYY')}
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {loan.loanDurationDays}
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {loan.accruingInterestRate}%
-              </TableCell>
-              <TableCell className="py-4 px-6 text-gray-700">
-                {loan.currentInterestRate}%
-              </TableCell>
-
-              <TableCell className="text-right py-4 px-6">
-                <span
-                  className={`inline-block px-2 text-xs font-semibold rounded-full ${
-                    loan.status
-                      ? 'bg-green-600 text-white'
-                      : 'bg-red-600 text-white'
-                  }`}
-                >
-                  {loan.status ? 'Yes' : 'No'}
-                </span>
-              </TableCell>
-              <TableCell className="text-right py-4 px-6">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel className="text-xs">
-                      Actions
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => router.push('/lender/loan-details')}
-                      className="text-xs"
-                    >
-                      View details
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+          {loans?.length < 1 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center text-gray-500">
+                No loans yet
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            loans.map((loan, index) => (
+              <TableRow
+                key={index}
+                className={`hover:bg-gray-100 ${
+                  index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                }`}
+              >
+                <TableCell className="py-4 px-6 font-medium text-gray-900 capitalize">
+                  {loan.borrower.firstName} {loan.borrower.lastName}
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700">
+                  {loan.currentInterestRate}%
+                </TableCell>
+                <TableCell className="py-4 px-6 font-medium text-gray-900">
+                  ₦{loan.principalAmount}
+                </TableCell>
+                <TableCell className="py-4 px-6 font-medium text-gray-900">
+                  ₦{loan.amountLeft}
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700 capitalize">
+                  {loan.repaymentFrequency}
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700">
+                  {dayjs(loan.dueDate).format('MMMM D, YYYY')}
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700">
+                  {loan.loanDurationDays}
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700">
+                  {loan.accruingInterestRate}%
+                </TableCell>
+                <TableCell className="py-4 px-6 text-gray-700">
+                  {loan.currentInterestRate}%
+                </TableCell>
+
+                <TableCell className="text-right py-4 px-6">
+                  <span
+                    className={`inline-block px-2 text-xs font-semibold rounded-full ${
+                      loan.status === 'Active'
+                        ? 'bg-green-600 text-white'
+                        : loan.status === 'Completed'
+                          ? 'bg-transparent text-black'
+                          : 'bg-red-600 text-white'
+                    }`}
+                  >
+                    {loan.status}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right py-4 px-6">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel className="text-xs">
+                        Actions
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/lender/loan-details/${loan.id}`)
+                        }
+                        className="text-xs"
+                      >
+                        View details
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 

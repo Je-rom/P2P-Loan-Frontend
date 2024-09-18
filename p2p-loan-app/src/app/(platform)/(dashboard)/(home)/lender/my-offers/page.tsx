@@ -20,13 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const MyOffers = () => {
   const { GetMyLoanOffer } = useLoanOffer();
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(5);
   const [totalItems, setTotalItems] = useState<number>(0);
-
+  const router = useRouter();
   const { data, error, isLoading } = GetMyLoanOffer(
     totalItems,
     pageNumber,
@@ -74,9 +76,13 @@ const MyOffers = () => {
         <p className="text-sm font-semibold text-gray-700">
           No loan offers found
         </p>
-        <p className="text-sm text-gray-500">
-          Go to your dashboard to start creating offers and manage your loans.
-        </p>
+        <p className="text-sm text-gray-500">Lets get you started</p>
+        <Button
+          onClick={() => router.push('/create-offer')}
+          className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
+        >
+          New Offer
+        </Button>
       </div>
     );
   }
