@@ -30,7 +30,6 @@ export interface editContactResponse {
 
 class AccountSettingsService {
     static async changePin(requestBody: changePin): Promise<AxiosResponse<changePinResponse>> {
-       // return axiosConfig.patch('api/auth/change-pin', requestBody);
      try {
         const response = await axiosConfig.patch('api/auth/change-pin', requestBody);
         console.log(response);
