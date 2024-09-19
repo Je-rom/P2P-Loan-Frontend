@@ -12,6 +12,7 @@ import useLoanRequest from '@/hooks/useLoanRequest';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import dayjs from 'dayjs';
+import UserProfileDialog from '../shared/UserProfileDialog';
 
 export function LendersOffer() {
   const { GetLoanOffers } = useLoanOffer();
@@ -28,6 +29,7 @@ export function LendersOffer() {
     pageSize,
     filters,
   );
+  const [openUserProfile, setOpenUserProfile] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const router = useRouter();
@@ -91,21 +93,21 @@ export function LendersOffer() {
     );
   }
 
-   if (!data || lendersOffers.length === 0) {
-     return (
-       <div className="flex flex-col justify-center items-center">
-         <Image
-           src={'/Withdrawal Receipt.gif'}
-           alt="no offer"
-           width={100}
-           height={10}
-         />
-         <h1 className="font-bold text-sm">
-           No offers available at the moment.
-         </h1>
-       </div>
-     );
-   }
+  if (!data || lendersOffers.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <Image
+          src={'/Withdrawal Receipt.gif'}
+          alt="no offer"
+          width={100}
+          height={10}
+        />
+        <h1 className="font-bold text-sm">
+          No offers available at the moment.
+        </h1>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -129,7 +131,6 @@ export function LendersOffer() {
       setPageNumber((prev) => prev - 1);
     }
   };
-
   return (
     <>
       <AnimatePresence>
@@ -256,12 +257,15 @@ export function LendersOffer() {
                       </div>
                       <div
                         className="text-xs"
-                        onClick={() => router.push('/profile')}
+                        onClick={() => setOpenUserProfile(true)}
                         style={{ cursor: 'pointer' }}
                       >
                         <Avatar className="w-6 h-6">
                           <AvatarImage src="https://github.com/shadcn.png" />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback>
+                            {active?.user?.firstName[0]}
+                            {active?.user?.lastName[0]}
+                          </AvatarFallback>
                         </Avatar>
                         {active.user.firstName} {active.user.lastName}
                       </div>
@@ -280,6 +284,11 @@ export function LendersOffer() {
                         'Apply Here'
                       )}
                     </Button>
+                    <UserProfileDialog
+                      open={openUserProfile}
+                      setOpen={setOpenUserProfile}
+                      userId={active.user.id}
+                    />
                   </motion.div>
                 </div>
               </div>
@@ -291,7 +300,6 @@ export function LendersOffer() {
       {/* <div className="mb-4">
         <AutocompleteHint filters={filters} setFilters={setFilters} />
       </div> */}
-
       <ul className="max-w-full mx-auto w-full gap-4">
         {lendersOffers?.map((offer: any) => (
           <motion.div
