@@ -157,9 +157,9 @@ const BorrowerLoanDetailsTable = () => {
                   <span
                     className={`inline-block px-2 text-xs font-semibold rounded-full ${
                       loan.status === 'Active'
-                        ? 'bg-green-600 text-white'
+                        ? 'bg-transparent text-yellow-600'
                         : loan.status === 'Completed'
-                          ? 'bg-transparent text-black'
+                          ? 'bg-transparent text-green-500'
                           : 'bg-red-600 text-white'
                     }`}
                   >

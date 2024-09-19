@@ -131,7 +131,10 @@ const BorrowerTable = () => {
                           ? 'Withdrawal from your wallet'
                           : transaction.narration.startsWith('Loan request')
                             ? 'Loan Request approval'
-                            : transaction.narration}
+                            : transaction.narration.startsWith('Loan') &&
+                                transaction.narration.includes('repayment')
+                              ? 'Loan repayment'
+                              : transaction.narration}
                     </TableCell>
                   </TableRow>
                 ))

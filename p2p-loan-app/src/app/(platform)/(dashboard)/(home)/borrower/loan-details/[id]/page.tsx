@@ -336,7 +336,10 @@ const LoanDetails = () => {
                   <div className="text-end">
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white w-18 h-8 text-xs mt-2">
+                        <Button
+                          disabled={loanData.result.status === 'Completed'}
+                          className="bg-blue-600 hover:bg-blue-700 text-white w-18 h-8 text-xs mt-2"
+                        >
                           Repay Now
                         </Button>
                       </DialogTrigger>
