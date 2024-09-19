@@ -2,6 +2,8 @@
 
 This is a decentralized platform for peer-to-peer loans. The application consists of a **frontend** built with React.js and a **backend** developed using Node.js and Express.js. The frontend provides the user interface for borrowers and lenders, while the backend handles authentication, business logic, and database operations.
 
+**Live Application**: https://borrowhub.vercel.app/
+
 ## Repositories
 
 - **Frontend Repository**: [P2P Loan Frontend](https://github.com/Je-rom/P2P-Loan-Frontend)
@@ -46,25 +48,25 @@ This is a decentralized platform for peer-to-peer loans. The application consist
 1. Clone the repository:
    ```bash
    git clone https://github.com/Je-rom/P2P-Loan-Frontend.git
-   cd P2P-Loan-Frontend
+   cd p2p-loan-Frontend
 2. Install dependencies:
     ```bash
     npm install
 3. Set up a environment
     Create a .env file in the root directory and add:
     ```bash
-    REACT_APP_BACKEND_URL=<backend_api_url>
+    NEXT_APP_BACKEND_URL=<backend_api_url>
 4. Run the Application
     ```bash
-    npm start
+    npm run dev
 
-the applicarion will run on http://localhost:3000.
+The application will run on http://localhost:3000.
 
 ### Key Files and Folders
 
 - **`src/`**: Contains React components and logic.
   - **`components/`**: Reusable components like forms and layout elements.
-  - **`pages/`**: Specific pages (e.g., dashboard, login, register).
+  - **`app/`**: Specific pages (e.g., dashboard, login, register).
   - **`services/`**: API request functions.
   - **`App.js`**: Main entry point, handles routing.
 
@@ -80,10 +82,69 @@ the applicarion will run on http://localhost:3000.
 **Repository Link**: [P2P Loan Backend](https://github.com/okikiolanlesi/p2p-loan-backend)
 
 ### Technology Stack
-- Node.js: Backend runtime.
-- Express.js: Web framework.
-- MongoDB: NoSQL database.
+- C#: Backend runtime.
+- Asp.NET: Web framework.
+- SQL Server: NoSQL database.
+- Entity Framework Core: object-relational mapper (ORM)
+- Azure Open AI: Artificial Intelligence 
+- Azure Key vault: Secret and key managemet service
+- Azure App Service: Application hosting service
+- Monnify API: Third Party Transaction
+- Docker: Containerization software
 - JWT: For user authentication.
 - Bcrypt: Password hashing.
-- Setup Instructions
-- Clone the repository:
+
+### Setup Instructions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/okikiolanlesi/p2p-loan-backend.git
+   cd p2p-loan-Frontend
+2. Install dependencies:
+    ```bash
+    npm install
+3. Set up a environment
+    Create a .env file in the root directory and add:
+    ```bash
+    DB_CONNECTION=sqlsrv
+    DB_HOST=127.0.0.1
+    DB_PORT=5000
+    DB_DATABASE=mydbserver
+    DB_USERNAME=johndoe
+    DB_PASSWORD=johndoe123
+
+4. Run the Application
+    ```bash
+    npm run dev
+
+The application will run on http://localhost:5000.
+
+### Key Files and Folders
+
+- **`routes/`**: Contains route handlers (e.g., loans, users).
+- **`controllers/`**: Contains the logic for API routes.
+- **`models/`**: MongoDB schemas for users and loans.
+
+### Deployment Process
+
+1. **Build the production version**:
+
+### API Endpoints
+- Authentication
+    - POST /api/auth/register: Register a new user.
+    - POST /api/auth/login: Authenticate and login.
+- Loan Management
+    - POST /api/loans/request: Create a new loan request.
+    - GET /api/loans/: Retrieve loan details.
+- User Management
+    - GET /api/users/profile: Get the logged-in user’s profile.
+    - PUT /api/users/update: Update user details.
+
+### Troubleshooting
+- Frontend
+    Issue: API requests fail.
+    Solution: Verify the backend URL in the .env file and ensure the backend server is running.
+- Backend
+    1. Issue: SQL Server connection errors.
+    Solution: Check the SQL Server URI and ensure the database is running.
+    2. Issue: Authentication errors.
+    Solution: Ensure JWT tokens are correctly generated and passed in headers.
