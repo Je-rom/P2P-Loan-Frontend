@@ -12,6 +12,7 @@ import useLoanRequest from '@/hooks/useLoanRequest';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import dayjs from 'dayjs';
+import UserProfileDialog from '../shared/UserProfileDialog';
 
 export function BorrowerOffer() {
   const { GetLoanOffers } = useLoanOffer();
@@ -28,6 +29,7 @@ export function BorrowerOffer() {
     pageSize,
     filters,
   );
+  const [openUserProfile, setOpenUserProfile] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const router = useRouter();
@@ -75,7 +77,7 @@ export function BorrowerOffer() {
       return;
     }
     const loanRequest = {
-      loanOfferId: offer.id, 
+      loanOfferId: offer.id,
       walletId, //borrower's wallet ID
       additionalInformation: offer.additionalInformation || '', //additional info from the lender's offer
     };
@@ -256,12 +258,15 @@ export function BorrowerOffer() {
                       </div>
                       <div
                         className="text-xs"
-                        onClick={() => router.push('/profile')}
+                        onClick={() => setOpenUserProfile(true)}
                         style={{ cursor: 'pointer' }}
                       >
                         <Avatar className="w-6 h-6">
                           <AvatarImage src="https://github.com/shadcn.png" />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback>
+                            {active?.user?.firstName[0]}
+                            {active?.user?.lastName[0]}
+                          </AvatarFallback>
                         </Avatar>
                         {active.user.firstName} {active.user.lastName}
                       </div>
@@ -280,6 +285,11 @@ export function BorrowerOffer() {
                         'Apply Here'
                       )}
                     </Button>
+                    <UserProfileDialog
+                      open={openUserProfile}
+                      setOpen={setOpenUserProfile}
+                      userId={active.user.id}
+                    />
                   </motion.div>
                 </div>
               </div>
