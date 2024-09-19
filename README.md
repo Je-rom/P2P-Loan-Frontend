@@ -22,8 +22,7 @@ This is a decentralized platform for peer-to-peer loans. The application consist
     - Key Files and Folders
     - Deployment Process
 3. [API Endpoints](#api-endpoints)
-4. [Testing](#testing)
-5. [Troubleshooting](#troubleshooting)
+4. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -141,10 +140,10 @@ The application will run on http://localhost:5000.
 
 ### Troubleshooting
 - Frontend
-    Issue: API requests fail.
-    Solution: Verify the backend URL in the .env file and ensure the backend server is running.
+    - Issue: API requests fail.
+    - Solution: Verify the backend URL in the .env file and ensure the backend server is running.
 - Backend
     1. Issue: SQL Server connection errors.
-    Solution: Check the SQL Server URI and ensure the database is running.
+        - Solution: Check the SQL Server URI and ensure the database is running.
     2. Issue: Authentication errors.
-    Solution: Ensure JWT tokens are correctly generated and passed in headers.
+        - Solution: Ensure JWT tokens are correctly generated and passed in headers.
