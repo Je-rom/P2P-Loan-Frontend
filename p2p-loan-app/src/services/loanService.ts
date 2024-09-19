@@ -578,6 +578,7 @@ class LoanService {
         pageNumber,
         pageSize,
         totalItems,
+        orderBy: 'CreatedAt dsc',
       },
     });
   };
