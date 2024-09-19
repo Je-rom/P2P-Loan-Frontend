@@ -46,9 +46,13 @@ const LoanDetails = () => {
   const [loanId, setLoanId] = useState<string | null>(null);
   const [pageNumber, setpageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(5);
+<<<<<<< jerry-branch
   const [pageSize] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loanStatus, setLoanStatus] = useState('Active');
+=======
+  const [pageSize] = useState(10);
+>>>>>>> main
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
@@ -58,7 +62,7 @@ const LoanDetails = () => {
     isLoading: repaymentLoan,
     isError: repaymentError,
     error,
-  } = useGetLoanRepaymentsQuery(loanId || '', totalItems, pageSize, pageNumber);
+  } = useGetLoanRepaymentsQuery(loanId || '', totalItems, pageNumber, pageSize);
 
   useEffect(() => {
     if (id) {
@@ -214,6 +218,20 @@ const LoanDetails = () => {
                     <strong>
                       {dayjs(loanData.result.dueDate).format('MMMM D, YYYY')}
                     </strong>
+                  </p>
+                  <p>
+                    <span>Status: </span>{' '}
+                    <span
+                      className={`inline-block px-2 text-xs font-semibold rounded-full ${
+                        loanData.result.status === 'Active'
+                          ? 'bg-green-600 text-white'
+                          : loanData.result.status === 'Completed'
+                            ? 'bg-transparent text-black'
+                            : 'bg-red-600 text-white'
+                      }`}
+                    >
+                      {loanData.result.status}
+                    </span>
                   </p>
                 </div>
               </CardContent>

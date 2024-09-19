@@ -16,7 +16,7 @@ export interface MyLoanResponse {
       dueDate: string;
       initialInterestRate: number;
       currentInterestRate: number;
-      status: string;
+      status: 'Active' | 'Completed' | 'Defaulted';
       repaymentFrequency: string;
       loanDurationDays: number;
       defaulted: boolean;
@@ -78,7 +78,7 @@ export interface MyActiveLoan {
     dueDate: string;
     initialInterestRate: number;
     currentInterestRate: number;
-    status: string;
+    status: 'Active' | 'Completed' | 'Defaulted';
     repaymentFrequency: string;
     loanDurationDays: number;
     defaulted: boolean;
@@ -196,7 +196,7 @@ export interface GetALoan {
     dueDate: string;
     initialInterestRate: number;
     currentInterestRate: number;
-    status: string;
+    status: 'Active' | 'Completed' | 'Defaulted';
     repaymentFrequency: string;
     loanDurationDays: number;
     defaulted: boolean;
@@ -265,7 +265,7 @@ export interface RepayLoanResponse {
       dueDate: string;
       initialInterestRate: number;
       currentInterestRate: number;
-      status: string;
+      status: 'Active' | 'Completed' | 'Defaulted';
       repaymentFrequency: string;
       loanDurationDays: number;
       defaulted: boolean;
@@ -410,7 +410,7 @@ export interface GetLoanRepayments {
         dueDate: string;
         initialInterestRate: number;
         currentInterestRate: number;
-        status: string;
+        status: 'Active' | 'Completed' | 'Defaulted';
         repaymentFrequency: string;
         loanDurationDays: number;
         defaulted: boolean;
@@ -578,6 +578,7 @@ class LoanService {
         pageNumber,
         pageSize,
         totalItems,
+        orderBy: 'CreatedAt dsc',
       },
     });
   };
@@ -609,6 +610,7 @@ class LoanService {
         totalItems,
         pageNumber,
         pageSize,
+        orderBy: 'CreatedAt dsc',
       },
     });
   };

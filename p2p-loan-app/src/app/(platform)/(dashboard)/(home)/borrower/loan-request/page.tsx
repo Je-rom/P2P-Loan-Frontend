@@ -1,5 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+<<<<<<< jerry-branch
+=======
+
+>>>>>>> main
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -246,7 +250,7 @@ const LoanRequest: React.FC = () => {
           {view === 'received' && !loanRequests?.result.items.length && (
             <div className="flex flex-col items-center text-center space-y-4">
               <Image
-                src={'/no-request.jpg'}
+                src={'/not-sent.jpg'}
                 alt="No loan requests received"
                 width={200}
                 height={300}

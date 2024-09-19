@@ -136,12 +136,12 @@
 
 // export default ChatModal;
 
-import React, { useState } from "react";
-import { useChat } from "../../../hooks/useChatBot";
-import { Send, SidebarClose } from "lucide-react";
-import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
-import { useAuthState } from "../../../store/authStore";
-import { ChatHistoryItem } from "../../../services/chatService";
+import React, { useState } from 'react';
+import { useChat } from '../../../hooks/useChatBot';
+import { Send, SidebarClose } from 'lucide-react';
+import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
+import { useAuthState } from '../../../store/authStore';
+import { ChatHistoryItem } from '../../../services/chatService';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -149,15 +149,15 @@ interface ChatModalProps {
 }
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false); // Loading state for assistant's response
   const { createChatMutation } = useChat();
   const { user } = useAuthState();
 
   const handleSendMessage = () => {
-    if (newMessage.trim() !== "") {
-      const userMessage = { role: "user", content: newMessage };
+    if (newMessage.trim() !== '') {
+      const userMessage = { role: 'user', content: newMessage };
 
       // Update chat history with user's message
       setChatHistory((prev) => [...prev, userMessage]);
@@ -173,9 +173,9 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
         },
         {
           onSuccess: (data) => {
-            console.log("Mutation Success:", data);
+            console.log('Mutation Success:', data);
             const aiMessage: ChatHistoryItem = {
-              role: "assistant",
+              role: 'assistant',
               content: data,
             };
             setChatHistory((prev) => [...prev, aiMessage]);
@@ -184,21 +184,21 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
             setIsLoading(false);
           },
           onError: (error) => {
-            console.error("Error sending message:", error);
+            console.error('Error sending message:', error);
 
             // Set loading state to false in case of error
             setIsLoading(false);
           },
-        }
+        },
       );
 
       // Clear the message input
-      setNewMessage("");
+      setNewMessage('');
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleSendMessage();
     }
   };
@@ -206,12 +206,16 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div  onClick={onClose} className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-md w-full max-w-3xl h-[80vh] flex flex-col">
+    <div className="fixed inset-0  flex justify-center items-center z-[999999999]">
+      <div
+        onClick={onClose}
+        className="absolute inset-0 bg-black bg-opacity-50"
+      ></div>
+      <div className="bg-white p-6 rounded-md w-full max-w-3xl h-[80vh] flex flex-col z-50">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">BorrowHub</h2>
           <button onClick={onClose} className="text-red-500">
-            <SidebarClose/>
+            <SidebarClose />
           </button>
         </div>
 
@@ -220,10 +224,10 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
             <div
               key={index}
               className={`mb-7 flex items-start ${
-                message.role === "user" ? "justify-end" : "justify-start"
+                message.role === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
-              {message.role === "assistant" && (
+              {message.role === 'assistant' && (
                 <Avatar className="mr-2 bg-white p-1">
                   <AvatarFallback className="bg-sky-500 text-white">
                     BH
@@ -232,15 +236,15 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               )}
               <p
                 className={`p-2 rounded-md mx-2 ${
-                  message.role === "user" ? "bg-blue-100" : "bg-gray-200"
+                  message.role === 'user' ? 'bg-blue-100' : 'bg-gray-200'
                 }`}
               >
                 {message.content}
               </p>
-              {message.role === "user" && (
+              {message.role === 'user' && (
                 <Avatar className="ml-2 bg- p-1">
                   <AvatarFallback className="bg-sky-500 text-white">
-                    {user?.firstName?.charAt(0).toUpperCase() || "U"}
+                    {user?.firstName?.charAt(0).toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
               )}
