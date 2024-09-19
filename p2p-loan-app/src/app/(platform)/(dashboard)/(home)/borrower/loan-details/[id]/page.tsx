@@ -46,9 +46,12 @@ const LoanDetails = () => {
   const [loanId, setLoanId] = useState<string | null>(null);
   const [pageNumber, setpageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(5);
-  const [pageSize] = useState(1);
+  const [pageSize] = useState(10);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loanStatus, setLoanStatus] = useState('Active');
+=======
+  const [pageSize] = useState(10);
+>>>>>>> main
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
@@ -416,7 +419,7 @@ const LoanDetails = () => {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount Paid</TableHead>
-                  <TableHead>Amount Left</TableHead>
+                  {/* <TableHead>Amount Left</TableHead> */}
                   <TableHead>Interest Rate</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
@@ -428,7 +431,7 @@ const LoanDetails = () => {
                       {dayjs(loanRepayment.loan.dueDate).format('MMMM D, YYYY')}
                     </TableCell>
                     <TableCell>₦{loanRepayment.amount}</TableCell>
-                    <TableCell>₦{loanRepayment.loan.amountLeft}</TableCell>
+                    {/* <TableCell>₦{loanRepayment.loan.amountLeft}</TableCell> */}
                     <TableCell>{loanRepayment.interestRate}%</TableCell>
                     <TableCell>{loanRepayment.status}</TableCell>
                   </TableRow>
