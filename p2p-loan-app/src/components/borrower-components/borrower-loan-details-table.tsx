@@ -111,17 +111,10 @@ const BorrowerLoanDetailsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-<<<<<<< jerry-branch
-          {loans.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={11} className="text-center py-4">
-                No Loans yet on the loan table
-=======
           {loans?.length < 1 ? (
             <TableRow>
               <TableCell colSpan={5} className="text-center text-gray-500">
                 No loans yet
->>>>>>> main
               </TableCell>
             </TableRow>
           ) : (
@@ -159,22 +152,19 @@ const BorrowerLoanDetailsTable = () => {
                 <TableCell className="py-4 px-6 text-gray-700">
                   {loan.currentInterestRate}%
                 </TableCell>
-<<<<<<< jerry-branch
-                <TableCell className="py-4 px-6 text-gray-700">
-                  {loan.status}
-=======
 
-                <TableCell className="text-right py-4 px-6">
+                <TableCell className="text-center py-4 px-6">
                   <span
                     className={`inline-block px-2 text-xs font-semibold rounded-full ${
-                      loan.status
+                      loan.status === 'Active'
                         ? 'bg-green-600 text-white'
-                        : 'bg-red-600 text-white'
+                        : loan.status === 'Completed'
+                          ? 'bg-transparent text-black'
+                          : 'bg-red-600 text-white'
                     }`}
                   >
-                    {loan.status ? 'Yes' : 'No'}
+                    {loan.status}
                   </span>
->>>>>>> main
                 </TableCell>
                 <TableCell className="text-right py-4 px-6">
                   <DropdownMenu>

@@ -1,9 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-<<<<<<< jerry-branch
-=======
-
->>>>>>> main
 import { Button } from '@/components/ui/button';
 import {
   Card,
