@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import useAuth from '@/hooks/useAuth';
-import { useQueryClient } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 
 interface CreatePinDialogProps {
   isDialogOpen: boolean;
@@ -30,6 +30,7 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
   const isPinValid = pin.length === 4 && /^\d+$/.test(pin);
   const isConfirmPinValid = confirmPin.length === 4 && /^\d+$/.test(confirmPin);
   const isFormValid = isPinValid && isConfirmPinValid && pin === confirmPin;
+  const isLoading = createPinMutation.isPending;
 
   const handleSubmit = async () => {
     if (pin !== confirmPin) {
@@ -90,7 +91,7 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
             </Label>
             <Input
               id="confirm-pin"
-              type="text"
+              type="password"
               className="col-span-3 text-xs"
               pattern="\d*"
               maxLength={4}
@@ -105,8 +106,12 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" onClick={handleSubmit} disabled={!isFormValid}>
-            Save PIN
+          <Button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!isFormValid || isLoading}
+          >
+            {isLoading ? <Loader2 className="animate-spin" /> : 'Save Pin'}
           </Button>
         </DialogFooter>
       </DialogContent>

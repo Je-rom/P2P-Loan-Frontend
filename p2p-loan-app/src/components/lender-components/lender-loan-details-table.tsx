@@ -27,9 +27,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { MoreHorizontal } from 'lucide-react';
+import { Loader2, MoreHorizontal } from 'lucide-react';
 import useLoan from '@/hooks/useLoan';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 const LenderLoanDetailsTable = () => {
   const router = useRouter();
@@ -52,11 +53,23 @@ const LenderLoanDetailsTable = () => {
   }, [data]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center text-xs mt-6">
+        <Loader2 className="animate-spin text-blue-500" size={48} />
+        <h1>Please wait, we are getting your loans</h1>
+      </div>
+    );
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+          <h1>Something went wrong, try again later..</h1>
+        </div>
+      </>
+    );
   }
 
   const loans = data?.result.items || [];
@@ -79,7 +92,7 @@ const LenderLoanDetailsTable = () => {
             <TableHead className="py-4 px-6 text-left">
               Principal Amount
             </TableHead>
-            <TableHead className="py-4 px-6 text-left">Amount to pay</TableHead>
+            <TableHead className="py-4 px-6 text-left">Amount to receive</TableHead>
             <TableHead className="py-4 px-6 text-left">
               Repayment Frequency
             </TableHead>
@@ -144,9 +157,9 @@ const LenderLoanDetailsTable = () => {
                   <span
                     className={`inline-block px-2 text-xs font-semibold rounded-full ${
                       loan.status === 'Active'
-                        ? 'bg-green-600 text-white'
+                        ? 'bg-transparent text-yellow-500'
                         : loan.status === 'Completed'
-                          ? 'bg-transparent text-black'
+                          ? 'bg-transparent text-green-500'
                           : 'bg-red-600 text-white'
                     }`}
                   >

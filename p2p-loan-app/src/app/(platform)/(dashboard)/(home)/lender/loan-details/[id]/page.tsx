@@ -22,6 +22,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import Image from 'next/image';
 
 const LoanDetails = () => {
   const router = useRouter();
@@ -66,15 +67,33 @@ const LoanDetails = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <Loader2 className="animate-spin text-blue-500" size={48} />
+          <h1>Please wait, we are getting your loan details..</h1>
+        </div>
+      </>
+    );
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <div>
+        <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+        <h1>Something went wrong..</h1>
+      </div>
+    );
   }
 
   if (!loanData) {
-    return <div>No loan data available</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <h1>No loan data avaiable</h1>
+        </div>
+      </>
+    );
   }
 
   const loanRepayments = repaymentData?.result?.items || [];
@@ -109,7 +128,7 @@ const LoanDetails = () => {
                     <strong>{loanData.result.principalAmount}</strong>
                   </p>
                   <p>
-                    <span>Amount to pay: </span>₦
+                    <span>Amount to receive: </span>₦
                     <strong>{loanData.result.amountLeft}</strong>
                   </p>
                   <p>

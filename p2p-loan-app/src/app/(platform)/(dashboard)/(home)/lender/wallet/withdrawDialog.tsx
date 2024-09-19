@@ -602,7 +602,7 @@ export function WithdrawDialog({
             <div className="relative sm:col-span-3 w-full">
               <Input
                 id="pin"
-                type="text"
+                type="password"
                 className="text-xs border-black"
                 pattern="\d*"
                 maxLength={4}
