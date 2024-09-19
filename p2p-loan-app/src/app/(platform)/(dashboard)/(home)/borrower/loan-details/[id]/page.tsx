@@ -34,6 +34,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import Image from 'next/image';
 
 const LoanDetails = () => {
   const router = useRouter();
@@ -46,6 +47,8 @@ const LoanDetails = () => {
   const [pageNumber, setpageNumber] = useState(1);
   const [totalItems, setTotalItems] = useState<number>(5);
   const [pageSize] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loanStatus, setLoanStatus] = useState('Active');
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
@@ -69,24 +72,51 @@ const LoanDetails = () => {
 
   const onSubmit = async () => {
     if (loanId && isPinValid && isAmountValid) {
-      repayLoan.mutate({
-        loanId,
-        PIN: pin,
-        amount: parseFloat(amount),
-      });
+      repayLoan.mutate(
+        {
+          loanId,
+          PIN: pin,
+          amount: parseFloat(amount),
+        },
+        {
+          onSuccess: () => {
+            setPin('');
+            setAmount('');
+            setIsDialogOpen(false);
+          },
+        },
+      );
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <Loader2 className="animate-spin text-blue-500" size={48} />
+          <h1>Please wait, we are getting your loan details..</h1>
+        </div>
+      </>
+    );
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <div>
+        <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+        <h1>Something went wrong..</h1>
+      </div>
+    );
   }
 
   if (!loanData) {
-    return <div>No loan data available</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <h1>No loan data avaiable</h1>
+        </div>
+      </>
+    );
   }
 
   const loanRepayments = repaymentData?.result?.items || [];
@@ -99,6 +129,43 @@ const LoanDetails = () => {
   };
 
   console.log(repaymentData);
+
+  // Calculate repayments dynamically
+  const calculateRepayments = (loan: any) => {
+    const principal = loan.principalAmount;
+    const durationDays = loan.loanDurationDays;
+    const frequency = loan.repaymentFrequency;
+
+    let numPayments;
+    if (frequency === 'daily') {
+      numPayments = durationDays;
+    } else if (frequency === 'weekly') {
+      numPayments = Math.floor(durationDays / 7);
+    } else if (frequency === 'monthly') {
+      numPayments = Math.floor(durationDays / 30);
+    }
+
+    const paymentAmount = principal / numPayments;
+    const today = dayjs();
+    const repayments = [];
+
+    for (let i = 1; i <= numPayments; i++) {
+      const paymentDate = dayjs(loan.startDate).add(
+        i * (frequency === 'daily' ? 1 : frequency === 'weekly' ? 7 : 30),
+        'days',
+      );
+      repayments.push({
+        date: paymentDate,
+        amount: paymentAmount,
+        status: paymentDate.isBefore(today) ? 'Defaulted' : 'Upcoming',
+      });
+    }
+
+    return repayments;
+  };
+
+  const repayments = calculateRepayments(loanData.result);
+  const status = loanData.result.status;
 
   return (
     <>
@@ -167,88 +234,92 @@ const LoanDetails = () => {
                     <h2 className="font-bold text-xs text-blue-600 flex items-center">
                       Upcoming Repayments
                     </h2>
-                    <ul className="list-none pl-0 text-xs text-gray-700 space-y-1 mt-1">
-                      <li className="flex items-center">
-                        <svg
-                          className="w-3 h-3 text-green-500 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 12l2 2 4-4m-6 6a9 9 0 110-18 9 9 0 010 18z"
-                          />
-                        </svg>
-                        Payment of $700 due on Oct 1, 2024
-                      </li>
-                      <li className="flex items-center">
-                        <svg
-                          className="w-3 h-3 text-green-500 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 12l2 2 4-4m-6 6a9 9 0 110-18 9 9 0 010 18z"
-                          />
-                        </svg>
-                        Payment of $750 due on Nov 1, 2024
-                      </li>
-                    </ul>
+                    {status === 'Active' ? (
+                      <ul className="list-none pl-0 text-xs text-gray-700 space-y-1 mt-1">
+                        {repayments
+                          .filter(
+                            (repayment) => repayment.status === 'Upcoming',
+                          )
+                          .slice(0, 2)
+                          .map((repayment, index) => (
+                            <li className="flex items-center" key={index}>
+                              <svg
+                                className="w-3 h-3 text-green-500 mr-2"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M9 12l2 2 4-4m-6 6a9 9 0 110-18 9 9 0 010 18z"
+                                />
+                              </svg>
+                              Payment of ₦{repayment.amount.toFixed(2)} due on{' '}
+                              {repayment.date.format('MMMM D, YYYY')}
+                            </li>
+                          ))}
+                        {repayments.filter(
+                          (repayment) => repayment.status === 'Upcoming',
+                        ).length === 0 && (
+                          <li className="text-green-600 text-xs">
+                            All repayments are completed or there are no
+                            upcoming payments.
+                          </li>
+                        )}
+                      </ul>
+                    ) : (
+                      <p className="text-green-600">
+                        All repayments are completed or there are no upcoming
+                        payments.
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-3">
                     <h2 className="font-bold text-xs text-red-600 flex items-center">
                       Defaulted Repayments
                     </h2>
-                    <ul className="list-none pl-0 text-xs text-red-600 space-y-1 mt-1">
-                      <li className="flex items-center">
-                        <svg
-                          className="w-3 h-3 text-red-500 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M18.364 5.636l-6.728 6.728m0 0l-6.728-6.728m6.728 6.728l6.728 6.728"
-                          />
-                        </svg>
-                        Payment of $600 missed on Aug 1, 2024
-                      </li>
-                      <li className="flex items-center">
-                        <svg
-                          className="w-3 h-3 text-red-500 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M18.364 5.636l-6.728 6.728m0 0l-6.728-6.728m6.728 6.728l6.728 6.728"
-                          />
-                        </svg>
-                        Payment of $650 missed on Sep 1, 2024
-                      </li>
-                    </ul>
+                    {repayments.filter(
+                      (repayment) => repayment.status === 'Defaulted',
+                    ).length > 0 ? (
+                      <ul className="list-none pl-0 text-xs text-red-600 space-y-1 mt-1">
+                        {repayments
+                          .filter(
+                            (repayment) => repayment.status === 'Defaulted',
+                          )
+                          .map((repayment, index) => (
+                            <li className="flex items-center" key={index}>
+                              <svg
+                                className="w-3 h-3 text-red-500 mr-2"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M18.364 5.636l-6.728 6.728m0 0l-6.728-6.728m6.728 6.728l6.728 6.728"
+                                />
+                              </svg>
+                              Payment of ₦{repayment.amount.toFixed(2)} missed
+                              on {repayment.date.format('MMMM D, YYYY')}
+                            </li>
+                          ))}
+                      </ul>
+                    ) : (
+                      <p className="text-xs text-gray-500 mt-1">
+                        No defaulted payments.
+                      </p>
+                    )}
                   </div>
 
                   <div className="text-end">
-                    <Dialog>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                       <DialogTrigger asChild>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white w-18 h-8 text-xs mt-2">
                           Repay Now
@@ -285,7 +356,7 @@ const LoanDetails = () => {
                           <div className="relative sm:col-span-3 w-full">
                             <Input
                               id="pin"
-                              type="text"
+                              type="password"
                               className="text-xs border-black"
                               pattern="\d*"
                               maxLength={4}

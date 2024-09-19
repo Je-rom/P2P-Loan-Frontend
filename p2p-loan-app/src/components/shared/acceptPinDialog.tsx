@@ -53,7 +53,7 @@ const AcceptRequestPinDialog: React.FC<PinInputDialogProps> = ({
               </Label>
               <Input
                 id="pin"
-                type="text"
+                type="password"
                 className="text-xs"
                 pattern="\d*"
                 maxLength={4}
@@ -70,11 +70,7 @@ const AcceptRequestPinDialog: React.FC<PinInputDialogProps> = ({
           </div>
         </div>
         <DialogFooter>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!isPinValid} 
-          >
+          <Button type="button" onClick={handleSubmit} disabled={!isPinValid}>
             Submit
           </Button>
         </DialogFooter>

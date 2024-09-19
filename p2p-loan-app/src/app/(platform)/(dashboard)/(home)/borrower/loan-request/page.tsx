@@ -1,7 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-
-
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -210,7 +208,12 @@ const LoanRequest: React.FC = () => {
   const totalPages = Math.ceil(totalItems / pageSize);
 
   if (error) {
-    return <div className="text-sm">Error loading loan requests.</div>;
+    return (
+      <>
+        <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+        <div className="text-sm">Error loading loan requests.</div>
+      </>
+    );
   }
 
   return (
