@@ -49,9 +49,7 @@ const LoanDetails = () => {
   const [pageSize] = useState(10);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loanStatus, setLoanStatus] = useState('Active');
-=======
-  const [pageSize] = useState(10);
->>>>>>> main
+
   const repayLoan = RepayLoanMutation();
 
   const { data: loanData, isLoading, isError } = useGetALoanQuery(loanId || '');
