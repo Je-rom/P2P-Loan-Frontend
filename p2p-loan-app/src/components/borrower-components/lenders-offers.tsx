@@ -131,6 +131,7 @@ export function LendersOffer() {
       setPageNumber((prev) => prev - 1);
     }
   };
+
   return (
     <>
       <AnimatePresence>
@@ -300,6 +301,7 @@ export function LendersOffer() {
       {/* <div className="mb-4">
         <AutocompleteHint filters={filters} setFilters={setFilters} />
       </div> */}
+
       <ul className="max-w-full mx-auto w-full gap-4">
         {lendersOffers?.map((offer: any) => (
           <motion.div

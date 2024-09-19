@@ -137,7 +137,7 @@ const CreateOfferPage = () => {
         loanDurationDays: parseInt(data.loanDurationDays, 10),
         interestRate: parseFloat(data.interestRate),
         accruingInterestRate: data.accruingInterestRate,
-        additionalInformation: data.additionalNote,
+        additionalInformation: data.additionalNote || 'NIL',
       };
       const result = await createLoanOfferMutation.mutateAsync(
         createLoanOfferRequest,

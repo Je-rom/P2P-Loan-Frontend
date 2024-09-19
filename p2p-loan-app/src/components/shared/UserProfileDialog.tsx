@@ -17,7 +17,7 @@ function UserProfileDialog({
   return (
     <div className="z-50">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogHeader>User Info</DialogHeader>
+        {/* <DialogHeader>User Info</DialogHeader> */}
         <DialogContent className="z-[9999999999]">
           <div>
             {isLoading && <div>Loading...</div>}
