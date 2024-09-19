@@ -50,5 +50,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/borrower/:path*', '/lender/:path*', '/create-offer'],
+  matcher: ['/borrower/:path*', '/lender/:path*', '/create-offer', '/account-settings'],
 };
