@@ -84,6 +84,8 @@ const useAuth = () => {
       toast.success('Login successful');
       console.log(responseData);
       console.log('Login successful, response data:', responseData);
+      clearAuth();
+
       setUser(responseData.user);
       setToken(responseData.token);
     },
