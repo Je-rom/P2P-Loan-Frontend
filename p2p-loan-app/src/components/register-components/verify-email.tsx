@@ -73,7 +73,8 @@ const VerifyEmail: React.FC = () => {
           <Image src={'/email-icon.svg'} alt="email" width={60} height={100} />
           <h1 className="font-bold text-base">Check Your Email</h1>
           <p className="text-center mt-2 text-sm">
-            Please open your mail app to verify your account
+            When done an email will be set to your mail, please check, so you
+            can verify your account, Welcome to BorrowHub.
           </p>
           {/* <h1 className="mt-4 flex">
             Didn't receive any mail?

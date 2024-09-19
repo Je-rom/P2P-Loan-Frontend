@@ -27,9 +27,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { MoreHorizontal } from 'lucide-react';
+import { Loader2, MoreHorizontal } from 'lucide-react';
 import useLoan from '@/hooks/useLoan';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 const BorrowerLoanDetailsTable = () => {
   const router = useRouter();
@@ -52,11 +53,23 @@ const BorrowerLoanDetailsTable = () => {
   }, [data]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center text-xs mt-6">
+        <Loader2 className="animate-spin text-blue-500" size={48} />
+        <h1>Please wait, we are getting your loans</h1>
+      </div>
+    );
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center text-xs">
+          <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+          <h1>Something went wrong, try again later..</h1>
+        </div>
+      </>
+    );
   }
 
   const loans = data?.result.items || [];
@@ -93,7 +106,7 @@ const BorrowerLoanDetailsTable = () => {
             <TableHead className="py-4 px-6 text-left">
               Current Interest Rate
             </TableHead>
-            <TableHead className="text-right py-4 px-6">Active</TableHead>
+            <TableHead className="text-right py-4 px-6">Status</TableHead>
             <TableHead className="text-right w-[50px] py-4 px-6"></TableHead>
           </TableRow>
         </TableHeader>

@@ -59,7 +59,8 @@ const MyOffers = () => {
   if (error) {
     return (
       <div className="flex justify-center text-red-500 text-xs">
-        <p className="text-sm">Failed to load loan offers</p>
+        <Image src={'/delete.svg'} alt="failed" width={50} height={10} />
+        <p className="text-sm">Sonething went wrong please try again later..</p>
       </div>
     );
   }

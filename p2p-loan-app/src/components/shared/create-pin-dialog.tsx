@@ -31,7 +31,6 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
   const isConfirmPinValid = confirmPin.length === 4 && /^\d+$/.test(confirmPin);
   const isFormValid = isPinValid && isConfirmPinValid && pin === confirmPin;
 
-
   const handleSubmit = async () => {
     if (pin !== confirmPin) {
       toast.error('PIN and Confirm PIN do not match.');
@@ -44,8 +43,6 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
         onSuccess: () => {
           toast.success('PIN created successfully.');
           setIsDialogOpen(false);
-
-          
         },
         onError: () => {
           toast.error('Failed to create PIN.');
@@ -74,7 +71,7 @@ const CreatePinDialog: React.FC<CreatePinDialogProps> = ({
             </Label>
             <Input
               id="pin"
-              type="text"
+              type="password"
               className="col-span-3 text-xs"
               pattern="\d*"
               maxLength={4}
