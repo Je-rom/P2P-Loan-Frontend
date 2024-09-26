@@ -23,9 +23,11 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import AcceptRequestPinDialog from '@/components/shared/acceptPinDialog';
+import UserProfileDialog from '@/components/shared/UserProfileDialog';
 
 interface LenderOfferCardProps {
   lenderName: string;
+  userId: string;
   loanAmount: number;
   repaymentOptions: string;
   interestRate: number;
@@ -56,6 +58,7 @@ const getStatusColor = (status: string) => {
 
 const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
   lenderName,
+  userId,
   loanAmount,
   repaymentOptions,
   interestRate,
@@ -97,20 +100,29 @@ const LenderOfferCard: React.FC<LenderOfferCardProps> = ({
       },
     });
   };
+  const [openUserProfile, setOpenUserProfile] = useState(false);
   return (
     <>
       <div className="flex justify-center sm:justify-start mb-4">
         <Card className="w-full max-w-[1250px] shadow-lg bg-gray-100 mx-4 sm:mx-0">
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle
+              className="flex items-center cursor-pointer"
+              onClick={() => setOpenUserProfile(true)}
+            >
               <Avatar className="w-6 h-6">
                 <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>{lenderName[0]}</AvatarFallback>
               </Avatar>
               <span className="ml-2 text-base">{lenderName}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <UserProfileDialog
+              open={openUserProfile}
+              setOpen={setOpenUserProfile}
+              userId={userId}
+            />
             <div className="space-y-1 text-xs">
               <p>
                 <span className="font-bold">Loan Amount: </span>₦{loanAmount}
@@ -274,10 +286,14 @@ const LoanRequest: React.FC = () => {
                   ? `${offer.user.firstName} ${offer.user.lastName}`
                   : `${offer.loanOffer.user.firstName} ${offer.loanOffer.user.lastName}`;
 
+              const userId =
+                view === 'received' ? offer.user.id : offer.loanOffer.user.id;
+
               return (
                 <LenderOfferCard
                   key={index}
                   lenderName={displayName}
+                  userId={userId}
                   loanAmount={offer.loanOffer.amount}
                   repaymentOptions={offer.loanOffer.repaymentFrequency}
                   interestRate={offer.loanOffer.interestRate}

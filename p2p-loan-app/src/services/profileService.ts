@@ -23,6 +23,12 @@ class ProfileService {
   static getMyProfile = async (): Promise<AxiosResponse<MyProfile>> => {
     return await axiosConfig.get('/api/User/me');
   };
+
+  static getUserProfile = async (
+    id: string,
+  ): Promise<AxiosResponse<MyProfile>> => {
+    return await axiosConfig.get(`/api/User/${id}`);
+  };
 }
 
 export default ProfileService;
