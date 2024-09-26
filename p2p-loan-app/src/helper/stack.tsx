@@ -33,7 +33,7 @@ const CARDS = [
   {
     id: 0,
     name: 'Racheal',
-    designation: 'Senior Designer',
+    designation: '',
     content: (
       <p>
         Using BorrowHub has been a <Highlight>game-changer</Highlight>. It’s
@@ -45,7 +45,7 @@ const CARDS = [
   {
     id: 1,
     name: 'Eka',
-    designation: 'Senior Shitposter',
+    designation: '',
     content: (
       <p>
         BorrowHub has made it incredibly simple for
@@ -57,7 +57,7 @@ const CARDS = [
   {
     id: 2,
     name: 'Simi',
-    designation: 'Manager Project Mayhem',
+    designation: '',
     content: (
       <p>
         The application is intuitive and makes tracking my loan activities so

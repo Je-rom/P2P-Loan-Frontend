@@ -76,7 +76,7 @@ const useAuth = () => {
       } else {
         toast.error('Invalid Login details, check your email and password');
       }
-      console.log('register error:', error);
+      console.log('login error:', error);
       console.log(error.response?.data);
     },
     onSuccess: (data: LoginResponse) => {
@@ -131,7 +131,7 @@ const useAuth = () => {
       if (error.response?.data?.message === 'Invalid verification token.') {
         toast.error('Invalid verification token.');
       }
-      console.log('register error:', error);
+      console.log('email error:', error);
       console.log(error.response?.data);
     },
     onSuccess: (data: EmailVerificationResponse) => {
@@ -152,7 +152,7 @@ const useAuth = () => {
       } else if (error.response?.data?.message === 'You already have a pin') {
         toast.error('You already have a pin.');
       }
-      console.log('register error:', error);
+      console.log('create pin:', error);
       console.log(error.response?.data);
     },
     onSuccess: (data: CreatePinResponse) => {

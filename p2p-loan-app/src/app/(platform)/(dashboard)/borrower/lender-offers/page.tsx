@@ -8,7 +8,7 @@ const BorrowerLenderOffers = () => {
     <>
       <div className="flex flex-row sm:flex-row justify-between items-center">
         <h1 className="font-bold text-base">Lenders Offers</h1>
-        <Filter />
+        {/* <Filter /> */}
       </div>
       <div className="border border-gray-200 rounded-2xl p-2 mt-4">
         <LendersOffer />

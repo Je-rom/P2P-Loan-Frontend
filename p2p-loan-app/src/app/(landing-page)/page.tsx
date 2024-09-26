@@ -11,8 +11,8 @@ const LandingPage = () => {
       <section className="bg-transparent">
         <div className="bg-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
-            <div className="w-full md:w-[718px] pr-4  md:pt-20 pl-3 md:pl-20 text-center md:text-left mt-20">
-              <h1 className="font-bold text-2xl md:text-5xl">
+            <div className="w-full md:w-[718px] pr-4 md:pt-20 pl-3 md:pl-20 text-center md:text-left mt-20 md:mt-40">
+              <h1 className="font-bold text-4xl md:text-5xl">
                 Welcome to BorrowHub
               </h1>
               <p className="flex tracking-wide justify-between items-center text-gray-600 mt-4 md:mt-6 mb-8 text-xs md:text-sm">
@@ -23,13 +23,13 @@ const LandingPage = () => {
                 personalized than ever.
               </p>
 
-              <div className="hidden md:block md:pt-4">
+              {/* <div className="hidden md:block md:pt-4">
                 <Link href="/register">
                   <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full mb-2 text-sm">
                     Get Started
                   </button>
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="hidden md:block w-full md:w-auto">

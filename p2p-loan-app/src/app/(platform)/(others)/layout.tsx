@@ -1,7 +1,6 @@
 'use client';
 import DashboardNavbar from '@/components/shared/dashboard-navbar';
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
 
 const OthersLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -22,7 +21,3 @@ const OthersLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default OthersLayout;
-
-
-// 
-// 

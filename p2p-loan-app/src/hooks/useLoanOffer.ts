@@ -22,7 +22,7 @@ const useLoanOffer = () => {
         return response.data;
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toast.error(error.message);
+        toast.error(error.response?.data.message);
         console.log(axiosResponseMessage(error));
         console.log('failed to create', error.message);
       },

@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 const MyOffers = () => {
   const { GetMyLoanOffer } = useLoanOffer();
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(10);
   const [totalItems, setTotalItems] = useState<number>(0);
   const router = useRouter();
   const { data, error, isLoading } = GetMyLoanOffer(
@@ -77,12 +77,11 @@ const MyOffers = () => {
         <p className="text-sm font-semibold text-gray-700">
           No loan offers found
         </p>
-        <p className="text-sm text-gray-500">Let's get you started</p>
         <Button
           onClick={() => router.push('/create-offer')}
-          className="bg-blue-500 hover:bg-blue-500 w-[100px] h-[30px] text-xs"
+          className="bg-blue-500 hover:bg-blue-500 w-[140px] h-[31px] text-xs"
         >
-          New Offer
+          Create A New Offer
         </Button>
       </div>
     );
@@ -91,7 +90,15 @@ const MyOffers = () => {
   return (
     <>
       <div className="">
-        <h1 className="font-bold text-sm">Your Loan Offers</h1>
+        <div className="flex justify-between">
+          <h1 className="font-bold text-sm">Your Loan Offers</h1>
+          <Button
+            onClick={() => router.push('/create-offer')}
+            className="bg-blue-500 hover:bg-blue-500 w-[120px] h-[30px] text-xs"
+          >
+            Create New Offer
+          </Button>
+        </div>
       </div>
       <div className="w-full overflow-x-auto mt-5">
         <Table className="min-w-full bg-white shadow-md rounded-lg overflow-y-auto overflow-hidden text-xs">

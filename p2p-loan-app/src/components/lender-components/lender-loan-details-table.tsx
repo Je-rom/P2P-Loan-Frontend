@@ -92,7 +92,9 @@ const LenderLoanDetailsTable = () => {
             <TableHead className="py-4 px-6 text-left">
               Principal Amount
             </TableHead>
-            <TableHead className="py-4 px-6 text-left">Amount to receive</TableHead>
+            <TableHead className="py-4 px-6 text-left">
+              Amount to receive
+            </TableHead>
             <TableHead className="py-4 px-6 text-left">
               Repayment Frequency
             </TableHead>
@@ -113,8 +115,11 @@ const LenderLoanDetailsTable = () => {
         <TableBody>
           {loans?.length < 1 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center text-gray-500">
-                No loans yet
+              <TableCell
+                colSpan={10}
+                className="text-center text-base text-gray-500"
+              >
+                No Loans yet
               </TableCell>
             </TableRow>
           ) : (

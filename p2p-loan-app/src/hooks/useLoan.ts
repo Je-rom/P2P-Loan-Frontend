@@ -7,6 +7,7 @@ import {
   useQuery,
   UseQueryResult,
   UseQueryOptions,
+  useQueryClient,
 } from '@tanstack/react-query';
 import LoanService, {
   GetALoan,
@@ -18,6 +19,8 @@ import LoanService, {
 } from '@/services/loanService';
 
 const useLoan = () => {
+  const queryClient = useQueryClient();
+
   const useMyLoans = (
     pageNumber: number,
     pageSize: number = 1,
@@ -130,6 +133,15 @@ const useLoan = () => {
         console.log('loan repayments', message, status);
         console.log(data.result);
         toast.success(data.message);
+        queryClient.invalidateQueries({
+          queryKey: [
+            'loanRepayments',
+            LoanId,
+            totalItems,
+            pageNumber,
+            pageSize,
+          ],
+        });
       },
     } as UseQueryOptions<GetLoanRepayments, AxiosError<{ message: string }>>);
   };
