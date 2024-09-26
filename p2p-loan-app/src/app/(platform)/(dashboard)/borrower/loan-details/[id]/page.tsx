@@ -420,23 +420,31 @@ const LoanDetails = () => {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount Paid</TableHead>
-                  {/* <TableHead>Amount Left</TableHead> */}
                   <TableHead>Interest Rate</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loanRepayments?.map((loanRepayment, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      {dayjs(loanRepayment.loan.dueDate).format('MMMM D, YYYY')}
+                {loanRepayments?.length > 0 ? (
+                  loanRepayments.map((loanRepayment, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        {dayjs(loanRepayment.loan.dueDate).format(
+                          'MMMM D, YYYY',
+                        )}
+                      </TableCell>
+                      <TableCell>₦{loanRepayment.amount}</TableCell>
+                      <TableCell>{loanRepayment.interestRate}%</TableCell>
+                      <TableCell>{loanRepayment.status}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} style={{ textAlign: 'center' }}>
+                      No repayments has been made
                     </TableCell>
-                    <TableCell>₦{loanRepayment.amount}</TableCell>
-                    {/* <TableCell>₦{loanRepayment.loan.amountLeft}</TableCell> */}
-                    <TableCell>{loanRepayment.interestRate}%</TableCell>
-                    <TableCell>{loanRepayment.status}</TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </div>

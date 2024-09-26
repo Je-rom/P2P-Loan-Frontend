@@ -15,6 +15,19 @@ import useWallet from '@/hooks/useWallet';
 import { Loader2 } from 'lucide-react';
 import { MoveLeft } from 'lucide-react';
 
+const getMinDuration = (frequency: string) => {
+  switch (frequency) {
+    case 'Daily':
+      return 1;
+    case 'Weekly':
+      return 7;
+    case 'Monthly':
+      return 30;
+    default:
+      return 0; // Default case, if frequency is not set
+  }
+};
+
 const formSchema = z.object({
   loanAmount: z
     .string()
@@ -118,23 +131,26 @@ const CreateOfferPage = () => {
     }
   }, [getWalletQuery.isError]);
 
-  // Function to create a user-friendly wallet ID display
-  // const formatWalletId = (walletId: string) => {
-  //   if (walletId.length > 10) {
-  //     return `${walletId.slice(0, 8)}...`;
-  //   }
-  //   return walletId;
-  // };
-
   // Handle form submission
   const onSubmit = async (data: FormValues) => {
+    const frequency = data.repaymentFrequency;
+    const duration = parseInt(data.loanDurationDays, 10);
+    const minDuration = getMinDuration(frequency);
+
+    if (duration < minDuration) {
+      toast.error(
+        'For the selected frequency, the loan duration must be at least 7 days for Weekly and 30 days for Monthly',
+      );
+      return;
+    }
+
     try {
       const createLoanOfferRequest = {
         walletId: data.walletId,
         amount: data.loanAmount,
         repaymentFrequency: data.repaymentFrequency,
         gracePeriodDays: parseInt(data.gracePeriodDays, 10),
-        loanDurationDays: parseInt(data.loanDurationDays, 10),
+        loanDurationDays: duration,
         interestRate: parseFloat(data.interestRate),
         accruingInterestRate: data.accruingInterestRate,
         additionalInformation: data.additionalNote,
@@ -152,19 +168,18 @@ const CreateOfferPage = () => {
 
   const isLoading = createLoanOfferMutation.isPending;
   const additionalNoteLength = watch('additionalNote').length;
-
   const termsAccepted = watch('termsAccepted');
 
   return (
     <>
       <button onClick={() => router.back()}>
         <div className="flex items-center">
-          <MoveLeft />
-          <h1 className="ml-1 font-bold">Back</h1>
+          <MoveLeft className="w-5" />
+          <h1 className="ml-1 font-bold text-sm">Back</h1>
         </div>
       </button>
       <div>
-        <h1 className="font-bold text-xl mt-10">Create New Offer</h1>
+        <h1 className="font-bold text-xl mt-4">Create New Offer</h1>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-6 p-4 mt-10">
@@ -276,16 +291,21 @@ const CreateOfferPage = () => {
 
         <div className="mt-10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-full md:w-auto">
-            <h1>
-              Click to see the
-              <button onClick={() => setIsOpen(true)} className="text-blue-400">
+            <div className="flex">
+              <h1>Click to see the </h1>
+              <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="text-blue-400 ml-1"
+              >
                 Terms and Conditions
               </button>
-              <TermsAndConditionDialog
-                open={isOpen}
-                onOpenChange={() => setIsOpen(!isOpen)}
-              />
-            </h1>
+            </div>
+
+            <TermsAndConditionDialog
+              open={isOpen}
+              onOpenChange={() => setIsOpen(!isOpen)}
+            />
             <div className="flex items-start space-x-2 mt-2">
               <Checkbox
                 checked={termsAccepted}

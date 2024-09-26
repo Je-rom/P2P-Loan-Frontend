@@ -1,11 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import LenderLoanDetailsTable from '@/components/lender-components/lender-loan-details-table';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const Loan = () => {
+  const router = useRouter();
+
   return (
     <div>
-      <h1 className="text-base font-bold">Your Loans</h1>
+      <h1 className="font-bold text-base">Your Loans</h1>
       <div className="mt-4 text-xs">
         <p>
           The table below displays the details of the loans you've issued,

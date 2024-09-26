@@ -1,13 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-
 import BorrowerLoanDetailsTable from '@/components/borrower-components/borrower-loan-details-table';
 
 const ActiveLoan = () => {
   return (
     <div>
-      <h1 className="font-bold text-base">Your Loans</h1>
-      <div className="mt-4 text-xs">
+      <div className="flex justify-between">
+        <h1 className="font-bold text-base">Your Loans</h1>
+      </div>
+
+      <div className="mt-5 text-xs">
         <p>
           The table below shows the details of your active loans, including the
           loan amount, interest rates, repayment frequency, and more. To view

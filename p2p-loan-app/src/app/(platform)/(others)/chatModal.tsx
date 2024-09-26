@@ -213,7 +213,13 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
       ></div>
       <div className="bg-white p-6 rounded-md w-full max-w-3xl h-[80vh] flex flex-col z-50">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">BorrowHub</h2>
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold">BorrowHub</h2>
+            <p>
+              Welcome to BorrowHub AI assistant! How can I assist you today?
+            </p>
+          </div>
+
           <button onClick={onClose} className="text-red-500">
             <SidebarClose />
           </button>

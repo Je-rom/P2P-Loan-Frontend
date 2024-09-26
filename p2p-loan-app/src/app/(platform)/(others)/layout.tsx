@@ -1,7 +1,6 @@
 'use client';
 import DashboardNavbar from '@/components/shared/dashboard-navbar';
 import React from 'react';
-import { useMediaQuery } from 'usehooks-ts';
 
 const OthersLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,9 +8,9 @@ const OthersLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="sticky top-0 z-30 w-full">
         <DashboardNavbar />
       </div>
-      <main className="lg:pl-7">
+      <main className="lg:pl-5">
         <div
-          className="px-8 py-10 lg:px-20 lg:py-16"
+          className=" lg:px-10 lg:py-10"
           style={{ minHeight: 'calc(100vh - 4rem)' }}
         >
           {children}
@@ -22,7 +21,3 @@ const OthersLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default OthersLayout;
-
-
-// 
-// 
