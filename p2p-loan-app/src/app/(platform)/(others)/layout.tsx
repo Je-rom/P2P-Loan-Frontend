@@ -8,9 +8,9 @@ const OthersLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="sticky top-0 z-30 w-full">
         <DashboardNavbar />
       </div>
-      <main className="lg:pl-5">
+      <main className="lg:pl-7">
         <div
-          className=" lg:px-10 lg:py-10"
+          className="px-8 py-10 lg:px-20 lg:py-16"
           style={{ minHeight: 'calc(100vh - 4rem)' }}
         >
           {children}
